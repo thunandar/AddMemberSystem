@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XtraReportsLayoutSerializer SerializerVersion="20.1.3.0" Ref="1" ControlType="DevExpress.XtraReports.UI.XtraReport, DevExpress.XtraReports.v20.1, Version=20.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Name="IncomeCoverLetter" Margins="60, 49, 199, 100" PageWidth="850" PageHeight="1100" Version="20.1" DataSource="#Ref-0" Font="Pyidaungsu Numbers, 10pt, charSet=0">
+  <Bands>
+    <Item1 Ref="2" ControlType="TopMarginBand" Name="topMarginBand1" HeightF="199">
+      <Controls>
+        <Item1 Ref="3" ControlType="XRLabel" Name="label4" Multiline="true" Text="label4" TextAlignment="MiddleCenter" SizeF="709.000244,23" LocationFloat="0,58.4999924" Padding="2,2,0,0,100">
+          <ExpressionBindings>
+            <Item1 Ref="4" EventName="BeforePrint" PropertyName="Text" Expression="[FromSubSectionDesc]" />
+          </ExpressionBindings>
+          <StylePriority Ref="5" UseTextAlignment="false" />
+        </Item1>
+        <Item2 Ref="6" ControlType="XRLabel" Name="label3" Multiline="true" Text="label3" TextAlignment="MiddleCenter" SizeF="709.000244,23.0000038" LocationFloat="0,35.4999962" Padding="2,2,0,0,100">
+          <ExpressionBindings>
+            <Item1 Ref="7" EventName="BeforePrint" PropertyName="Text" Expression="[FromSectionDesc]" />
+          </ExpressionBindings>
+          <StylePriority Ref="8" UseTextAlignment="false" />
+        </Item2>
+        <Item3 Ref="9" ControlType="XRLabel" Name="label5" TextFormatString="{0:d}" Multiline="true" Text="label5" TextAlignment="MiddleLeft" SizeF="236.361,22.9999924" LocationFloat="472.6387,119.138885" Padding="2,2,0,0,100">
+          <ExpressionBindings>
+            <Item1 Ref="10" EventName="BeforePrint" PropertyName="Text" Expression="[DocumentDateStr]" />
+          </ExpressionBindings>
+          <StylePriority Ref="11" UseTextAlignment="false" />
+        </Item3>
+        <Item4 Ref="12" ControlType="XRLabel" Name="label2" Multiline="true" Text="label2" TextAlignment="MiddleLeft" SizeF="236.3613,23" LocationFloat="472.6387,96.13889" Padding="2,2,0,0,100">
+          <ExpressionBindings>
+            <Item1 Ref="13" EventName="BeforePrint" PropertyName="Text" Expression="[DocumentRefNumber]" />
+          </ExpressionBindings>
+          <StylePriority Ref="14" UseTextAlignment="false" />
+        </Item4>
+        <Item5 Ref="15" ControlType="XRLabel" Name="label17" Multiline="true" Text="၊" SizeF="12.5000839,23" LocationFloat="460.1387,119.138885" Padding="2,2,0,0,100" />
+        <Item6 Ref="16" ControlType="XRLabel" Name="label16" Multiline="true" Text="၊" SizeF="12.5000839,23" LocationFloat="460.1387,96.13889" Padding="2,2,0,0,100" />
+        <Item7 Ref="17" ControlType="XRLabel" Name="label7" Multiline="true" Text="ရက်စွဲ             " TextAlignment="MiddleLeft" SizeF="69.44449,22.9999924" LocationFloat="390.694183,119.138885" Font="Pyidaungsu Numbers, 10pt, charSet=0" Padding="2,2,0,0,100">
+          <StylePriority Ref="18" UseFont="false" UseTextAlignment="false" />
+        </Item7>
+        <Item8 Ref="19" ControlType="XRLabel" Name="label6" Multiline="true" Text="စာအမှတ်        " TextAlignment="MiddleLeft" SizeF="69.44446,23" LocationFloat="390.694183,96.13889" Font="Pyidaungsu Numbers, 10pt, charSet=0" Padding="2,2,0,0,100">
+          <StylePriority Ref="20" UseFont="false" UseTextAlignment="false" />
+        </Item8>
+        <Item9 Ref="21" ControlType="XRLabel" Name="label1" Multiline="true" Text="ပြည်ထောင်စုသမ္မတမြန်မာနိုင်ငံတော်" TextAlignment="MiddleCenter" SizeF="709,35.4999962" LocationFloat="0,0" Font="Pyidaungsu Numbers, 14pt, charSet=0" Padding="2,2,0,0,100">
+          <StylePriority Ref="22" UseFont="false" UseTextAlignment="false" />
+        </Item9>
+      </Controls>
+    </Item1>
+    <Item2 Ref="23" ControlType="DetailBand" Name="detailBand1" HeightF="349.500031">
+      <Controls>
+        <Item1 Ref="24" ControlType="XRLabel" Name="label18" Multiline="true" Text="label18" TextAlignment="MiddleCenter" SizeF="204.916534,23" LocationFloat="498.6111,284.027832" Padding="2,2,0,0,96">
+          <ExpressionBindings>
+            <Item1 Ref="25" EventName="BeforePrint" PropertyName="Text" Expression="[SignatureUserLst].[DeptDesc]" />
+          </ExpressionBindings>
+          <StylePriority Ref="26" UseTextAlignment="false" />
+        </Item1>
+        <Item2 Ref="27" ControlType="XRPictureBox" Name="pictureBox1" Sizing="StretchImage" SizeF="170.138916,70.1389" LocationFloat="498.6111,167.8889">
+          <ExpressionBindings>
+            <Item1 Ref="28" EventName="BeforePrint" PropertyName="ImageSource" Expression="[SignatureUserLst].[sigByte]" />
+          </ExpressionBindings>
+        </Item2>
+        <Item3 Ref="29" ControlType="XRLabel" Name="label12" Multiline="true" Text="label12" TextAlignment="MiddleLeft" SizeF="528.9718,59.1111069" LocationFloat="180.0281,45.9999924" Font="Pyidaungsu Numbers, 12pt, charSet=0" Padding="2,2,0,0,100">
+          <ExpressionBindings>
+            <Item1 Ref="30" EventName="BeforePrint" PropertyName="Text" Expression="[DocumentContent]" />
+          </ExpressionBindings>
+          <StylePriority Ref="31" UseFont="false" UseTextAlignment="false" />
+        </Item3>
+        <Item4 Ref="32" ControlType="XRLabel" Name="label11" Multiline="true" Text="label11" SizeF="528.9718,23.0000038" LocationFloat="180.027817,22.9999962" Font="Pyidaungsu Numbers, 12pt, charSet=0" Padding="2,2,0,0,100">
+          <ExpressionBindings>
+            <Item1 Ref="33" EventName="BeforePrint" PropertyName="Text" Expression="[DocumentRefer]" />
+          </ExpressionBindings>
+          <StylePriority Ref="34" UseFont="false" />
+        </Item4>
+        <Item5 Ref="35" ControlType="XRLabel" Name="label9" Multiline="true" Text="label9" SizeF="528.9718,23" LocationFloat="180.027817,0" Font="Pyidaungsu Numbers, 12pt, charSet=0" Padding="2,2,0,0,100">
+          <ExpressionBindings>
+            <Item1 Ref="36" EventName="BeforePrint" PropertyName="Text" Expression="[DocumentHeader]" />
+          </ExpressionBindings>
+          <StylePriority Ref="37" UseFont="false" />
+        </Item5>
+        <Item6 Ref="38" ControlType="XRLabel" Name="label23" Multiline="true" Text="label23" TextAlignment="MiddleLeft" SizeF="528.971863,23.0000076" LocationFloat="180.027817,116.19445" Font="Pyidaungsu Numbers, 12pt, charSet=0" Padding="2,2,0,0,100">
+          <ExpressionBindings>
+            <Item1 Ref="39" EventName="BeforePrint" PropertyName="Text" Expression="[DocumentRemark]" />
+          </ExpressionBindings>
+          <StylePriority Ref="40" UseFont="false" UseTextAlignment="false" />
+        </Item6>
+        <Item7 Ref="41" ControlType="XRLabel" Name="label22" Multiline="true" Text="။         ။" SizeF="68.22231,23.0000076" LocationFloat="111.805504,116.19445" Font="Pyidaungsu Numbers, 12pt, charSet=0" Padding="2,2,0,0,100">
+          <StylePriority Ref="42" UseFont="false" />
+        </Item7>
+        <Item8 Ref="43" ControlType="XRLabel" Name="label21" Multiline="true" Text="ပူးတွဲပါ" TextAlignment="MiddleLeft" SizeF="111.805504,23.0000076" LocationFloat="0,116.19445" Font="Pyidaungsu Numbers, 12pt, charSet=0" Padding="2,2,0,0,100">
+          <StylePriority Ref="44" UseFont="false" UseTextAlignment="false" />
+        </Item8>
+        <Item9 Ref="45" ControlType="XRLabel" Name="label15" Multiline="true" Text="။         ။" SizeF="68.22231,22.9999981" LocationFloat="111.805504,23.0000172" Font="Pyidaungsu Numbers, 12pt, charSet=0" Padding="2,2,0,0,100">
+          <StylePriority Ref="46" UseFont="false" />
+        </Item9>
+        <Item10 Ref="47" ControlType="XRLabel" Name="label19" Multiline="true" Text="label19" TextAlignment="MiddleCenter" SizeF="204.916748,23" LocationFloat="498.610931,261.027832" Padding="2,2,0,0,100">
+          <ExpressionBindings>
+            <Item1 Ref="48" EventName="BeforePrint" PropertyName="Text" Expression="[SignatureUserLst].[RoleDesc]" />
+          </ExpressionBindings>
+          <StylePriority Ref="49" UseTextAlignment="false" />
+        </Item10>
+        <Item11 Ref="50" ControlType="XRLabel" Name="label14" Multiline="true" Text="label14" TextAlignment="MiddleCenter" SizeF="204.916626,23.0000153" LocationFloat="498.6111,238.027786" Font="Pyidaungsu Numbers, 10pt, charSet=0" Padding="2,2,0,0,100">
+          <ExpressionBindings>
+            <Item1 Ref="51" EventName="BeforePrint" PropertyName="Text" Expression="[SignatureUserLst].[UserFullName]" />
+          </ExpressionBindings>
+          <StylePriority Ref="52" UseFont="false" UseTextAlignment="false" />
+        </Item11>
+        <Item12 Ref="53" ControlType="XRLabel" Name="label13" Multiline="true" Text="။         ။" SizeF="68.2222748,23" LocationFloat="111.805542,0" Font="Pyidaungsu Numbers, 12pt, charSet=0" Padding="2,2,0,0,100">
+          <StylePriority Ref="54" UseFont="false" />
+        </Item12>
+        <Item13 Ref="55" ControlType="XRLabel" Name="label10" Multiline="true" Text="ရည်ညွှန်းချက်     " TextAlignment="MiddleLeft" SizeF="111.805557,23.0000038" LocationFloat="0,22.9999962" Font="Pyidaungsu Numbers, 12pt, charSet=0" Padding="2,2,0,0,100">
+          <StylePriority Ref="56" UseFont="false" UseTextAlignment="false" />
+        </Item13>
+        <Item14 Ref="57" ControlType="XRLabel" Name="label8" Multiline="true" Text="အကြောင်းအရာ  " TextAlignment="MiddleLeft" SizeF="111.805557,23" LocationFloat="0,0" Font="Pyidaungsu Numbers, 12pt, charSet=0" Padding="2,2,0,0,100">
+          <StylePriority Ref="58" UseFont="false" UseTextAlignment="false" />
+        </Item14>
+      </Controls>
+    </Item2>
+    <Item3 Ref="59" ControlType="BottomMarginBand" Name="bottomMarginBand1">
+      <Controls>
+        <Item1 Ref="60" ControlType="XRLabel" Name="label25" Multiline="true" Text="ပြည်ထောင်စုရုံးသို့ဆက်လက်ပေးပို့တင်ပြအပ်ပါသည်။" TextAlignment="MiddleLeft" SizeF="741,23.0000458" LocationFloat="0,66.99995" Padding="2,2,0,0,100">
+          <StylePriority Ref="61" UseTextAlignment="false" />
+        </Item1>
+      </Controls>
+    </Item3>
+    <Item4 Ref="62" ControlType="DetailReportBand" Name="DetailReport" Level="0" DataMember="DocUserLst" DataSource="#Ref-0" Borders="None">
+      <Bands>
+        <Item1 Ref="63" ControlType="DetailBand" Name="Detail" HeightF="39.5833321">
+          <MultiColumn Ref="64" Mode="UseColumnWidth" />
+          <Controls>
+            <Item1 Ref="65" ControlType="XRTable" Name="table1" SizeF="741,39.5833321" LocationFloat="0,0" Padding="2,2,0,0,96">
+              <Rows>
+                <Item1 Ref="66" ControlType="XRTableRow" Name="tableRow2" Weight="1">
+                  <Cells>
+                    <Item1 Ref="67" ControlType="XRTableCell" Name="tableCell2" Weight="2.61588922345216" Multiline="true" Text="tableCell2" TextAlignment="MiddleRight">
+                      <ExpressionBindings>
+                        <Item1 Ref="68" EventName="BeforePrint" PropertyName="Padding.Right" Expression="[DataSource.CurrentRowIndex]*30" />
+                        <Item2 Ref="69" EventName="BeforePrint" PropertyName="Text" Expression="[SectionDesc]" />
+                      </ExpressionBindings>
+                      <StylePriority Ref="70" UseTextAlignment="false" />
+                    </Item1>
+                    <Item2 Ref="71" ControlType="XRTableCell" Name="tableCell15" Weight="2.7567281124644176" Multiline="true" Text="tableCell15" TextAlignment="MiddleRight">
+                      <ExpressionBindings>
+                        <Item1 Ref="72" EventName="BeforePrint" PropertyName="Text" Expression="[RoleDesc]" />
+                        <Item2 Ref="73" EventName="BeforePrint" PropertyName="Padding.Right" Expression="[DataSource.CurrentRowIndex]*30" />
+                      </ExpressionBindings>
+                      <StylePriority Ref="74" UseTextAlignment="false" />
+                    </Item2>
+                    <Item3 Ref="75" ControlType="XRTableCell" Name="tableCell3" Weight="3.4885227239435084" Multiline="true" Text="tableCell3" TextAlignment="MiddleRight">
+                      <Controls>
+                        <Item1 Ref="76" ControlType="XRPictureBox" Name="pictureBox2" Sizing="StretchImage" ImageAlignment="MiddleRight" SizeF="200.5,40.22" LocationFloat="81.2225342,0">
+                          <ExpressionBindings>
+                            <Item1 Ref="77" EventName="BeforePrint" PropertyName="ImageSource" Expression="[sigByte]" />
+                            <Item2 Ref="78" EventName="BeforePrint" PropertyName="Padding.Right" Expression="[DataSource.CurrentRowIndex]*30" />
+                          </ExpressionBindings>
+                        </Item1>
+                      </Controls>
+                      <StylePriority Ref="79" UseTextAlignment="false" />
+                    </Item3>
+                  </Cells>
+                </Item1>
+              </Rows>
+            </Item1>
+          </Controls>
+        </Item1>
+        <Item2 Ref="80" ControlType="ReportHeaderBand" Name="ReportHeader" HeightF="25.7777748">
+          <Controls>
+            <Item1 Ref="81" ControlType="XRTable" Name="table2" SizeF="741,25" LocationFloat="0,0" Padding="2,2,0,0,96">
+              <Rows>
+                <Item1 Ref="82" ControlType="XRTableRow" Name="tableRow3" Weight="1">
+                  <Cells>
+                    <Item1 Ref="83" ControlType="XRTableCell" Name="tableCell5" Weight="2.4771944576145928" Multiline="true" Text="ဌာန" TextAlignment="MiddleRight">
+                      <StylePriority Ref="84" UseTextAlignment="false" />
+                    </Item1>
+                    <Item2 Ref="85" ControlType="XRTableCell" Name="tableCell14" Weight="2.6105654455091241" Multiline="true" Text="ရာထူး" TextAlignment="MiddleRight">
+                      <StylePriority Ref="86" UseTextAlignment="false" />
+                    </Item2>
+                    <Item3 Ref="87" ControlType="XRTableCell" Name="tableCell1" Weight="3.3035595743382444" Multiline="true" Text="လက်မှတ်" TextAlignment="MiddleRight">
+                      <StylePriority Ref="88" UseTextAlignment="false" />
+                    </Item3>
+                  </Cells>
+                </Item1>
+              </Rows>
+            </Item1>
+          </Controls>
+        </Item2>
+      </Bands>
+    </Item4>
+  </Bands>
+  <ComponentStorage>
+    <Item1 Ref="0" ObjectType="DevExpress.DataAccess.ObjectBinding.ObjectDataSource,DevExpress.DataAccess.v20.1" Name="objectDataSource1" Base64="PE9iamVjdERhdGFTb3VyY2UgTmFtZT0ib2JqZWN0RGF0YVNvdXJjZTEiPjxEYXRhU291cmNlIFR5cGU9IlJlcG9zaXRvcnlTZXJ2aWNlUGF0dGVybi5Db3JlLk1vZGVscy5Eb2N1bWVudENvdmVyTGV0dGVyLCBSZXBvc2l0b3J5U2VydmljZVBhdHRlcm4uQ29yZSwgVmVyc2lvbj0xLjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPW51bGwiIC8+PC9PYmplY3REYXRhU291cmNlPg==" />
+  </ComponentStorage>
+</XtraReportsLayoutSerializer>

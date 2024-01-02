@@ -1,0 +1,27 @@
+#dynamic-skin-navbar,#dynamic-main-sidebar{
+	background-color: #2a5b84;
+}
+
+#dynamic-skin-logo{
+	background: #fff;
+}
+
+.dynamic-skin .sidebar a{
+	color: #fff !important;
+}
+
+
+.dynamic-skin .sidebar-menu>li:hover>a, .dynamic-skin .sidebar-menu>li.active>a{
+	    background: #0b496c !important;
+    /* background: rgba(73, 73, 73, 0.9) !important; */
+    border-left-color: #a7a7a7 !important;
+}
+
+.skin-blue .sidebar-menu>li>.treeview-menu{
+	/* background: rgba(73, 73, 73, 0.6) !important; */
+    background: #083852 !important;
+}
+
+.svg-inline--fa{
+	margin-right: 10px;
+}

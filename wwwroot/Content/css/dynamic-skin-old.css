@@ -1,0 +1,201 @@
+:root{
+	/*login-background*/
+	--login-page-background: #000;
+	--login-box-background: #fff;
+	--btn-login-color: #464646;
+	/*outer background-color*/
+	--siderbar-header-bg: #fff;
+	--siderbar-body-bg: #707070;
+	--right-tittle-bar: #707070;
+	--right-content-wrapper: #fafafa;
+	--footer-bg: #f1f1f1;
+	/*sidebar menu*/
+	--treeview-menu-color: #fff;
+	--treeview-menu-hover-color: #ffd5d5;
+	--dynamic-skin-sidebar-menu-background: #3d0000;
+	--dynamic-skin-sidebar-menu-borderleftcolor: #ccc;
+	--dynamic-skin-sidebar-menu-treeview-menu: #3d0000;
+	/*Box Background*/
+	--box-custombackground: #fff;
+	--box-customcolor:#fff;
+	--box-header-customcolor:#efefef;
+	/*Save Button Color*/
+	--save-button: #0072bc;
+	--save-button-color: #fff;
+	--save-button-hover: #000;
+	--save-button-hover-color: #fff;
+	/*Cancel Button Color*/
+	--cancel-button: #464646;
+	--cancel-button-color: #fff;
+	--cancel-button-hover: #000;
+	--cancel-button-hover-color: #fff;
+	/*Back Button Color*/
+	--back-button: #a67c52;
+	--back-button-color: #fff;
+	--back-button-hover: #000;
+	--back-button-hover-color: #fff;
+	/*Close Button Color*/
+	--close-button: #898989;
+	--close-button-color: #fff;
+	--close-button-hover: #000;
+	--close-button-hover-color: #fff;
+	/*Ok Button Color*/
+	--ok-button: #39b54a;
+	--ok-button-color: #fff;
+	--ok-button-hover: #000;
+	--ok-button-hover-color: #fff;
+	/*Ok Button Color*/
+	--action-button: #7d7d7d;
+	--action-button-color: #fff;
+	--action-button-hover: #3d0000;
+	--action-button-hover-color: #fff;
+}
+
+
+
+/*login-background*/
+
+.login-page-background, .register-page{
+	background-color: var(--login-page-background);
+}
+
+.login-box-background, .register-box{
+	background-color: var(--login-box-background);
+}
+
+.btn-login-color{
+	background-color: var(--btn-login-color) !important;
+}
+
+/*background-color*/
+
+#siderbar-header-bg{
+	background-color: var(--siderbar-header-bg);
+}
+
+#siderbar-body-bg{
+	background-color: var(--siderbar-body-bg);
+}
+
+#right-tittle-bar{
+	background-color: var(--right-tittle-bar);
+}
+
+#right-content-wrapper{
+	background-color: var(--right-content-wrapper);
+}
+
+#footer-bg{
+	background-color: var(--footer-bg);
+}
+
+/*sidebar menu color*/
+
+.dynamic-skin .treeview-menu>li>a{
+	color: var(--treeview-menu-color) !important;
+}
+
+.dynamic-skin .sidebar a {
+    color: #fff !important;
+}
+
+.dynamic-skin .treeview-menu>li.active>a, .skin-blue .treeview-menu>li>a:hover{
+	color: var(--treeview-menu-hover-color) !important;
+}
+
+.dynamic-skin .sidebar-menu>li:hover>a, .dynamic-skin .sidebar-menu>li.active>a {
+    background: var(--dynamic-skin-sidebar-menu-background) !important;
+    border-left-color: var(--dynamic-skin-sidebar-menu-borderleftcolor) !important;
+}
+
+.skin-blue .sidebar-menu>li>.treeview-menu{
+	background: var(--dynamic-skin-sidebar-menu-treeview-menu) !important;
+}
+
+/*Box background-color*/
+
+#box-custombackground{
+	background-color: var(--box-custombackground);
+	padding: 20px;
+	box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
+}
+
+.box-customcolor{
+	border-top: 3px solid var(--box-customcolor)!important;
+}
+
+.box-header-customcolor{
+	background-color: var(--box-header-customcolor);
+}
+
+/*SaveButton color*/
+
+.save-button{
+	background-color: var(--save-button);
+	color: var(--save-button-color);
+}
+
+.save-button:hover{
+	background-color: var(--save-button-hover);
+	color: var(--save-button-hover-color);
+}
+
+/*CancelButton color*/
+
+.cancel-button{
+	background-color: var(--cancel-button);
+	color: var(--cancel-button-color);
+}
+
+.cancel-button:hover{
+	background-color: var(--cancel-button-hover);
+	color: var(--cancel-button-hover-color);
+}
+
+/*BackButton color*/
+
+.back-button{
+	background-color: var(--back-button);
+	color: var(--back-button-color);
+}
+
+.back-button:hover{
+	background-color: var(--back-button-hover);
+	color: var(--back-button-hover-color);
+}
+
+/*CloseButton color*/
+
+.close-button{
+	background-color: var(--close-button);
+	color: var(--close-button-color);
+}
+
+.close-button:hover{
+	background-color: var(--close-button-hover);
+	color: var(--close-button-hover-color);
+}
+
+/*OKButton color*/
+
+.ok-button{
+	background-color: var(--ok-button);
+	color: var(--ok-button-color);
+}
+
+.ok-button:hover{
+	background-color: var(--ok-button-hover);
+	color: var(--ok-button-hover-color);
+}
+
+/*Action Button color*/
+
+.action-button{
+	background-color: var(--action-button);
+	color: var(--action-button-color);
+}
+
+.action-button:hover{
+	background-color: var(--action-button-hover);
+	color: var(--action-button-hover-color);
+}

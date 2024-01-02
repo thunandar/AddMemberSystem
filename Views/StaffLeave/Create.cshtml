@@ -1,0 +1,88 @@
+﻿@model AddMemberSystem.Models.TB_StaffLeave
+
+@{
+    ViewData["Title"] = "ခွင့်မှတ်တမ်းတင်ခြင်း";
+}
+
+<h2>ခွင့်မှတ်တမ်းတင်ခြင်း</h2>
+<hr />
+
+<form asp-action="Create" enctype="multipart/form-data">
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="SerialNo" class="control-label">ဝန်ထမ်းအမှတ်</label>
+            <input asp-for="SerialNo" class="form-control" />
+            <span asp-validation-for="SerialNo" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="StaffLeaveName" class="control-label">ဝန်ထမ်းအမည်</label>
+            <input asp-for="StaffLeaveName" class="form-control" />
+            <span asp-validation-for="StaffLeaveName" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="LeaveDays" class="control-label">ခွင့်ယူသည့်ရက်</label>
+            <input asp-for="LeaveDays" class="form-control" type="number" min="0" />
+            <span asp-validation-for="LeaveDays" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="DepartmentId" class="control-label">ဌာန</label>
+            <select id="lstDepartmentId" asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentPkid" onchange="FillPos(this,'lstPosition');"></select>
+            <span asp-validation-for="DepartmentId" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="PositionId" class="control-label">ရာထူး</label>
+            <select id="lstPosition" asp-for="PositionId" class="form-control" asp-items="ViewBag.PositionPkid">
+                <option value="" selected disabled>---- ရာထူးရွေးချယ်ပါ ----</option>
+            </select>
+            <span asp-validation-for="PositionId" class="text-danger"></span>
+        </div>      
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="CreatedDate" class="control-label">ယနေ့ရက်စွဲ</label>
+            <input asp-for="CreatedDate" class="form-control" />
+            <span asp-validation-for="CreatedDate" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="LeaveTypeId" class="control-label">ခွင့်အမျိုးအစား</label>
+            <select asp-for="LeaveTypeId" class="form-control" asp-items="ViewBag.LeaveTypeId"></select>
+            <span asp-validation-for="LeaveTypeId" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="LeaveDateFrom" class="control-label">ခွင့်ယူသည့်ရက်မှ</label>
+            <input asp-for="LeaveDateFrom" class="form-control" />
+            <span asp-validation-for="LeaveDateFrom" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="LeaveDateTo" class="control-label">ခွင့်ယူသည့်ရက်ထိ</label>
+            <input asp-for="LeaveDateTo" class="form-control" />
+            <span asp-validation-for="LeaveDateTo" class="text-danger"></span>
+        </div>     
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+        <label asp-for="LeaveAddress" class="control-label">ခွင့်ခံစားစဉ်နေရပ်လိပ်စာ</label>
+            <input asp-for="LeaveAddress" class="form-control" />
+            <span asp-validation-for="LeaveAddress" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+        <label asp-for="DutyAssignedTo" class="control-label">ခွင့်ခံစားစဉ်တာ၀န်ယူမည့်သူ</label>
+            <input asp-for="DutyAssignedTo" class="form-control" />
+            <span asp-validation-for="DutyAssignedTo" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="DutyAssignPosition" class="control-label">ရာထူး</label>
+            <input asp-for="DutyAssignPosition" class="form-control" />
+            <span asp-validation-for="DutyAssignPosition" class="text-danger"></span>
+        </div>               
+        <div class="form-group col-sm-12 col-md-12 col-lg-12">
+            <input type="submit" value="သိမ်းမည်" class="btn btn-primary col-md-2" />
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
