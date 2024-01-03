@@ -251,8 +251,9 @@ namespace AddMemberSystem.Migrations
                     b.Property<int>("PositionId")
                         .HasColumnType("int");
 
-                    b.Property<string>("SerialNo")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("StaffID")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("StaffLeaveName")
                         .HasMaxLength(50)

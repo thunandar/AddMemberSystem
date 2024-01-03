@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AddMemberSystem.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Metrics;
@@ -161,45 +162,86 @@ namespace AddMemberSystem.Controllers
             return Json(positions);
         }
 
+       
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(string staffID)
         {
             if (!IsUserLoggedIn())
             {
                 return RedirectToAction("Index", "Account");
             }
 
-            TB_StaffLeave StaffL = new TB_StaffLeave();
-            ViewBag.DepartmentPkid = GetDepartments();
-            ViewBag.PositionPkid = GetPositions();
-            ViewBag.LeaveTypeId = GetLeaveTypes();
-            return View(StaffL);
+            var staffLeaveModel = new TB_StaffLeave();
+            int totalLeaveDays = 36;
+
+            var staffLeaveRecords = _context.TB_StaffLeaves.Where(s => s.StaffID == staffID).Where(s => s.IsDeleted == false).ToList();
+            int takenLeaveDays = staffLeaveRecords.Sum(s => s.LeaveDays);
+            int remainingLeaveDays = totalLeaveDays - takenLeaveDays;
+
+            SetViewDataAndViewBag(staffID, totalLeaveDays, takenLeaveDays, remainingLeaveDays);
+
+            return View(staffLeaveModel);
         }
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult Create(TB_StaffLeave staffL)
+        public IActionResult Create(TB_StaffLeave staffL, string staffID)
         {
-            
+            // Set CreatedDate to the current UTC timestamp
             staffL.CreatedDate = DateTime.UtcNow;
             staffL.IsDeleted = false;
 
+            int totalLeaveDays = 36;
+            var staffLeaveRecords = _context.TB_StaffLeaves.Where(s => s.StaffID == staffID).Where(s => s.IsDeleted == false).ToList();
+            int takenLeaveDays = staffLeaveRecords.Sum(s => s.LeaveDays);
+            int remainingLeaveDays = totalLeaveDays - takenLeaveDays;
+
+            SetViewDataAndViewBag(staffID, totalLeaveDays, takenLeaveDays, remainingLeaveDays);
+
+            ValidateLeaveDays(staffL);
+
+            if (!ModelState.IsValid)
+            {
+                return View(staffL);
+            }
+
+            try
+            {
+                _context.Add(staffL);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(List));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "An error occurred while saving the data.");
+                return View(staffL);
+            }
+        }
+
+        private void SetViewDataAndViewBag(string staffID, int totalLeaveDays, int takenLeaveDays, int remainingLeaveDays)
+        {
+            ViewData["StaffID"] = staffID;
+            ViewBag.TotalLeaveDays = totalLeaveDays;
+            ViewBag.TakenLeaveDays = takenLeaveDays;
+            ViewBag.RemaningLeaveDays = remainingLeaveDays;
+            ViewBag.DepartmentPkid = GetDepartments();
+            ViewBag.PositionPkid = GetPositions();
+            ViewBag.LeaveTypeId = GetLeaveTypes();
+        }
+
+        private void ValidateLeaveDays(TB_StaffLeave staffL)
+        {
             if (staffL.LeaveDays > 0 && staffL.LeaveDateFrom.HasValue && staffL.LeaveDateTo.HasValue)
             {
                 var leaveFromDate = staffL.LeaveDateFrom.Value;
                 var leaveToDate = staffL.LeaveDateTo.Value;
-
                 var dateDifference = leaveToDate - leaveFromDate;
 
                 if (dateDifference.Days != staffL.LeaveDays - 1)
                 {
-                    ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDays), $"The difference between LeaveDateFrom and LeaveDateTo should be {staffL.LeaveDays} days.");
+                    ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDays), $"ခွင့်ယူသည့်ရက်မှ ခွင့်ယူသည့်ရက်ထိ ကွာခြားချက်မှာ {staffL.LeaveDays} ရက်ဖြစ်သင့်ပါသည်");
                 }
             }
-
-            _context.Add(staffL);
-            _context.SaveChanges();
-            return RedirectToAction(nameof(List));
         }
 
         private TB_StaffLeave GetStaffLeave(int Id)
@@ -218,6 +260,18 @@ namespace AddMemberSystem.Controllers
             }
 
             TB_StaffLeave staffL = GetStaffLeave(id);
+
+            int totalLeaveDays = 36;
+
+            var staffLeaveRecords = _context.TB_StaffLeaves.Where(s => s.StaffID == staffL.StaffID).Where(s => s.IsDeleted == false).ToList();
+
+            int takenLeaveDays = staffLeaveRecords.Sum(s => s.LeaveDays);
+            int remainingLeaveDays = totalLeaveDays - takenLeaveDays;
+
+            ViewBag.TotalLeaveDays = totalLeaveDays;
+            ViewBag.TakenLeaveDays = takenLeaveDays;
+            ViewBag.RemaningLeaveDays = remainingLeaveDays;
+
             ViewBag.DepartmentPkid = GetDepartments();
             ViewBag.PositionPkid = GetPositions(staffL.DepartmentId);
             ViewBag.LeaveTypeId = GetLeaveTypes();
@@ -228,9 +282,24 @@ namespace AddMemberSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(TB_StaffLeave editedStaffL)
         {
+            // Get the existing staff leave record from the database
             TB_StaffLeave existingStaffL = GetStaffLeave(editedStaffL.StaffLeavePkid);
 
-            existingStaffL.SerialNo = editedStaffL.SerialNo;
+            int totalLeaveDays = 36;
+            var staffLeaveRecords = _context.TB_StaffLeaves.Where(s => s.StaffID == existingStaffL.StaffID).Where(s => s.IsDeleted == false).ToList();
+
+            int takenLeaveDays = staffLeaveRecords.Sum(s => s.LeaveDays);
+            int remainingLeaveDays = totalLeaveDays - takenLeaveDays;
+
+            ViewBag.TotalLeaveDays = totalLeaveDays;
+            ViewBag.TakenLeaveDays = takenLeaveDays;
+            ViewBag.RemaningLeaveDays = remainingLeaveDays;
+            ViewBag.DepartmentPkid = GetDepartments();
+            ViewBag.PositionPkid = GetPositions();
+            ViewBag.LeaveTypeId = GetLeaveTypes();
+
+            // Update properties of the existing staff leave record
+            existingStaffL.StaffID = editedStaffL.StaffID;
             existingStaffL.StaffLeaveName = editedStaffL.StaffLeaveName;
             existingStaffL.DepartmentId = editedStaffL.DepartmentId;
             existingStaffL.PositionId = editedStaffL.PositionId;
@@ -240,9 +309,10 @@ namespace AddMemberSystem.Controllers
             existingStaffL.LeaveDays = editedStaffL.LeaveDays;
             existingStaffL.LeaveAddress = editedStaffL.LeaveAddress;
             existingStaffL.DutyAssignedTo = editedStaffL.DutyAssignedTo;
-            existingStaffL.DutyAssignPosition = editedStaffL.DutyAssignPosition;           
+            existingStaffL.DutyAssignPosition = editedStaffL.DutyAssignPosition;
             existingStaffL.LeaveTypeId = editedStaffL.LeaveTypeId;
 
+            // Validate leave days and dates
             if (existingStaffL.LeaveDays > 0 && existingStaffL.LeaveDateFrom.HasValue && existingStaffL.LeaveDateTo.HasValue)
             {
                 var leaveFromDate = existingStaffL.LeaveDateFrom.Value;
@@ -252,17 +322,28 @@ namespace AddMemberSystem.Controllers
 
                 if (dateDifference.Days != existingStaffL.LeaveDays - 1)
                 {
-                    Console.WriteLine("Edit ERR");
-                    ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDays), $"The difference between LeaveDateFrom and LeaveDateTo should be {existingStaffL.LeaveDays} days.");
+                    ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDays), $"ခွင့်ယူသည့်ရက်မှ and ခွင့်ယူသည့်ရက်ထိ ကွာခြားချက်မှာ {existingStaffL.LeaveDays} ရက်ဖြစ်သင့်ပါသည်");
                 }
             }
 
-            _context.SaveChanges();
+            if (!ModelState.IsValid)
+            {
+                return View(editedStaffL);
+            }
 
-
-            return RedirectToAction(nameof(List));
-
+            // Save changes to the database
+            try
+            {
+                _context.SaveChanges();
+                return RedirectToAction(nameof(List));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "An error occurred while saving the data.");
+                return View(editedStaffL);
+            }
         }
+
 
         [HttpGet]
         public IActionResult Details(int Id)

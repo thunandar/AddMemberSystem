@@ -22,7 +22,7 @@ namespace AddMemberSystem.Controllers
             if (!IsUserLoggedIn())
             {
                 return RedirectToAction("Index", "Account");
-            }  
+            }
 
             return View();
         }

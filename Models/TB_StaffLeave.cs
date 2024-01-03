@@ -7,7 +7,8 @@ namespace AddMemberSystem.Models
         [Key]
         public int StaffLeavePkid { get; set; }
 
-        public string SerialNo { get; set; }
+        [MaxLength(50)]
+        public string StaffID { get; set; }
 
         [MaxLength(50)]
         public string StaffLeaveName { get; set; }

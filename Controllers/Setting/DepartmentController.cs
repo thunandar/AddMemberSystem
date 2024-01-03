@@ -32,7 +32,7 @@ namespace AddMemberSystem.Controllers.Setting
 
             ViewBag.DepartmentId = departmentList;
             ViewBag.Positions = positions;
-
+            
             return View("~/Views/Setting/Department/DepartmentCrud.cshtml");
         }     
 

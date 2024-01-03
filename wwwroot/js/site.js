@@ -72,3 +72,23 @@ let displayPicture = document.querySelector(".display-picture"); //declearing pr
 displayPicture.addEventListener("click", function () { //on click on profile picture toggle hidden class from css
     card.classList.toggle("hidden")
 })
+
+//StaffID show Form
+function showForm() {
+    var overlay = document.getElementById('overlay');
+    var form = document.getElementById('staffForm');
+
+    overlay.style.display = 'block';
+    form.style.display = 'block';
+}
+
+// Optional: Close the form and overlay when clicking outside the form
+document.getElementById('overlay').addEventListener('click', function (event) {
+    if (event.target === this) {
+        this.style.display = 'none';
+        document.getElementById('staffForm').style.display = 'none';
+    }
+});
+
+
+

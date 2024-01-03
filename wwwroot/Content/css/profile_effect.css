@@ -1,19 +1,4 @@
-﻿
-/** {
-    margin: 0;
-    padding: 0;
-    font-family: Sans-serif;
-}
-
-body {
-    background-color: #eee;
-}*/
-
-nav {
-    margin: 20px;
-    position: relative;
-}
-ul {
+﻿ul {
     list-style: none;
    
 }

@@ -173,7 +173,7 @@ namespace AddMemberSystem.Migrations
                 {
                     StaffLeavePkid = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SerialNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StaffID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     StaffLeaveName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     PositionId = table.Column<int>(type: "int", nullable: false),
                     DepartmentId = table.Column<int>(type: "int", nullable: false),
