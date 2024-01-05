@@ -57,9 +57,18 @@
                             <li class="dropdown user user-menu" style="width:80px;">
                                 <a href="#" class="dropdown-toggle display-picture" data-toggle="dropdown">
                                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrTq97frFCSb9F3q2xKfP3-NGZZjzLBTqQhfL1V5v9Lg&amp;usqp=CAU&amp;ec=48600113" alt="Profile Image" style="width: 32px; height: 32px; border-radius: 50%; background-color: rgb(217, 217, 217); aspect-ratio: 1 / 1;">
-                          
-                                    
-                                </a>
+
+                                    <div class="card hidden">
+                                        <!--ADD TOGGLE HIDDEN CLASS ATTRIBUTE HERE-->
+                                        <ul>
+                                            <!--MENU-->
+                                            <li><a href="#">Profile</li></a>
+                                            <li><a href="#">Account</li></a>
+                                            <li><a href="#">Settings</li></a>
+                                            <li><a class="active" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
+                                        </ul>
+                                    </div>
+                    </a>
                                 <ul class="dropdown-menu">
                                     @{
                                     }
@@ -77,33 +86,33 @@
                         <li class="treeview active menu-open">
                             <a href="#" class="active">
                                 <i class="fa fa-list"></i>
-                                <span style="font-size:20px;">MainMenu</span>
+                                <span style="font-size:16px;">MainMenu</span>
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                             </a>
                             <ul class="treeview-menu">
                                 <li class="nav-item">
-                                    <a class="active" asp-area="" asp-controller="Home" asp-action="Index" style="font-size:16px;"><i class="bi bi-house-door"></i> အိမ်</a>
+                                    <a class="active" asp-area="" asp-controller="Home" asp-action="Index" style="font-size:14px;"><i class="bi bi-house-door"></i> အိမ်</a>
                                 </li>
                                 
                                 <li class="nav-item">
-                                    <a class="active" asp-area="" asp-controller="Home" asp-action="List" style="font-size:16px;"><i class="bi bi-people"></i> ဝန်ထမ်းများ</a>
+                                    <a class="active" asp-area="" asp-controller="Home" asp-action="List" style="font-size:14px;"><i class="bi bi-people"></i> ဝန်ထမ်းများ</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="active" asp-area="Setting" asp-controller="Department" asp-action="Index" style="font-size:16px;"><i class="bi bi-buildings"></i> ဌာန</a>
+                                    <a class="active" asp-area="Setting" asp-controller="Department" asp-action="Index" style="font-size:14px;"><i class="bi bi-buildings"></i> ဌာန</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="active" asp-area="Setting" asp-controller="Position" asp-action="Index" style="font-size:16px;"><i class="bi bi-person-badge"></i> ရာထူး</a>
+                                    <a class="active" asp-area="Setting" asp-controller="Position" asp-action="Index" style="font-size:14px;"><i class="bi bi-person-badge"></i> ရာထူး</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="active" asp-area="" asp-controller="StaffLeave" asp-action="List" style="font-size:16px;" id="login-link"><i class="bi bi-calendar-date"></i> ခွင့်</a>
+                                    <a class="active" asp-area="" asp-controller="StaffLeave" asp-action="List" style="font-size:14px;" id="login-link"><i class="bi bi-calendar-date"></i> ခွင့်</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="active" asp-area="" asp-controller="Account" asp-action="Index" style="font-size:16px;" id="login-link"><i class="bi bi-box-arrow-left"></i> အကောင့်၀င်မည်</a>
+                                    <a class="active" asp-area="" asp-controller="Account" asp-action="Index" style="font-size:14px;" id="login-link"><i class="bi bi-box-arrow-left"></i> အကောင့်၀င်မည်</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="active" asp-area="" asp-controller="Account" asp-action="Logout" style="font-size:16px;" id="login-link"><i class="bi bi-box-arrow-right"></i> အကောင့်ထွက်မည်</a>
+                                    <a class="active" asp-area="" asp-controller="Account" asp-action="Logout" style="font-size:14px;" id="login-link"><i class="bi bi-box-arrow-right"></i> အကောင့်ထွက်မည်</a>
                                 </li>                               
                             </ul>
                         </li>

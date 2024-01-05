@@ -29,7 +29,7 @@ namespace AddMemberSystem.Controllers.Account
                 if (logInUser != null)
                 {
                     string hashedEnteredPassword = HashUtil.ComputeSHA256Hash(user.Password);
-                    Console.WriteLine("hashed pwd: " + hashedEnteredPassword);
+                    Console.WriteLine("hashed pwd**: " + hashedEnteredPassword);
 
                     if (hashedEnteredPassword == logInUser.Password)
                     {
