@@ -1,4 +1,5 @@
-﻿@model AddMemberSystem.Models.TB_Department
+﻿@inject IConfiguration Configuration
+@model AddMemberSystem.Models.TB_Department
 
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <div class="row">
@@ -63,7 +64,7 @@
 @section Scripts {
     <script src="~/js/site.js"></script>
     <script>
-
+        const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
         $("#departmentInput, #submitButton").prop("disabled", true);     
 
         $(document).on("click", ".edit-link", function () {
@@ -97,7 +98,7 @@
             $('#originalSection').hide();
             $("#confirmationSection").show();
 
-            $.getJSON(`/Department/GetAllDepartments?departmentId=${departmentId}`, (data) => {
+            $.getJSON(commonUrl + `/Department/GetAllDepartments?departmentId=${departmentId}`, (data) => {
                 if (data) {
                     $("#confirmationDepartmentInfo").text(data.department);
                     $("#confirmDepartmentId").val(departmentId);
@@ -129,7 +130,7 @@
 
             selectedDepartmentId = selectedDepartment;
 
-            $.getJSON("/Department/GetAllDepartments", (data) => {
+            $.getJSON(commonUrl + "/Department/GetAllDepartments", (data) => {
                 if (data && data.length > 0) {
                     const rows = data.map((item, index) => `
                                     <tr>

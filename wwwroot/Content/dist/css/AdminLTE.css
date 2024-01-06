@@ -186,9 +186,10 @@ a:focus {
  * ----------------------
  */
 .main-header {
-  position: relative;
-  max-height: 100px;
-  z-index: 1030;
+    position: relative;
+    max-height: 100px;
+    z-index: 1030;
+    background-color: #6c85c3 !important;
 }
 .main-header .navbar {
   -webkit-transition: margin-left 0.3s ease-in-out;

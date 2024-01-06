@@ -1,4 +1,7 @@
-﻿const FillPos = (lstDepartmentCtrl, lstPositionId) => {
+﻿
+const commonUrl1 = "http://136.228.167.31/AdminDepartment";
+
+const FillPos = (lstDepartmentCtrl, lstPositionId) => {
     const lstPositions = $("#" + lstPositionId);
     lstPositions.empty();
 
@@ -9,7 +12,7 @@
     if (selectedDepartment != null && selectedDepartment != '') {
         positionSelect.disabled = false;
 
-        $.getJSON("/home/GetPositionsByDepartment", { DepartmentPkid: selectedDepartment }, (positions) => {
+        $.getJSON(commonUrl1+"/home/GetPositionsByDepartment", { DepartmentPkid: selectedDepartment }, (positions) => {
             if (positions != null && !jQuery.isEmptyObject(positions)) {
                 positions.forEach((position) => {
                     lstPositions.append($('<option/>',

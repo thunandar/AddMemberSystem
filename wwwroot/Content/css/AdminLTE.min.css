@@ -164,6 +164,7 @@ a {
     position: block;
     max-height: 200px;
     z-index: 1030;
+    background-color: #6c85c3 !important;
 }
 
     .main-header .navbar {
