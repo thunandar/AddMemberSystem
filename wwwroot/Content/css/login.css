@@ -83,7 +83,8 @@ a {
 }
 
 .box-background--white {
-    background-color: #ffffff;
+    /*background-color: #ffffff;*/
+    background: linear-gradient(#c6e0f8, #e8e5e6);
 }
 
 .box-background--blue800 {
@@ -107,7 +108,8 @@ a {
 }
 
 .padding-top--48 {
-    padding-top: 48px;
+   /* padding-top: 48px;*/
+    padding-top: 28px;
 }
 
 .padding-bottom--24 {
@@ -241,7 +243,7 @@ a.ssolink {
     animation: animationLeftRight 4s ease-in-out infinite;
 }
 
-@keyframes animationLeftRight {
+/*@keyframes animationLeftRight {
     0% {
         transform: translateX(0px);
     }
@@ -267,4 +269,4 @@ a.ssolink {
     100% {
         transform: translateX(0px);
     }
-}
+}*/

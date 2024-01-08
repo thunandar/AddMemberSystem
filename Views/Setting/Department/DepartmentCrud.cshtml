@@ -65,6 +65,7 @@
     <script src="~/js/site.js"></script>
     <script>
         const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
+
         $("#departmentInput, #submitButton").prop("disabled", true);     
 
         $(document).on("click", ".edit-link", function () {
