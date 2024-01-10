@@ -79,11 +79,13 @@
                                     <input type="password" name="Password" id="password-input">
                                     <span asp-validation-for="Password" class="text-danger"></span>
                                 </div>
-                                @*<div class="field field-checkbox padding-bottom--24 flex-flex align-center">
-                                    <label for="checkbox">
-                                        <input type="checkbox" name="checkbox"> Stay signed in for a week
+                                <div class="field field-checkbox padding-bottom--24 flex-flex align-center">
+                                    <label for="StaySignedIn">
+                                        <input type="checkbox" name="StaySignedIn" value="true"> Stay signed in for a week
                                     </label>
-                                </div>*@
+                                </div>
+
+
                                 <div class="field padding-bottom--24">
                                     <button type="submit" name="submit">Login</button>
                                 </div>

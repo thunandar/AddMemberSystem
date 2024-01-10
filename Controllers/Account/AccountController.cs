@@ -16,11 +16,18 @@ namespace AddMemberSystem.Controllers.Account
 
         public IActionResult Index()
         {
+            var staySignedInCookie = Request.Cookies["staySignedIn"];
+
+            if (staySignedInCookie != null)
+            {
+                return RedirectToAction("List", "Home");
+            }
+
             return View("Login");
         }
 
         [HttpPost]
-        public IActionResult Login(TB_User user)
+        public IActionResult Login(TB_User user, bool? StaySignedIn)
         {
             if (ModelState.IsValid)
             {
@@ -29,11 +36,25 @@ namespace AddMemberSystem.Controllers.Account
                 if (logInUser != null)
                 {
                     string hashedEnteredPassword = HashUtil.ComputeSHA256Hash(user.Password);
-                    Console.WriteLine("hashed pwd**: " + hashedEnteredPassword);
+                    Console.WriteLine("hashed pwd**: " + hashedEnteredPassword);                  
 
                     if (hashedEnteredPassword == logInUser.Password)
                     {
                         string userJson = JsonSerializer.Serialize(logInUser);
+
+                        if (StaySignedIn.HasValue && StaySignedIn.Value)
+                        {
+                            // Set a cookie with an expiration date of 7 days
+                            var options = new CookieOptions
+                            {
+                                Expires = DateTime.UtcNow.AddDays(7),
+                                HttpOnly = true,
+                                SameSite = SameSiteMode.Strict,
+                                Secure = true
+                            };
+
+                            Response.Cookies.Append("staySignedIn", "true", options);
+                        }
 
                         HttpContext.Session.SetString("loginUser", userJson);
 
@@ -41,19 +62,41 @@ namespace AddMemberSystem.Controllers.Account
 
                         _context.SaveChanges();
 
-                        return RedirectToAction("List", "Home");
+                        // Check for the "staySignedIn" cookie in the request
+                        var staySignedInCookie = Request.Cookies["staySignedIn"];
+                        if (!string.IsNullOrEmpty(staySignedInCookie))
+                        {
+                            return View("Login");
+                        } else
+                        {
+                            return RedirectToAction("List", "Home");
+
+                        }
+
+
+                       
                     }
                     else
                     {
                         _context.SaveChanges();
                     }
-
                 }
-
             }
-            ModelState.AddModelError(string.Empty, "Please enter a correct credentials.");
+
+            ModelState.AddModelError(string.Empty, "Please enter correct credentials.");
             return View("Login");
         }
+
+
+
+
+
+
+
+
+
+
+
 
         public IActionResult Logout()
         {           

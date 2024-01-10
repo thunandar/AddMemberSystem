@@ -14,7 +14,7 @@ namespace AddMemberSystem.Controllers.Setting
         }
         private bool IsUserLoggedIn()
         {
-            return HttpContext.Session.GetString("loginUser") != null;
+            return HttpContext.Session.GetString("loginUser") != null || Request.Cookies.ContainsKey("staySignedIn");
         }
 
         public IActionResult Index()
