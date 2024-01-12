@@ -36,7 +36,7 @@ namespace AddMemberSystem.Controllers
 
         private bool IsUserLoggedIn()
         {
-            return HttpContext.Session.GetString("loginUser") != null;
+            return HttpContext.Session.GetString("loginUser") != null || Request.Cookies.ContainsKey("staySignedIn");
         }
 
         public IActionResult List(int pg = 1)
@@ -187,14 +187,23 @@ namespace AddMemberSystem.Controllers
         [HttpPost]
         public IActionResult Create(TB_StaffLeave staffL, string staffID)
         {
-            // Set CreatedDate to the current UTC timestamp
             staffL.CreatedDate = DateTime.UtcNow;
             staffL.IsDeleted = false;
 
             int totalLeaveDays = 36;
             var staffLeaveRecords = _context.TB_StaffLeaves.Where(s => s.StaffID == staffID).Where(s => s.IsDeleted == false).ToList();
             int takenLeaveDays = staffLeaveRecords.Sum(s => s.LeaveDays);
+            int isValidLeaveDays = takenLeaveDays + staffL.LeaveDays;
             int remainingLeaveDays = totalLeaveDays - takenLeaveDays;
+
+
+            if (isValidLeaveDays > totalLeaveDays)
+            {
+                ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDays), "ခွင့်ပေးထားသည့်ရက်၃၆ရက်ထက် ခွင့်ယူထားသည့်ရက်များက ကျော်လွန်နေပါသည်");
+                SetViewDataAndViewBag(staffID, totalLeaveDays, takenLeaveDays, remainingLeaveDays);
+                return View(staffL);
+            }
+
 
             SetViewDataAndViewBag(staffID, totalLeaveDays, takenLeaveDays, remainingLeaveDays);
 
@@ -311,6 +320,14 @@ namespace AddMemberSystem.Controllers
             existingStaffL.DutyAssignedTo = editedStaffL.DutyAssignedTo;
             existingStaffL.DutyAssignPosition = editedStaffL.DutyAssignPosition;
             existingStaffL.LeaveTypeId = editedStaffL.LeaveTypeId;
+
+            Console.WriteLine("editedLeaveDays" + editedStaffL.LeaveDays);
+            int isValidLeaveDays = takenLeaveDays + editedStaffL.LeaveDays;
+
+            if (isValidLeaveDays > totalLeaveDays)
+            {
+                ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDays), "ခွင့်ပေးထားသည့်ရက်၃၆ရက်ထက် ခွင့်ယူထားသည့်ရက်များက ကျော်လွန်နေပါသည်");
+            }
 
             // Validate leave days and dates
             if (existingStaffL.LeaveDays > 0 && existingStaffL.LeaveDateFrom.HasValue && existingStaffL.LeaveDateTo.HasValue)
