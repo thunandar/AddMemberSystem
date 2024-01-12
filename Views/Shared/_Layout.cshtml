@@ -62,10 +62,14 @@
                                         <!--ADD TOGGLE HIDDEN CLASS ATTRIBUTE HERE-->
                                         <ul>
                                             <!--MENU-->
-                                        <li><a href="#">Profile</a></li>
-                                        <li><a href="#">Account</a></li>                         
-                                        <li><a href="#">Settings</a></li>
-                                            <li><a class="active" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
+                                            <li> <a class="active" asp-area="" asp-controller="Home" asp-action="List"> ဝန်ထမ်းများ</a></li>
+                                            <li>
+                                                <a class="active" asp-area="Setting" asp-controller="Department" asp-action="Index"> ဌာန</a>
+                                            </li>
+                                            <li>
+                                                <a class="active" asp-area="Setting" asp-controller="Position" asp-action="Index"> ရာထူး</a>
+                                            </li>
+                                            <li><a class="active" asp-area="" asp-controller="Account" asp-action="Logout">အကောင့်ထွက်မည်</a></li>
                                         </ul>
                                     </div>
                     </a>
