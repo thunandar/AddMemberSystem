@@ -9,7 +9,7 @@
     if (selectedDepartment != null && selectedDepartment != '') {
         positionSelect.disabled = false;
 
-        $.getJSON("http://localhost:7655"+"/home/GetPositionsByDepartment", { DepartmentPkid: selectedDepartment }, (positions) => {
+        $.getJSON("http://136.228.167.31/AdminDepartment"+"/home/GetPositionsByDepartment", { DepartmentPkid: selectedDepartment }, (positions) => {
             if (positions != null && !jQuery.isEmptyObject(positions)) {
                 positions.forEach((position) => {
                     lstPositions.append($('<option/>',
