@@ -38,11 +38,12 @@
 <!-- Pre Loader -->
 
 <body class="hold-transition skin-yellow-light sidebar-mini">
-    <div class="wrapper">
-       
-        <header class="main-header" style="background-color: #6c85c3; height: 50px;">
-            
-            <nav class="navbar navbar-static-top" id="my-navbar" style="height: 42px;">
+    <div class="wrapper">      
+        <header class="main-header" style="background-color: #6c85c3; height: 53px;">
+            <div>
+                <img src="~/Content/Logo/YRTCRemovebg.png" alt="YRTC Logo" style="width: 36px; height: 36x; margin-left: 8%; margin-top: 6px;">
+            </div>
+            <nav class="navbar navbar-static-top" id="my-navbar" style="margin-top: -43px;">
                 <div class="upNav">
                     <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
                         <span class="sr-only">Toggle navigation</span>
@@ -51,8 +52,9 @@
                         <ul class="nav navbar-nav" style="float:left">
                             <li class="dropdown user user-menu" style="font-size:10px;">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <img src="~/Content/Logo/YRTCRemovebg.png" alt="YRTC Logo" style="width: 24px; height: 24px;">
+                                    <span class="hidden-xs" style="font-size:15px;">Test1 </span>
                                 </a>
+                                
                             </li>
                         </ul>
                     </div>
@@ -115,6 +117,9 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="active" asp-area="" asp-controller="StaffLeave" asp-action="List" style="font-size:14px;" id="login-link"><i class="bi bi-calendar-date"></i> ခွင့်</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="active" asp-area="" asp-controller="StaffPunishment" asp-action="List" style="font-size:14px;" id="login-link"><i class="bi bi-exclamation-square-fill"></i> ပြစ်မှုမှတ်တမ်း</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="active" asp-area="" asp-controller="Account" asp-action="Index" style="font-size:14px;" id="login-link"><i class="bi bi-box-arrow-left"></i> အကောင့်၀င်မည်</a>

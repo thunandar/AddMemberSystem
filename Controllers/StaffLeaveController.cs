@@ -196,7 +196,6 @@ namespace AddMemberSystem.Controllers
             int isValidLeaveDays = takenLeaveDays + staffL.LeaveDays;
             int remainingLeaveDays = totalLeaveDays - takenLeaveDays;
 
-
             if (isValidLeaveDays > totalLeaveDays)
             {
                 ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDays), "ခွင့်ပေးထားသည့်ရက်၃၆ရက်ထက် ခွင့်ယူထားသည့်ရက်များက ကျော်လွန်နေပါသည်");
@@ -321,7 +320,6 @@ namespace AddMemberSystem.Controllers
             existingStaffL.DutyAssignPosition = editedStaffL.DutyAssignPosition;
             existingStaffL.LeaveTypeId = editedStaffL.LeaveTypeId;
 
-            Console.WriteLine("editedLeaveDays" + editedStaffL.LeaveDays);
             int isValidLeaveDays = takenLeaveDays + editedStaffL.LeaveDays;
 
             if (isValidLeaveDays > totalLeaveDays)

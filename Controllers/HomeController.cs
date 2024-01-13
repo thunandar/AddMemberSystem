@@ -24,6 +24,20 @@ namespace AddMemberSystem.Controllers
                 return RedirectToAction("Index", "Account");
             }
 
+            int totalStaffCount = _context.TB_Staffs.Where(b => b.isDeleted == true).Count();
+            int totalPositionCount = _context.TB_Positions.Where(b => b.isDeleted == true).Count();
+            int totalDepartmentCount = _context.TB_Departments.Where(b => b.isDeleted == true).Count();
+            int totalStaffPunishmentCount = _context.TB_StaffPunishments.Where(b => b.IsDeleted == true).Count();
+            int totalStaffLeaveCount = _context.TB_StaffLeaves.Where(b => b.IsDeleted == true).Count();
+
+
+            ViewBag.totalStaffCount = totalStaffCount;
+            ViewBag.totalPositionCount = totalPositionCount;
+            ViewBag.totalDepartmentCount = totalDepartmentCount;
+            ViewBag.totalStaffPunishmentCount = totalStaffPunishmentCount;
+            ViewBag.totalStaffLeaveCount = totalStaffLeaveCount;
+
+        
             return View();
         }
 
