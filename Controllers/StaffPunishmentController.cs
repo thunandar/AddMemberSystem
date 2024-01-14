@@ -60,7 +60,7 @@ namespace AddMemberSystem.Controllers
 
             this.ViewBag.Pager = pager;
 
-            return View(staffLeaves);
+            return View(data);
         }
        
         private string GetSelectedDepartment(int selectedDepartmentId)
@@ -105,6 +105,11 @@ namespace AddMemberSystem.Controllers
             return lstPunishmentTypes;
         }
 
+        private TB_Staff GetStaffInfoByStaffID(string staffID)
+        {
+            return _context.TB_Staffs.FirstOrDefault(s => s.StaffID == staffID);
+        }
+
         [HttpGet]
         public IActionResult Create(string staffID)
         {
@@ -115,15 +120,12 @@ namespace AddMemberSystem.Controllers
 
             TB_StaffPunishment StaffPunishment = new TB_StaffPunishment();
 
-            var staffInfo = _context.TB_Staffs.FirstOrDefault(s => s.StaffID == staffID);
-
+            var staffInfo = GetStaffInfoByStaffID(staffID);
             var staffName = _context.TB_Staffs.FirstOrDefault(s => s.StaffPkid == staffInfo.StaffPkid);
 
             ViewBag.StaffID = staffInfo.StaffID;
-
             ViewBag.StaffName = staffName.Name;
             ViewBag.PunishmentTypeId = GetPunishmentTypes();
-
             ViewBag.SelectedDepartment = GetSelectedDepartment(staffInfo.DepartmentId);
             ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
 
@@ -134,11 +136,9 @@ namespace AddMemberSystem.Controllers
         [HttpPost]
         public IActionResult Create(TB_StaffPunishment StaffPunishment, string staffID)
         {
-           // StaffPunishment.CreatedDate = DateTime.UtcNow;
             StaffPunishment.IsDeleted = false;
 
-            var staffInfo = _context.TB_Staffs.FirstOrDefault(s => s.StaffID == staffID);
-
+            var staffInfo = GetStaffInfoByStaffID(staffID);
             StaffPunishment.StaffId = staffInfo.StaffPkid;
 
             var Department = _context.TB_Departments.FirstOrDefault(d => d.DepartmentPkid == staffInfo.DepartmentId);
@@ -182,7 +182,7 @@ namespace AddMemberSystem.Controllers
             }
 
             TB_StaffPunishment staffPunish = GetStaffPunishment(id);
-            
+
             var staffInfo = _context.TB_Staffs.FirstOrDefault(s => s.StaffPkid == staffPunish.StaffId); //staff ya from staff table
 
             ViewBag.StaffID = staffInfo.StaffID;
@@ -214,7 +214,6 @@ namespace AddMemberSystem.Controllers
                 return View(editedStaffPunishment);
             }
 
-            // Save changes to the database
             try
             {
                 _context.SaveChanges();
