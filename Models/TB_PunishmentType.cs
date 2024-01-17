@@ -5,6 +5,8 @@
         [Key]
         public int PunishmentTypePkid { get; set; }
 
-        public string punishmentType { get; set; }
+        public string Punishment { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

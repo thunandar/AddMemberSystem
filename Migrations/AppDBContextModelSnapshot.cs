@@ -125,12 +125,15 @@ namespace AddMemberSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PunishmentTypePkid"), 1L, 1);
 
-                    b.Property<string>("punishmentType")
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Punishment")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PunishmentTypePkid");
 
-                    b.ToTable("TB_PunishmentTypes");
+                    b.ToTable("TB_PunishmentType");
                 });
 
             modelBuilder.Entity("AddMemberSystem.Models.TB_Staff", b =>

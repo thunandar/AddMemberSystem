@@ -1,4 +1,5 @@
-﻿using AddMemberSystem.Migrations;
+﻿//using AddMemberSystem.Migrations;
+using AddMemberSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -81,17 +82,18 @@ namespace AddMemberSystem.Controllers
                 .FirstOrDefault();
             return position ?? "Unknown Position";
         }
+       
 
         private List<SelectListItem> GetPunishmentTypes()
         {
             var lstPunishmentTypes = new List<SelectListItem>();
 
-            List<TB_PunishmentType> PunishmentTypes = _context.TB_PunishmentTypes.ToList();
+            List<TB_PunishmentType> TB_PunishmentTypes =_context.TB_PunishmentType.Where(d => d.IsDeleted == false).ToList();
 
-            lstPunishmentTypes = PunishmentTypes.Select(d => new SelectListItem()
+            lstPunishmentTypes = TB_PunishmentTypes.Select(d => new SelectListItem()
             {
                 Value = d.PunishmentTypePkid.ToString(),
-                Text = d.punishmentType
+                Text = d.Punishment ?? "Unknown Punishment"
             }).ToList();
 
             var defItem = new SelectListItem()
@@ -228,7 +230,7 @@ namespace AddMemberSystem.Controllers
 
         private string GetPunishmentTypeName(int PunishmentTypePkid)
         {
-            string PunishmentTypeName = _context.TB_PunishmentTypes.Where(p => p.PunishmentTypePkid == PunishmentTypePkid).SingleOrDefault().punishmentType;
+            string PunishmentTypeName = _context.TB_PunishmentType.Where(p => p.PunishmentTypePkid == PunishmentTypePkid).SingleOrDefault().Punishment;
             return PunishmentTypeName;
         }
 
