@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AddMemberSystem.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240112032421_Punishment&Type")]
-    partial class PunishmentType
+    [Migration("20240117091113_createDB")]
+    partial class createDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -127,12 +127,15 @@ namespace AddMemberSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PunishmentTypePkid"), 1L, 1);
 
-                    b.Property<string>("punishmentType")
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Punishment")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PunishmentTypePkid");
 
-                    b.ToTable("TB_PunishmentTypes");
+                    b.ToTable("TB_PunishmentType");
                 });
 
             modelBuilder.Entity("AddMemberSystem.Models.TB_Staff", b =>

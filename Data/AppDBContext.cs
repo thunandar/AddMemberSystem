@@ -21,7 +21,7 @@ namespace AddMemberSystem.Data
         public DbSet<TB_LeaveType> TB_LeaveTypes { get; set; }
         public DbSet<TB_StaffLeave> TB_StaffLeaves { get; set; }
         public DbSet<TB_StaffPunishment> TB_StaffPunishments { get; set; }
-        public DbSet<TB_PunishmentType> TB_PunishmentTypes { get; set; }
+        public DbSet<TB_PunishmentType> TB_PunishmentType { get; set; }
 
     }
 }
