@@ -117,6 +117,22 @@ namespace AddMemberSystem.Migrations
                     b.ToTable("TB_Positions");
                 });
 
+            modelBuilder.Entity("AddMemberSystem.Models.TB_PunishmentType", b =>
+                {
+                    b.Property<int>("PunishmentTypePkid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PunishmentTypePkid"), 1L, 1);
+
+                    b.Property<string>("punishmentType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PunishmentTypePkid");
+
+                    b.ToTable("TB_PunishmentTypes");
+                });
+
             modelBuilder.Entity("AddMemberSystem.Models.TB_Staff", b =>
                 {
                     b.Property<int>("StaffPkid")
@@ -268,6 +284,54 @@ namespace AddMemberSystem.Migrations
                     b.HasIndex("PositionId");
 
                     b.ToTable("TB_StaffLeaves");
+                });
+
+            modelBuilder.Entity("AddMemberSystem.Models.TB_StaffPunishment", b =>
+                {
+                    b.Property<int>("StaffPunishmentPkid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StaffPunishmentPkid"), 1L, 1);
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PositionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Punishment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("PunishmentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PunishmentTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StaffId")
+                        .HasColumnType("int");
+
+                    b.HasKey("StaffPunishmentPkid");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("PositionId");
+
+                    b.HasIndex("PunishmentTypeId");
+
+                    b.HasIndex("StaffId");
+
+                    b.ToTable("TB_StaffPunishments");
                 });
 
             modelBuilder.Entity("AddMemberSystem.Models.TB_User", b =>
@@ -481,6 +545,41 @@ namespace AddMemberSystem.Migrations
                     b.Navigation("LeaveType");
 
                     b.Navigation("Position");
+                });
+
+            modelBuilder.Entity("AddMemberSystem.Models.TB_StaffPunishment", b =>
+                {
+                    b.HasOne("AddMemberSystem.Models.TB_Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AddMemberSystem.Models.TB_Position", "Position")
+                        .WithMany()
+                        .HasForeignKey("PositionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AddMemberSystem.Models.TB_PunishmentType", "PunishmentType")
+                        .WithMany()
+                        .HasForeignKey("PunishmentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AddMemberSystem.Models.TB_Staff", "Staff")
+                        .WithMany()
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Position");
+
+                    b.Navigation("PunishmentType");
+
+                    b.Navigation("Staff");
                 });
 #pragma warning restore 612, 618
         }
