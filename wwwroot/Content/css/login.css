@@ -271,3 +271,15 @@ a.ssolink {
     }
 }*/
 
+/*eye icon*/
+#stripe-login {
+    position: relative;
+}
+
+    #stripe-login i {
+        right: 4%;
+        display: inline-block;
+        position: absolute;        
+        top: 42%;
+        font-size: 20px;
+    }

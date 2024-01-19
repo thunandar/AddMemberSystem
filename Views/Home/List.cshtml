@@ -13,6 +13,8 @@
         pageNo = pager.CurrentPage;
     }
 }
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
 <div class="row" style="display: flex; align-items: center;">
     <div class="col-md-10" style="margin-top: -10px;">
         <h1 style="font-size: 32px;">ဝန်ထမ်းအချက်အလက်များ</h1>
@@ -22,9 +24,8 @@
     </div>
 </div>
 
-
 <div class="row" style="margin-left: 0px; margin-top: 10px; margin-bottom: 10px;">
-    <form asp-action="SearchStaffs" method="get" class="row g-3">
+    <form asp-controller="Home" asp-action="" method="get" class="row g-3" id="ListForm">
         <div class="col-md-3">
             <select id="SearchCriteria" name="SearchCriteria" class="form-control" asp-items="ViewBag.SearchCriteriaItems">
                <option value="">-----ရှာဖွေရန် ရွေးချယ်ပါ-----</option>
@@ -44,12 +45,39 @@
                 <input type="text" id="SearchTerm" name="SearchTerm" class="form-control" placeholder="ရှာဖွေမည့်စကားလုံးရိုက်ထည့်ပါ" value="@ViewBag.SearchTerm" />
             </div>
         </div>
-        <div class="col-md-4">
-            <button type="submit" class="btn btn-primary search-btn col-md-6">ရှာဖွေမည်</button>
+        <div class="col-md-2">
+            <button id="btnSearchStaff" class="btn btn-primary search-btn col-md-12">ရှာဖွေမည်</button>
+        </div>
+        <div class="col-md-2">
+            <button id="btnExportToExcel" class="btn btn-primary">Download Excel</button>
         </div>
     </form>
 </div>
 
+
+<script>
+    //Go to certain route when user click search/excel download
+    $(document).ready(function () {
+        $("#btnSearchStaff").click(function () {
+            $("#ListForm").attr("action", "/Home/SearchStaffs");
+            $("#ListForm").submit();
+        });
+
+        $("#btnExportToExcel").click(function () {
+            var searchTerm = $("#SearchTerm").val();
+
+            if (searchTerm && searchTerm.trim() !== "") {
+                $("#ListForm").attr("action", "/Home/ExcelExportSearchResult");
+            } else {
+                $("#ListForm").attr("action", "/Home/ExcelAllStaffExport");
+            }
+
+            $("#ListForm").submit();
+        });
+
+    });
+
+</script>
 
 <table class="table">
     <thead>

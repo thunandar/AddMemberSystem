@@ -90,3 +90,24 @@ document.getElementById('overlay').addEventListener('click', function (event) {
     }
 });
 
+//Go to certain route when user click search/excel download
+$(document).ready(function () {
+    $("#btnSearchStaff").click(function () {
+        $("#ListForm").attr("action", "/Home/SearchStaffs");
+        $("#ListForm").submit();
+    });
+
+    $("#btnExportToExcel").click(function () {
+        var searchTerm = $("#SearchTerm").val();
+
+        if (searchTerm && searchTerm.trim() !== "") {
+            $("#ListForm").attr("action", "/Home/ExcelExportSearchResult");
+        } else {
+            $("#ListForm").attr("action", "/Home/ExcelAllStaffExport");
+        }
+
+        $("#ListForm").submit();
+    });
+
+});
+
