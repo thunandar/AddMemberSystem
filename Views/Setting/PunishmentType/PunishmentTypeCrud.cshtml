@@ -1,5 +1,5 @@
 ﻿@inject IConfiguration Configuration
-@model AddMemberSystem.Models.TB_LeaveType
+@model AddMemberSystem.Models.TB_PunishmentType
 
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <div class="row">
@@ -7,12 +7,12 @@
         <form asp-action="Create" method="post" class="setting-form">
             <div class="row mt-3">
                 <div class="form-group col-md-4">
-                    <label asp-for="LeaveTypeName" class="control-label d-flex align-items-center"><span style="font-weight: 600;">ခွင့်အမျိုးအစား: &nbsp;</span></label>
+                    <label asp-for="Punishment" class="control-label d-flex align-items-center"><span style="font-weight: 600;">ပြစ်မှုအမျိုးအစား: &nbsp;</span></label>
                 </div>
                 <div class="col-md-8">
                     <input type="hidden" id="actionType" name="actionType" value="Create" />
-                    <input asp-for="LeaveTypeName" class="form-control setting-input" id="settingNameInput">
-                    <span asp-validation-for="LeaveTypeName" class="text-danger"></span>
+                    <input asp-for="Punishment" class="form-control setting-input" id="settingNameInput">
+                    <span asp-validation-for="Punishment" class="text-danger"></span>
                 </div>
             </div>
             <div class="row mt-3">
@@ -26,11 +26,11 @@
     </div>
     <div class="col-md-6" id="confirmationSection" style="display: none;">
         <form asp-action="Delete" method="post" class="setting-form ">
-            <input type="hidden" id="confirmLeaveTypeId" name="leaveTypeId" value="" />
+            <input type="hidden" id="confirmPunishmentTypeId" name="punishmentTypeId" value="" />
 
             <div class="row">
                 <div class="col-md-4">
-                    <label id="ိleaveTypeLabel" class="control-label d-flex align-items-center"><span style="font-weight: 600;">ခွင့်အမျိုးအစား: </span></label>
+                    <label class="control-label d-flex align-items-center"><span style="font-weight: 600;">ပြစ်မှုအမျိုးအစား: </span></label>
                 </div>
                 <div class="col-md-8">
                     <p id="confirmInfo" style="margin: 0;"></p>
@@ -68,7 +68,7 @@
 
         $("#settingNameInput, #submitButton").prop("disabled", true);
 
-        
+
         $(document).on("click", ".edit-link", function () {
 
             $("#settingNameInput, #submitButton").prop("disabled", false);
@@ -77,17 +77,17 @@
             var settingNameId = $(this).data("setting-id");
             var settingName = $(this).data("setting-name");
 
-            $("#LeaveTypePkid").remove();
+            $("#PunishmentTypePkid").remove();
             $("<input>").attr({
                 type: "hidden",
-                id: "LeaveTypePkid",
-                name: "LeaveTypePkid",
+                id: "PunishmentTypePkid",
+                name: "PunishmentTypePkid",
                 value: settingNameId
             }).appendTo("form");
 
             $("#actionType").val("Edit");
 
-            $("#LeaveTypePkid").val(settingNameId);
+            $("#PunishmentTypePkid").val(settingNameId);
             $("#settingNameInput").val(settingName);
 
 
@@ -100,10 +100,10 @@
             $('#originalSection').hide();
             $("#confirmationSection").show();
 
-            $.getJSON(commonUrl + `/LeaveType/GetAllLeaveTypes?leaveTypeId=${settingNameId}`, (data) => {
+            $.getJSON(commonUrl + `/PunishmentType/GetAllPunishmentTypes?punishmentTypeId=${settingNameId}`, (data) => {
                 if (data) {
-                    $("#confirmInfo").text(data.leaveType);
-                    $("#confirmLeaveTypeId").val(settingNameId);
+                    $("#confirmInfo").text(data.punishmentType);
+                    $("#confirmPunishmentTypeId").val(settingNameId);
                 }
             });
 
@@ -132,20 +132,20 @@
 
             selectedId = selectedName;
 
-            $.getJSON(commonUrl + "/LeaveType/GetAllLeaveTypes", (data) => {
+            $.getJSON(commonUrl + "/PunishmentType/GetAllPunishmentTypes", (data) => {
                 if (data && data.length > 0) {
                     const rows = data.map((item, index) => `
-                                            <tr>
-                                <td>${index + 1}</td>
-                                <td>${item.leaveTypeName}</td>
-                                <td><a href="javascript:void(0);" class="edit-link btn btn-primary btn-sm all-edit"
-                                            data-setting-id="${item.leaveTypePkid}" data-setting-name="${item.leaveTypeName}">
-                                    <i class="fa fa-pencil"></i>
-                                </a></td>
-                                        <td><a href="#" class="delete-Link btn btn-danger btn-sm" data-setting-id="${item.leaveTypePkid}">
-                                    <i class="fa fa-trash"></i></a></td>
-                            </tr>
-                            `).join('');
+                                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td>${item.punishment}</td>
+                                        <td><a href="javascript:void(0);" class="edit-link btn btn-primary btn-sm all-edit"
+                                                            data-setting-id="${item.punishmentTypePkid}" data-setting-name="${item.punishment}">
+                                            <i class="fa fa-pencil"></i>
+                                        </a></td>
+                                                        <td><a href="#" class="delete-Link btn btn-danger btn-sm" data-setting-id="${item.punishmentTypePkid}">
+                                            <i class="fa fa-trash"></i></a></td>
+                                    </tr>
+                                    `).join('');
 
                     targetElement.find("tbody").html(rows);
 
@@ -162,10 +162,6 @@
                 FillPositionsForSettingPage(this, 'listSetting');
             });
         });
-
-
-
-
 
     </script>
 }

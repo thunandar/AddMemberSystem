@@ -72,7 +72,7 @@ namespace AddMemberSystem.Controllers.Setting
                 {
                     if (_context.TB_LeaveTypes.Any(d => d.LeaveTypeName == lt.LeaveTypeName))
                     {
-                        ModelState.AddModelError("LeaveTypeName", "Edit LeaveType with this name already exists in the selected department.");
+                        ModelState.AddModelError("LeaveTypeName", "Edit LeaveType with this name already exists.");
                         return View("~/Views/Setting/LeaveType/LeaveTypeCrud.cshtml", lt);
                     }
 
@@ -115,13 +115,7 @@ namespace AddMemberSystem.Controllers.Setting
 
             if (lt != null)
             {
-                Console.WriteLine("Removed**");
-                //lt.isDeleted = true;
-
-               // _context.Entry(lt).State = EntityState.Modified;
                 _context.Remove(lt);
-
-
                 _context.SaveChanges();
 
                 return RedirectToAction(nameof(Index));

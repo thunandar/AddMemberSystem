@@ -24,7 +24,7 @@ namespace AddMemberSystem.Controllers.Setting
                 return RedirectToAction("Index", "Account");
             }
 
-            List<TB_Department> departments = _context.TB_Departments.ToList();
+            List<TB_Department> departments = _context.TB_Departments.Where(dep => dep.isDeleted == false).ToList();
 
             SelectList departmentList = new SelectList(departments, "DepartmentPkid", "Department");
 
