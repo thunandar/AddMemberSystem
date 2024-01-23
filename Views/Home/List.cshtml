@@ -61,7 +61,7 @@
     const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
     $(document).ready(function () {
         $("#btnSearchStaff").click(function () {
-            $("#ListForm").attr("action", "/Home/SearchStaffs");
+            $("#ListForm").attr("action", commonUrl + "/Home/SearchStaffs");
             $("#ListForm").submit();
         });
 
