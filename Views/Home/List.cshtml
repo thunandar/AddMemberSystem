@@ -1,4 +1,5 @@
-﻿@model IEnumerable<AddMemberSystem.Models.TB_Staff>
+﻿@inject IConfiguration Configuration
+@model IEnumerable<AddMemberSystem.Models.TB_Staff>
 
 @{
     ViewData["Title"] = "ိ်ျူျိ်ူျ‌ေိ်ြဝန်ထမ်းများစာရင်း";
@@ -57,6 +58,7 @@
 
 <script>
     //Go to certain route when user click search/excel download
+    const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
     $(document).ready(function () {
         $("#btnSearchStaff").click(function () {
             $("#ListForm").attr("action", "/Home/SearchStaffs");
@@ -67,9 +69,9 @@
             var searchTerm = $("#SearchTerm").val();
 
             if (searchTerm && searchTerm.trim() !== "") {
-                $("#ListForm").attr("action", "/Home/ExcelExportSearchResult");
+                $("#ListForm").attr("action", commonUrl+"/Home/ExcelExportSearchResult");
             } else {
-                $("#ListForm").attr("action", "/Home/ExcelAllStaffExport");
+                $("#ListForm").attr("action", commonUrl + "/Home/ExcelAllStaffExport");
             }
 
             $("#ListForm").submit();
