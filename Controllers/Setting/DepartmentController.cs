@@ -24,7 +24,7 @@ namespace AddMemberSystem.Controllers.Setting
                 return RedirectToAction("Index", "Account");
             }
 
-            List<TB_Department> departments = _context.TB_Departments.ToList();
+            List<TB_Department> departments = _context.TB_Departments.Where(dep => dep.isDeleted == false).ToList();
 
             SelectList departmentList = new SelectList(departments, "DepartmentPkid", "Department");
 
@@ -35,34 +35,6 @@ namespace AddMemberSystem.Controllers.Setting
             
             return View("~/Views/Setting/Department/DepartmentCrud.cshtml");
         }     
-
-        private List<SelectListItem> GetDepartments()
-        {
-            List<TB_Department> departments = _context.TB_Departments.Where(departments => departments.isDeleted == false).ToList();
-
-            List<SelectListItem> departmentList = departments
-                .Select(d => new SelectListItem()
-                {
-                    Value = d.DepartmentPkid.ToString(),
-                    Text = d.Department ?? "Unknown Department"
-                })
-                .ToList();
-
-            return departmentList;
-        }
-
-
-        [HttpGet]
-        public IActionResult Create()
-        {
-            if (!IsUserLoggedIn())
-            {
-                return RedirectToAction("Index", "Account");
-            }
-
-            ViewBag.DepartmentId = GetDepartments();
-            return View();
-        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -75,7 +47,6 @@ namespace AddMemberSystem.Controllers.Setting
                     if (_context.TB_Departments.Any(d => d.Department == dep.Department))
                     {
                         ModelState.AddModelError("Department", "Department with this name already exists.");
-                        ViewBag.DepartmentId = GetDepartments();
                         return View("~/Views/Setting/Department/DepartmentCrud.cshtml", dep);
                     }
 
@@ -83,6 +54,11 @@ namespace AddMemberSystem.Controllers.Setting
                 }
                 else if (actionType == "Edit")
                 {
+                    if (_context.TB_Departments.Any(d => d.Department == dep.Department))
+                    {
+                        ModelState.AddModelError("Department", "Edit Department with this name already exists in the selected department.");
+                        return View("~/Views/Setting/Department/DepartmentCrud.cshtml", dep);
+                    }
 
                     var existingDepartment = _context.TB_Departments.Find(dep.DepartmentPkid);
 
@@ -98,8 +74,6 @@ namespace AddMemberSystem.Controllers.Setting
 
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewBag.DepartmentId = GetDepartments();
 
             return View("~/Views/Setting/Department/DepartmentCrud.cshtml", dep);
         }

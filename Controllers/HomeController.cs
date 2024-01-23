@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
+using System.Net.Mime;
 
 namespace AddMemberSystem.Controllers
 {
@@ -95,6 +97,7 @@ namespace AddMemberSystem.Controllers
 
             return View(data);
         }
+
         private TB_Staff GetStaff(int Id)
         {
             TB_Staff staff = _context.TB_Staffs
@@ -362,10 +365,23 @@ namespace AddMemberSystem.Controllers
                 + Path.GetExtension(fileName);
         }
 
-        [HttpGet]
-        public IActionResult SearchStaffs(string searchCriteria, string searchTerm, int pg = 1)
+        private void SetSearchCriteriaItemsInViewBag(string searchCriteria)
         {
-            IQueryable<TB_Staff> query = _context.TB_Staffs
+            var searchCriteriaItems = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "Name", Text = "၀န်ထမ်းအမည်" },
+            new SelectListItem { Value = "Department", Text = "ဌာန" },
+            new SelectListItem { Value = "Position", Text = "ရာထူး" },
+        };
+
+            searchCriteriaItems.ForEach(item => item.Selected = item.Value == searchCriteria);
+
+            ViewBag.SearchCriteriaItems = searchCriteriaItems;
+        }
+
+        private IQueryable<TB_Staff> BuildQuery(string searchCriteria, string searchTerm)
+        {
+            var query = _context.TB_Staffs
                 .Where(m => m.isDeleted == false)
                 .Include("Department")
                 .Include("Position");
@@ -378,14 +394,13 @@ namespace AddMemberSystem.Controllers
                     {
                         case "Name":
                             query = query.Where(m => m.Name.Contains(searchTerm));
-                            break;                       
+                            break;
                         case "Department":
                             query = query.Where(m => m.DepartmentId.ToString().Contains(searchTerm));
                             break;
                         case "Position":
                             query = query.Where(m => m.PositionId.ToString().Contains(searchTerm));
                             break;
-                        
                         default:
                             break;
                     }
@@ -393,45 +408,30 @@ namespace AddMemberSystem.Controllers
                 else
                 {
                     query = query.Where(m =>
-                        m.Name.Contains(searchTerm) ||                       
+                        m.Name.Contains(searchTerm) ||
                         m.DepartmentId.ToString().Contains(searchTerm) ||
                         m.PositionId.ToString().Contains(searchTerm));
                 }
             }
 
+            return query;
+        }
+
+        [HttpGet]
+        public IActionResult SearchStaffs(string searchCriteria, string searchTerm, int pg = 1)
+        {
+            var query = BuildQuery(searchCriteria, searchTerm);
+
             const int pageSize = 5;
-            if (pg < 1)
-                pg = 1;
+            var pager = new Pager(query.Count(), pg, pageSize);
 
-            int recsCount = query.Count();
-
-            var pager = new Pager(recsCount, pg, pageSize);
-
-            int recSkip = (pg - 1) * pageSize;
-
+            var recSkip = (pg - 1) * pageSize;
             var searchResults = query
                 .Skip(recSkip)
                 .Take(pager.PageSize)
                 .ToList();
 
-            var searchCriteriaItems = new List<SelectListItem>
-            {
-               new SelectListItem { Value = "Name", Text = "၀န်ထမ်းအမည်" },
-                new SelectListItem { Value = "Department", Text = "ဌာန" },
-                new SelectListItem { Value = "Position", Text = "ရာထူး" },
-            };
-
-            foreach (var item in searchCriteriaItems)
-            {
-                if (item.Value == searchCriteria)
-                {
-                    item.Selected = true;
-                }
-            }
-
-            ViewBag.SearchCriteriaItems = searchCriteriaItems;
-
-            pager = new Pager(recsCount, pg, pageSize);
+            SetSearchCriteriaItemsInViewBag(searchCriteria);
 
             ViewBag.Pager = pager;
             ViewBag.searchCriteria = searchCriteria;
@@ -440,8 +440,93 @@ namespace AddMemberSystem.Controllers
             return View("List", searchResults);
         }
 
+        private byte[] GenerateExcelData(List<TB_Staff> staffList, string worksheetName)
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add(worksheetName);
+
+                var headerRow = worksheet.Row(1);
+                headerRow.Style.Font.Bold = true;
+
+                worksheet.Cell(1, 1).Value = "No";
+                worksheet.Cell(1, 2).Value = "Staff Id";
+                worksheet.Cell(1, 3).Value = "Name";
+                worksheet.Cell(1, 4).Value = "Department";
+                worksheet.Cell(1, 5).Value = "Position";
+                worksheet.Cell(1, 6).Value = "FatherName";
+                worksheet.Cell(1, 7).Value = "DateOfBirth";
+                worksheet.Cell(1, 8).Value = "NRC";
+                worksheet.Cell(1, 9).Value = "Age";
+                worksheet.Cell(1, 10).Value = "Religion";
+                worksheet.Cell(1, 11).Value = "VisibleMark";
+                worksheet.Cell(1, 12).Value = "Address";
+                worksheet.Cell(1, 13).Value = "Phone";
+                worksheet.Cell(1, 14).Value = "StartedDate";
+                worksheet.Cell(1, 15).Value = "Responsibility";
+
+                headerRow.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
 
+                for (int i = 0; i < staffList.Count; i++)
+                {
+                    var staff = staffList[i];
+
+                    worksheet.Cell(i + 2, 1).Value = i + 1;
+                    worksheet.Cell(i + 2, 2).Value = staff.StaffID;
+                    worksheet.Cell(i + 2, 3).Value = staff.Name;
+                    worksheet.Cell(i + 2, 4).Value = staff.Department?.Department;
+                    worksheet.Cell(i + 2, 5).Value = staff.Position?.Position;
+                    worksheet.Cell(i + 2, 6).Value = staff.FatherName;
+                    worksheet.Cell(i + 2, 7).Value = staff.DateOfBirth;
+                    worksheet.Cell(i + 2, 8).Value = staff.NRC;
+                    worksheet.Cell(i + 2, 9).Value = staff.Age;
+                    worksheet.Cell(i + 2, 10).Value = staff.Religion;
+                    worksheet.Cell(i + 2, 11).Value = staff.VisibleMark;
+                    worksheet.Cell(i + 2, 12).Value = staff.Address;
+                    worksheet.Cell(i + 2, 13).Value = staff.Phone;
+                    worksheet.Cell(i + 2, 14).Value = staff.StartedDate;
+                    worksheet.Cell(i + 2, 15).Value = staff.Responsibility;
+
+                    worksheet.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                }
+
+                worksheet.Columns().Width = 20;
+
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    stream.Position = 0;
+
+                    return stream.ToArray();
+                }
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ExcelAllStaffExport()
+        {
+            var allStaff = _context.TB_Staffs
+                .Where(staff => staff.isDeleted == false)
+                .Include(d => d.Department)
+                .Include(p => p.Position)
+                .ToList();
+
+            var excelData = GenerateExcelData(allStaff, "AllStaff");
+
+            return File(excelData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "AllStaff.xlsx");
+        }
+
+        [HttpGet]
+        public IActionResult ExcelExportSearchResult(string searchCriteria, string searchTerm)
+        {
+            var query = BuildQuery(searchCriteria, searchTerm);
+            var searchResults = query.ToList();
+            var excelData = GenerateExcelData(searchResults, "SearchResults");
+
+            return File(excelData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "SearchResults.xlsx");
+        }
 
     }
 }

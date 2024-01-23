@@ -74,6 +74,9 @@
         width: 259px;
     }
 
+    #btnExportToExcel {
+        margin-top: 10px;
+    }
 
 }
 
