@@ -310,6 +310,7 @@ namespace AddMemberSystem.Controllers
             existingMember.StartedDate = editedStaff.StartedDate;
             existingMember.Remarks = editedStaff.Remarks;
             existingMember.StaffPhoto = editedStaff.StaffPhoto;
+            existingMember.Salary = editedStaff.Salary;
 
             _context.SaveChanges();
 

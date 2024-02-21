@@ -162,7 +162,31 @@ namespace AddMemberSystem.Controllers
             return Json(positions);
         }
 
-       
+        private TB_Staff GetStaffInfoByStaffID(string staffID)
+        {
+            return _context.TB_Staffs.FirstOrDefault(s => s.StaffID == staffID);
+        }
+
+        private string GetSelectedDepartment(int selectedDepartmentId)
+        {
+            var department = _context.TB_Departments
+                .Where(d => d.DepartmentPkid == selectedDepartmentId && !d.isDeleted)
+                .Select(d => d.Department)
+                .FirstOrDefault();
+
+            return department ?? "Unknown Department";
+        }
+
+        private string GetSelectedPosition(int selectedPositionId)
+        {
+            var position = _context.TB_Positions
+                .Where(d => d.PositionPkid == selectedPositionId)
+                .Select(d => d.Position)
+                .FirstOrDefault();
+            return position ?? "Unknown Position";
+        }
+
+
         [HttpGet]
         public IActionResult Create(string staffID)
         {
@@ -177,6 +201,14 @@ namespace AddMemberSystem.Controllers
             var staffLeaveRecords = _context.TB_StaffLeaves.Where(s => s.StaffID == staffID).Where(s => s.IsDeleted == false).ToList();
             int takenLeaveDays = staffLeaveRecords.Sum(s => s.LeaveDays);
             int remainingLeaveDays = totalLeaveDays - takenLeaveDays;
+
+            var staffInfo = GetStaffInfoByStaffID(staffID);
+
+            var staffName = _context.TB_Staffs.FirstOrDefault(s => s.StaffPkid == staffInfo.StaffPkid);
+            ViewBag.StaffName = staffName.Name;
+
+            ViewBag.SelectedDepartment = GetSelectedDepartment(staffInfo.DepartmentId);
+            ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
 
             SetViewDataAndViewBag(staffID, totalLeaveDays, takenLeaveDays, remainingLeaveDays);
 
@@ -195,6 +227,14 @@ namespace AddMemberSystem.Controllers
             int takenLeaveDays = staffLeaveRecords.Sum(s => s.LeaveDays);
             int isValidLeaveDays = takenLeaveDays + staffL.LeaveDays;
             int remainingLeaveDays = totalLeaveDays - takenLeaveDays;
+
+            var staffInfo = GetStaffInfoByStaffID(staffID);
+
+            var Department = _context.TB_Departments.FirstOrDefault(d => d.DepartmentPkid == staffInfo.DepartmentId);
+            staffL.DepartmentId = Department.DepartmentPkid;
+
+            var Position = _context.TB_Positions.FirstOrDefault(d => d.PositionPkid == staffInfo.PositionId);
+            staffL.PositionId = Position.PositionPkid;
 
             if (isValidLeaveDays > totalLeaveDays)
             {
@@ -261,13 +301,16 @@ namespace AddMemberSystem.Controllers
 
         [HttpGet]
         public IActionResult Edit(int id)
+            
         {
             if (!IsUserLoggedIn())
             {
                 return RedirectToAction("Index", "Account");
             }
 
-            TB_StaffLeave staffL = GetStaffLeave(id);
+           TB_StaffLeave staffL = GetStaffLeave(id);
+
+            var staffInfo = _context.TB_Staffs.FirstOrDefault(s => s.StaffID == staffL.StaffID); 
 
             int totalLeaveDays = 36;
 
@@ -275,6 +318,13 @@ namespace AddMemberSystem.Controllers
 
             int takenLeaveDays = staffLeaveRecords.Sum(s => s.LeaveDays);
             int remainingLeaveDays = totalLeaveDays - takenLeaveDays;
+
+            ViewBag.StaffID = staffInfo.StaffID;
+
+            ViewBag.StaffName = staffInfo.Name;
+
+            ViewBag.SelectedDepartment = GetSelectedDepartment(staffInfo.DepartmentId);
+            ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
 
             ViewBag.TotalLeaveDays = totalLeaveDays;
             ViewBag.TakenLeaveDays = takenLeaveDays;
@@ -290,7 +340,6 @@ namespace AddMemberSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(TB_StaffLeave editedStaffL)
         {
-            // Get the existing staff leave record from the database
             TB_StaffLeave existingStaffL = GetStaffLeave(editedStaffL.StaffLeavePkid);
 
             int totalLeaveDays = 36;
@@ -306,7 +355,6 @@ namespace AddMemberSystem.Controllers
             ViewBag.PositionPkid = GetPositions();
             ViewBag.LeaveTypeId = GetLeaveTypes();
 
-            // Update properties of the existing staff leave record
             existingStaffL.StaffID = editedStaffL.StaffID;
             existingStaffL.StaffLeaveName = editedStaffL.StaffLeaveName;
             existingStaffL.DepartmentId = editedStaffL.DepartmentId;
@@ -369,6 +417,12 @@ namespace AddMemberSystem.Controllers
             }
 
             TB_StaffLeave staffL = GetStaffLeave(Id);
+
+            var staffInfo = _context.TB_Staffs.FirstOrDefault(s => s.StaffID == staffL.StaffID);
+
+
+            ViewBag.StaffName = staffInfo.Name;
+
             ViewBag.Department = GetDepartmentName(staffL.DepartmentId);
             ViewBag.Position = GetPositionName(staffL.PositionId);
             ViewBag.LeaveTypeId = GetLeaveTypeName(staffL.LeaveTypeId);

@@ -173,6 +173,8 @@ namespace AddMemberSystem.Controllers
             TB_StaffPunishment staffPunish = _context.TB_StaffPunishments
                 .Where(m => m.StaffPunishmentPkid == Id).FirstOrDefault();
             return staffPunish;
+
+
         }
 
         [HttpGet]
@@ -185,7 +187,9 @@ namespace AddMemberSystem.Controllers
 
             TB_StaffPunishment staffPunish = GetStaffPunishment(id);
 
-            var staffInfo = _context.TB_Staffs.FirstOrDefault(s => s.StaffPkid == staffPunish.StaffId); //staff ya from staff table
+            Console.WriteLine("punish*", staffPunish.StaffPunishmentPkid);
+
+            var staffInfo = _context.TB_Staffs.FirstOrDefault(s => s.StaffPkid == staffPunish.StaffId); 
 
             ViewBag.StaffID = staffInfo.StaffID;
             

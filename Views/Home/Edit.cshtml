@@ -78,12 +78,17 @@
             <input asp-for="Responsibility" class="form-control" />
             <span asp-validation-for="Responsibility" class="text-danger"></span>
         </div>
- 
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="Salary" class="control-label"><span style="font-weight: 600;">လစာ</span> <span style="color: red;">*</span></label>
+            <input asp-for="Salary" class="form-control" />
+            <span asp-validation-for="Salary" class="text-danger"></span>
+        </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="Age" class="control-label"><span style="font-weight: 600;">အသက်</span> <span style="color: red;">*</span></label>
             <input asp-for="Age" class="form-control" />
             <span asp-validation-for="Age" class="text-danger"></span>
         </div>
+      
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="Religion" class="control-label"><span style="font-weight: 600;">ကိုးကွယ်သည့်ဘာသာ</span> <span style="color: red;">*</span></label>
             <input asp-for="Religion" class="form-control" />

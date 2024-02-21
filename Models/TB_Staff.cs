@@ -61,6 +61,8 @@ namespace AddMemberSystem.Models
         [MaxLength(255, ErrorMessage = "Staff Image cannot exceed 255 characters.")]
         public string StaffPhoto { get; set; }
 
+        public string Salary { get; set; }
+
         [NotMapped]
         public IFormFile ImageFile { get; set; }
 

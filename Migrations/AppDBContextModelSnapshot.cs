@@ -196,6 +196,9 @@ namespace AddMemberSystem.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Salary")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SerialNo")
                         .HasColumnType("nvarchar(max)");
 

@@ -119,7 +119,7 @@
                 @Html.DisplayFor(modelItem => item.Phone)
             </td>            
             <td>
-                @Html.DisplayFor(modelItem => item.StartedDate)
+                    @item.StartedDate?.ToString("yyyy-MM-dd")
             </td>            
             <td>
                 <img decoding="async" src="@("~/StaffPhoto/"+@item.StaffPhoto)" asp-append-version="true" width="70px" height="50px" style="object-fit: cover;" />

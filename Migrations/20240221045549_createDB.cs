@@ -248,6 +248,7 @@ namespace AddMemberSystem.Migrations
                     StartedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Remarks = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     StaffPhoto = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    Salary = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<int>(type: "int", nullable: false)

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AddMemberSystem.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240117091113_createDB")]
+    [Migration("20240221045549_createDB")]
     partial class createDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -197,6 +197,9 @@ namespace AddMemberSystem.Migrations
                     b.Property<string>("Responsibility")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Salary")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SerialNo")
                         .HasColumnType("nvarchar(max)");

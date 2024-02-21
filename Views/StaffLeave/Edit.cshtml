@@ -18,9 +18,23 @@
     </div>
     <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="StaffLeaveName" class="control-label">ဝန်ထမ်းအမည်</label>
-        <input asp-for="StaffLeaveName" class="form-control" />
+            <input class="form-control" value="@ViewBag.StaffName" readonly />
         <span asp-validation-for="StaffLeaveName" class="text-danger"></span>
     </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="DepartmentId" class="control-label">ဌာန</label>
+            <input class="form-control"
+                   value="@ViewBag.SelectedDepartment"
+                   readonly />
+            <input asp-for="DepartmentId" type="hidden" />
+            <span asp-validation-for="DepartmentId" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="PositionId" class="control-label">ရာထူး</label>
+            <input class="form-control" value="@ViewBag.SelectedPosition" readonly />
+            <input asp-for="PositionId" type="hidden" />
+            <span asp-validation-for="PositionId" class="text-danger"></span>
+        </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="LeaveAddress" class="control-label">ခွင့်ခံစားစဉ်နေရပ်လိပ်စာ</label>
             <input asp-for="LeaveAddress" class="form-control" />
@@ -58,20 +72,7 @@
             <label asp-for="LeaveDays" class="control-label">ရက်</label>
             <input asp-for="LeaveDays" class="form-control" type="number" min="1"  />
             <span asp-validation-for="LeaveDays" class="text-danger"></span>
-        </div>
-
-        <div class="form-group col-sm-12 col-md-12 col-lg-4">
-        <label asp-for="DepartmentId" class="control-label">Department</label>
-        <select id="lstDepartmentId" asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentPkid" onchange="FillPos(this,'lstPosition');"></select>
-        <span asp-validation-for="DepartmentId" class="text-danger"></span>
-    </div>
-    <div class="form-group col-sm-12 col-md-12 col-lg-4">
-        <label asp-for="PositionId" class="control-label">Position</label>
-        <select id="lstPosition" asp-for="PositionId" class="form-control" asp-items="ViewBag.PositionPkid">
-            <option value="" selected disabled>---- Select Position ----</option>
-        </select>
-        <span asp-validation-for="PositionId" class="text-danger"></span>
-    </div>   
+        </div>  
     <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="DutyAssignedTo" class="control-label">ခွင့်ခံစားစဉ်တာ၀န်ယူမည့်သူ</label>
         <input asp-for="DutyAssignedTo" class="form-control" />
