@@ -1,0 +1,167 @@
+﻿@model AddMemberSystem.Models.TB_User
+
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Login to your account</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="icon" href="~/Content/Logo/YRTCremovebg.png" type="image/png" sizes="16x16" />
+</head>
+<body>
+    <link rel="stylesheet" href="~/Content/css/login.css" asp-append-version="true">
+    <!-- Bootstrap CSS via CDN with version parameter appended -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" asp-append-version="true">-->
+
+    <div class="login-root">
+        <div class="box-root flex-flex flex-direction--column" style="min-height: 100vh;flex-grow: 1;">
+            <div class="loginbackground box-background--white padding-top--64">
+                @*<div class="loginbackground-gridContainer">*@
+                <div>
+                    <div class="box-root flex-flex" style="grid-area: top / start / 8 / end;">
+                        <div class="box-root" style="background-image: linear-gradient(white 0%, rgb(247, 250, 252) 33%); flex-grow: 1;">
+                        </div>
+                    </div>
+                    <div class="box-root flex-flex" style="grid-area: 4 / 2 / auto / 5;">
+                        <div class="box-root box-divider--light-all-2 animationLeftRight tans3s" style="flex-grow: 1;"></div>
+                    </div>
+                    <div class="box-root flex-flex" style="grid-area: 6 / start / auto / 2;">
+                        <div class="box-root box-background--blue800" style="flex-grow: 1;"></div>
+                    </div>
+                    <div class="box-root flex-flex" style="grid-area: 7 / start / auto / 4;">
+                        <div class="box-root box-background--blue animationLeftRight" style="flex-grow: 1;"></div>
+                    </div>
+                    <div class="box-root flex-flex" style="grid-area: 8 / 4 / auto / 6;">
+                        <div class="box-root box-background--gray100 animationLeftRight tans3s" style="flex-grow: 1;"></div>
+                    </div>
+                    <div class="box-root flex-flex" style="grid-area: 2 / 15 / auto / end;">
+                        <div class="box-root box-background--cyan200 animationRightLeft tans4s" style="flex-grow: 1;"></div>
+                    </div>
+                    <div class="box-root flex-flex" style="grid-area: 3 / 14 / auto / end;">
+                        <div class="box-root box-background--blue animationRightLeft" style="flex-grow: 1;"></div>
+                    </div>
+                    <div class="box-root flex-flex" style="grid-area: 4 / 17 / auto / 20;">
+                        <div class="box-root box-background--gray100 animationRightLeft tans4s" style="flex-grow: 1;"></div>
+                    </div>
+                    <div class="box-root flex-flex" style="grid-area: 5 / 14 / auto / 17;">
+                        <div class="box-root box-divider--light-all-2 animationRightLeft tans3s" style="flex-grow: 1;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="box-root padding-top--24 flex-flex flex-direction--column" style="flex-grow: 1; z-index: 9;">
+                <div class="box-root padding-top--48 padding-bottom--24 flex-flex flex-justifyContent--center">
+                    <h1><a href="http://blog.stackfindover.com/" rel="dofollow"><img src="~/Content/Logo/YRTCremovebg.png" alt="YRTC Logo" style="width: 50px; height: 50px; margin-bottom: -9px"> YRTC</a></h1>
+                </div>
+                <div class="formbg-outer">
+                    <div class="formbg">
+                        <div class="formbg-inner padding-horizontal--48">
+                            <span class="padding-bottom--15">Login in to your account</span>
+                            <form id="stripe-login" asp-controller="Account" asp-action="Login" method="post" class="form-validation">
+                                <div id="validationSummary" asp-validation-summary="All" class="text-danger"></div>
+
+                                <div class="field padding-bottom--24">
+                                    <label for="UserID">User ID</label>
+                                    <input type="text" name="UserID">
+                                    <span asp-validation-for="UserID" class="text-danger"></span>
+                                </div>
+                                <div class="field padding-bottom--24">
+                                    <div class="grid--50-50">
+                                        <label for="Password">Password</label>
+                                        <div class="reset-pass">
+                                            @*<a href="#">Forgot your password?</a>*@
+                                        </div>
+                                    </div>
+                                    <input type="password" name="Password" id="password-input">
+                                    <i class="bi bi-eye-fill" id="toggle-password" style="display: none;"></i>
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+                                <div class="field field-checkbox padding-bottom--24 flex-flex align-center">
+                                    <label for="StaySignedIn">
+                                        <input type="checkbox" name="StaySignedIn" value="true"> Stay signed in for a week
+                                    </label>
+                                </div>
+
+
+                                <div class="field padding-bottom--24">
+                                    <button type="submit" name="submit">Login</button>
+                                </div>
+                                <div class="field">
+                                    <a class="ssolink" href="#">Enter your YRTC ID and Password.</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    @*<div class="footer-link padding-top--24">
+                        <span>Don't have an account? <a href="">Sign up</a></span>
+                        <div class="listing padding-top--24 padding-bottom--24 flex-flex center-center">
+                            <span><a href="#">© Stackfindover</a></span>
+                            <span><a href="#">Contact</a></span>
+                            <span><a href="#">Privacy & terms</a></span>
+                        </div>
+                    </div>*@
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+</body>
+<script>
+    let passwordInput = document.getElementById('password-input');
+    let icon = document.getElementById('toggle-password');
+
+    // Show the eye icon when the password input field has content
+    passwordInput.addEventListener('input', () => {
+        if (passwordInput.value.length > 0) {
+            icon.style.display = 'inline-block';
+        } else {
+            icon.style.display = 'none';
+        }
+    });
+
+    // Toggle password visibility
+    icon.addEventListener('click', () => {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('bi-eye-fill');
+            icon.classList.add('bi-eye-slash-fill');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('bi-eye-slash-fill');
+            icon.classList.add('bi-eye-fill');
+        }
+    });
+</script>
+
+<script src="site.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation/1.19.3/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.14/jquery.validate.unobtrusive.min.js"></script>
+
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

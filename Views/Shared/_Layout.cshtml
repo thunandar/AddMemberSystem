@@ -1,0 +1,258 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>YRTC</title>
+
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="~/Content/css/style_edit.css" asp-append-version="true">
+
+    <!-- Select Box -->
+    <link rel="stylesheet" href="~/Content/plugins/select2/select2.min.css" asp-append-version="true">
+
+    <link href="~/Content/dist/css/fontawesome.min.css" rel="stylesheet" asp-append-version="true" />
+
+    <!-- Bootstrap 3.3.7 -->
+    <link rel="stylesheet" href="~/Content/bower_components/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/Content/bower_components/font-awesome/css/font-awesome.min.css" asp-append-version="true">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="~/Content/bower_components/Ionicons/css/ionicons.min.css" asp-append-version="true">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/dist/css/AdminLTE.min.css">
+
+    <link rel="stylesheet" href="~/Content/dist/css/skins/_all-skins.css" asp-append-version="true">
+
+    <link rel="stylesheet" href="~/Content/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" asp-append-version="true">
+
+    <link rel="stylesheet" href="~/Content/css/responsive.css" asp-append-version="true">
+
+
+    <link rel="stylesheet" href="~/Content/css/profile_effect.css" asp-append-version="true">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <link rel="icon" href="~/Content/Logo/YRTCRemovebg.png" type="image/png" sizes="16x16" />
+
+
+</head>
+
+<body class="hold-transition skin-yellow-light sidebar-mini">
+    <div class="wrapper">      
+        <header class="main-header" style="background-color: #6c85c3; height: 53px;">
+            <div>
+                <img src="~/Content/Logo/YRTCRemovebg.png" alt="YRTC Logo" style="width: 36px; height: 36x; margin-left: 8%; margin-top: 6px;">
+            </div>
+            <nav class="navbar navbar-static-top" id="my-navbar" style="margin-top: -43px;">
+                <div class="upNav">
+                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                        <span class="sr-only">Toggle navigation</span>
+                    </a>
+                    <div class="navbar-custom-menu" style="float:left">
+                        <ul class="nav navbar-nav" style="float:left">
+                            <li class="dropdown user user-menu" style="font-size:10px;">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <span class="hidden-xs" style="font-size:15px;">Test1 </span>
+                                </a>
+                                
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="navbar-custom-menu">
+                        <ul class="nav navbar-nav" style="float:right">
+                            <li class="dropdown user user-menu" style="width:80px;">
+                                <a href="#" class="dropdown-toggle display-picture" data-toggle="dropdown">
+                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrTq97frFCSb9F3q2xKfP3-NGZZjzLBTqQhfL1V5v9Lg&amp;usqp=CAU&amp;ec=48600113" alt="Profile Image" style="width: 24px; height: 24px; border-radius: 50%; background-color: rgb(217, 217, 217); aspect-ratio: 1 / 1;"/>
+                                   
+                                    <div class="card hidden">
+                                        <!--ADD TOGGLE HIDDEN CLASS ATTRIBUTE HERE-->
+                                        <ul>
+                                            <!--MENU-->
+                                            <li> <a class="active" asp-area="" asp-controller="Home" asp-action="List"> ဝန်ထမ်း</a></li>
+                                            <li>
+                                                <a class="active" asp-area="Setting" asp-controller="Department" asp-action="Index"> ဌာန</a>
+                                            </li>
+                                            <li>
+                                                <a class="active" asp-area="Setting" asp-controller="Position" asp-action="Index"> ရာထူး</a>
+                                            </li>
+                                            <li><a class="active" asp-area="" asp-controller="Account" asp-action="Logout">ထွက်</a></li>
+                                        </ul>
+                                    </div>
+                    </a>
+                                <ul class="dropdown-menu">
+                                    @{
+                                    }
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <aside class="main-sidebar">
+            <section class="sidebar">
+                <ul class="sidebar-menu" data-widget="tree" style="margin-top:60px;">
+                    @{
+                        <li class="treeview active menu-open">
+                            <a href="#" class="active">
+                                <i class="fa fa-list"></i>
+                                <span style="font-size:16px;">MainMenu</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li class="nav-item">
+                                    <a class="active" asp-area="" asp-controller="Home" asp-action="Index" style="font-size:14px;"><i class="bi bi-house-door"></i> အိမ်</a>
+                                </li>
+                                
+                                <li class="nav-item">
+                                    <a class="active" asp-area="" asp-controller="Home" asp-action="List" style="font-size:14px;"><i class="bi bi-people"></i> ဝန်ထမ်းများ</a>
+                                </li>                               
+                                <li class="nav-item">
+                                    <a class="active" asp-area="" asp-controller="StaffLeave" asp-action="List" style="font-size:14px;" id="login-link"><i class="bi bi-calendar-date"></i> ခွင့်</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="active" asp-area="" asp-controller="StaffPunishment" asp-action="List" style="font-size:14px;" id="login-link"><i class="bi bi-exclamation-square-fill"></i> ပြစ်မှုမှတ်တမ်း</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="active" asp-area="" asp-controller="Account" asp-action="Index" style="font-size:14px;" id="login-link"><i class="bi bi-box-arrow-left"></i> အကောင့်၀င်မည်</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="active" asp-area="" asp-controller="Account" asp-action="Logout" style="font-size:14px;" id="login-link"><i class="bi bi-box-arrow-right"></i> အကောင့်ထွက်မည်</a>
+                                </li>
+                               
+                            </ul>
+                        </li>
+                        <li class="treeview active menu-open">
+                            <a href="#" class="active">
+                                <i class="fa fa-list"></i>
+                                <span style="font-size: 16px;">Setting</span>
+
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li class="nav-item">
+                                    <a class="active" asp-area="Setting" asp-controller="Department" asp-action="Index" style="font-size:14px;"><i class="bi bi-buildings"></i> ဌာန</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="active" asp-area="Setting" asp-controller="Position" asp-action="Index" style="font-size:14px;"><i class="bi bi-person-badge"></i>လက်ရှိ ရာထူး</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="active" asp-area="Setting" asp-controller="InitialPosition" asp-action="Index" style="font-size:14px;"><i class="bi bi-person-badge"></i>စတင်ခဲ့သည့် ရာထူး</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="active" asp-area="Setting" asp-controller="LeaveType" asp-action="Index" style="font-size:14px;" id="login-link"> <i class="bi bi-calendar-minus-fill"></i> ခွင့်အမျို့းအစား</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="active" asp-area="Setting" asp-controller="PunishmentType" asp-action="Index" style="font-size:14px;" id="login-link"> <i class="bi bi-calendar-minus-fill"></i> ပြစ်မှုအမျိုးအစား</a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            </section>
+        </aside>
+        <div class="content-wrapper">
+            <section class="content">
+                @RenderBody()
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                <b>Version</b> 1.1.0
+            </div>
+            <strong>Copyright &copy; @DateTime.Now.Year <a href="http://acedatasystems.com/" target="_blank">YRTC</a>.</strong> All rights
+            reserved.
+        </footer>
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Create the tabs -->
+            <ul class="nav nav-tabs nav-justified control-sidebar-tabs"></ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <!-- Home tab content -->
+                <div class="tab-pane" id="control-sidebar-home-tab">
+
+                    <!-- /.control-sidebar-menu -->
+                </div>
+            </div>
+        </aside>
+
+        <div class="control-sidebar-bg"></div>
+    </div>
+
+    <!-- ./wrapper -->
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js" asp-append-version="true"></script>
+    <script src="~/Content/plugins/select2/select2.full.min.js" asp-append-version="true"></script>
+    <script src="~/Content/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js" asp-append-version="true"></script>
+    <script src="~/Content/plugins/datatables/jquery.dataTables.min.js" asp-append-version="true"></script>
+    <script src="~/Content/plugins/datatables/dataTables.bootstrap.min.js" asp-append-version="true"></script>
+    <script src="~/Content/plugins/datatables/dataTables.bootstrap.js" asp-append-version="true"></script>
+    <script src="~/Content/plugins/input-mask/jquery.inputmask.js" asp-append-version="true"></script>
+    <script src="~/Content/plugins/input-mask/jquery.inputmask.date.extensions.js" asp-append-version="true"></script>
+    <script src="~/Content/plugins/input-mask/jquery.inputmask.extensions.js" asp-append-version="true"></script>
+    <script src="~/Content/bower_components/morris.js/morris.min.js" asp-append-version="true"></script>
+    <!-- jQuery 3 -->
+    <script src="~/Content/bower_components/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="~/Content/bower_components/jquery-ui/jquery-ui.min.js" asp-append-version="true"></script>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+        $.widget.bridge('uibutton', $.ui.button);
+    </script>
+    <!-- Bootstrap 3.3.7 -->
+    <script src="~/Content/bower_components/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
+    <!-- Morris.js charts -->
+    <script src="~/Content/bower_components/raphael/raphael.min.js" asp-append-version="true"></script>
+    <script src="~/Content/bower_components/morris.js/morris.min.js" asp-append-version="true"></script>
+    <!-- Sparkline -->
+    <script src="~/Content/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js" asp-append-version="true"></script>
+    <!-- jvectormap -->
+    <script src="~/Content/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js" asp-append-version="true"></script>
+    <script src="~/Content/plugins/jvectormap/jquery-jvectormap-world-mill-en.js" asp-append-version="true"></script>
+    <!-- jQuery Knob Chart -->
+    <script src="~/Content/bower_components/jquery-knob/dist/jquery.knob.min.js" asp-append-version="true"></script>
+    <!-- daterangepicker -->
+    <script src="~/Content/bower_components/moment/min/moment.min.js" asp-append-version="true"></script>
+    <script src="~/Content/bower_components/bootstrap-daterangepicker/daterangepicker.js" asp-append-version="true"></script>
+    <!-- datepicker -->
+    <script src="~/Content/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js" asp-append-version="true"></script>
+    <!-- Bootstrap WYSIHTML5 -->
+    <!-- Slimscroll -->
+    <script src="~/Content/bower_components/jquery-slimscroll/jquery.slimscroll.min.js" asp-append-version="true"></script>
+    <!-- FastClick -->
+    <script src="~/Content/bower_components/fastclick/lib/fastclick.js" asp-append-version="true"></script>
+    <!-- AdminLTE App -->
+    <script src="~/Content/dist/js/adminlte.min.js" asp-append-version="true"></script>
+    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+    <!-- AdminLTE for demo purposes -->
+    <script src="~/Content/bower_components/jquery-ui/jquery-ui.js" asp-append-version="true"></script>
+    <script src="~/Content/scripts/Chart.min.js" asp-append-version="true"></script>
+    <script src="~/Content/scripts/Chart.min.js" asp-append-version="true"></script>
+    <script src="~/Content/plugins/toastr/toastr.min.js" asp-append-version="true"></script>
+
+    <script src="~/Content/bower_components/moment/locale/my.js"></script>
+    <script src="~/js/sweetalert2@11.js"></script>
+
+    <!--my script Select box-->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        function EnToMy(EnStr) {
+            return EnStr.replace('1', '၁').replace('2', '၂').replace('3', '၃').replace('4', '၄').replace('5', '၅').replace('6', '၆').replace('7', '၇').replace('8', '၈').replace('9', '၉').replace('0', '၀');
+        }
+        function MyToEn(MyStr) {
+            return EnStr.replace('၁', '1').replace('၂', '2').replace('၃', '3').replace('၄', '4').replace('၅', '5').replace('၆', '6').replace('၇', '7').replace('၈', '8').replace('၉', '9').replace('၀', '0');
+        }
+    </script>
+</body>
+@RenderSection("Scripts", required: false)
+</html>

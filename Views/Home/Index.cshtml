@@ -1,0 +1,83 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<link rel="stylesheet" href="~/Content/css/homedashboard.css" asp-append-version="true">
+
+@*<div class="text-center">
+    <h1 class="display-4"><a href="http://blog.stackfindover.com/" rel="dofollow"><img src="/Content/Logo/YRTCRemovebg.png" alt="YRTC Logo" style="width: 50px; height: 50px; margin-bottom: 9px;"> YRTC</a></h1>
+    <p>Welcome From Yangon Region Private Transport Committe <i class="bi bi-star-fill"></i> YRTC <i class="bi bi-star-fill"></i></p>
+</div>
+*@
+
+@{
+    var totalStaffCount = ViewBag.totalStaffCount ?? 0;
+    var totalPositionCount = ViewBag.totalPositionCount ?? 0;
+    var totalDepartmentCount = ViewBag.totalDepartmentCount ?? 0;
+    var totalStaffPunishmentCount = ViewBag.totalStaffPunishmentCount ?? 0;
+    var totalStaffLeaveCount = ViewBag.totalStaffLeaveCount ?? 0;
+}
+
+<div class="background--white" style="background: #f1f1f1;">
+    <div class="container">
+        <div class="box">
+            <h1>Total Staffs</h1>
+            <p>100</p>
+        </div>
+        <div class="box">
+            <h1>Total Positions</h1>
+            <p>100</p>
+        </div>
+        <div class="box">
+            <h1>Total Deaprtments</h1>
+            <p>100</p>
+        </div>
+        <div class="box">
+            <h1>Total Punishments </h1>
+            <p>100</p>
+        </div>
+        <div class="box">
+            <h1>Total Leaves </h1>
+            <p>100</p>
+        </div>
+        <div class="box">
+            <h1> - </h1>
+            <p>100</p>
+        </div>
+    </div>
+
+    <div class="second-container">
+        <div class="second-container-image-box">
+            <img src="~/Content/Logo/YRTC.jpeg" alt="YRTC Logo">
+        </div>
+        <div class="second-container-right-side">
+            <div class="right-container-first-row">
+                <div class="general-box green">
+                    <h1>Total Members <i class="bi bi-people"></i></h1>
+                    <p>100</p>
+                </div>
+                <div class="general-box gray">
+                    <h1>Total Books <i class="bi bi-people-fill"></i></h1>
+                    <p>100</p>
+                </div>
+            </div>
+            <div class="right-container-second-row">          
+                <h4>New Announcement</h4>
+                <div class="announce">
+                    <h2>testing</h2>
+                    <p>welcome to Yangon Region Private Transport Committe, Here's testing. </p>     
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+

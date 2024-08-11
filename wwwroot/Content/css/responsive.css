@@ -1,0 +1,108 @@
+﻿.create-btn {
+    margin-top: 25px; 
+    display: flex; 
+    justify-content: flex-end;
+}
+
+@media screen and (min-width: 992px) and (max-width:1160px) {
+    .input-group {
+        width: 200px;
+        margin-left: 46px;
+    }
+
+
+    .search-btn {
+        margin-left: 20px;
+    }
+}
+
+
+@media screen and (min-width: 756px) and (max-width: 991px) {
+    .input-group {
+        width: 200px;
+        margin-left: 0px;
+    }
+
+
+    .search-btn {
+        margin-left: 0px;
+    }
+
+    form {
+    display: flex;
+    justify-content: center;
+    }
+
+    .create-btn {
+        margin-top: -42px;
+    }
+    
+}
+
+
+@media screen and (min-width: 536px) and (max-width: 755px) {
+    
+    form {
+        display: flex;
+        justify-content: center;
+    }
+
+    .create-btn {
+        margin-top: -42px;
+    }
+    
+}
+
+@media screen and (min-width: 350px) and (max-width: 536px) {
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .create-btn {
+        margin-top: -42px;
+    }
+
+    .input-group {
+        width: 260px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+    #SearchCriteria {
+        width: 259px;
+    }
+
+    #btnExportToExcel {
+        margin-top: 10px;
+    }
+
+}
+
+@media screen and (min-width: 350px) and (max-width: 983px) {
+
+    .setting-form {
+        display: flex;
+        flex-direction: column;
+    }
+
+        .setting-form label {
+            margin: 0;
+        }
+
+    .setting-input {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .setting-submit {
+
+    margin-bottom: 20px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+}
+

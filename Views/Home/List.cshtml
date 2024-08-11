@@ -1,0 +1,173 @@
+﻿@inject IConfiguration Configuration
+@model IEnumerable<AddMemberSystem.Models.TB_Staff>
+
+@{
+    ViewData["Title"] = "ိ်ျူျိ်ူျ‌ေိ်ြဝန်ထမ်းများစာရင်း";
+
+    Pager pager = new Pager();
+
+    int pageNo = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<div class="row" style="display: flex; align-items: center;">
+    <div class="col-md-10" style="margin-top: -10px;">
+        <h1 style="font-size: 32px;">ဝန်ထမ်းအချက်အလက်များ</h1>
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-primary"><a asp-action="Create" style="color: #fff;">+ အသစ်ဖန်တီးမည်</a></button>
+    </div>
+</div>
+
+<div class="row" style="margin-left: 0px; margin-top: 10px; margin-bottom: 10px;">
+    <form asp-controller="Home" asp-action="" method="get" class="row g-3" id="ListForm">
+        <div class="col-md-3">
+            <select id="SearchCriteria" name="SearchCriteria" class="form-control" asp-items="ViewBag.SearchCriteriaItems">
+               <option value="">-----ရှာဖွေရန် ရွေးချယ်ပါ-----</option>
+                @if (string.IsNullOrEmpty(ViewBag.SearchTerm))
+                {
+
+                }
+
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-search"></i>
+                </span>
+                <input type="text" id="SearchTerm" name="SearchTerm" class="form-control" placeholder="ရှာဖွေမည့်စကားလုံးရိုက်ထည့်ပါ" value="@ViewBag.SearchTerm" />
+            </div>
+        </div>
+        <div class="col-md-2">
+            <button id="btnSearchStaff" class="btn btn-primary search-btn col-md-12">ရှာဖွေမည်</button>
+        </div>
+        <div class="col-md-2">
+            <button id="btnExportToExcel" class="btn btn-primary">Download Excel</button>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    //Go to certain route when user click search/excel download
+    const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
+    $(document).ready(function () {
+        $("#btnSearchStaff").click(function () {
+            $("#ListForm").attr("action", commonUrl + "/Home/SearchStaffs");
+            $("#ListForm").submit();
+        });
+
+        $("#btnExportToExcel").click(function () {
+            var searchTerm = $("#SearchTerm").val();
+
+            if (searchTerm && searchTerm.trim() !== "") {
+                $("#ListForm").attr("action", commonUrl+"/Home/ExcelExportSearchResult");
+            } else {
+                $("#ListForm").attr("action", commonUrl + "/Home/ExcelAllStaffExport");
+            }
+
+            $("#ListForm").submit();
+        });
+
+    });
+
+</script>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>စဉ်</th>
+            <th>အမှတ်စဉ်</th>
+            <th>ဝန်ထမ်းအမှတ်</th>
+            <th> ဝန်ထမ်းအမည်</th>          
+            <th>ဖုန်းနံပါတ်</th>                     
+            <th>ဝန်ထမ်းစတင်ရက်ဆွဲ</th>         
+            <th>ဝန်ထမ်း ဓာတ်ပုံ</th>                  
+            <th>ပြုပြင်ရန်</th>
+            <th>ကြည့်ရန်</th>
+            <th>ဖျက်ရန်</th>
+        </tr>
+    </thead>
+    <tbody class="text-center">
+        @{
+            var counter = 1;
+        }
+@foreach (var item in Model) {
+  
+        <tr>
+                <td>
+                    @counter
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SerialNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StaffID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>          
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>            
+            <td>
+                    @item.StartedDate?.ToString("yyyy-MM-dd")
+            </td>            
+            <td>
+                <img decoding="async" src="@("~/StaffPhoto/"+@item.StaffPhoto)" asp-append-version="true" width="70px" height="50px" style="object-fit: cover;" />
+            </td>
+
+                <td>
+                    <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@item.StaffPkid">
+                        <i class="fa fa-pencil"></i>
+                    </a>
+                </td>
+                <td>
+                    <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@item.StaffPkid">
+                        <i class="fa fa-info-circle"></i>
+                    </a>
+                </td>
+                <td>
+                    <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="@("#deleteModal" + @item.StaffPkid)">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </td>
+                <!-- Delete Modal Box -->
+                <div class="modal fade" id="@("deleteModal" + @item.StaffPkid)" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h3 class="modal-title" id="myModalLabel">အတည်ပြုခြင်း</h3>
+                            </div>
+                            <div class="modal-body">
+                                <h4>ဒီဝန်ထမ်းကို ဖျက်ချင်တာသေချာပါသလား</h4>
+                            </div>
+                            <div class="modal-footer">
+                                <form asp-action="Delete">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">ပိတ်မည်</button>
+                                    <input type="hidden" name="Id" asp-for="@item.StaffPkid" />
+                                    <button type="submit" class="btn btn-danger">ဖျက်မည်</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </tr>
+         
+            counter++;
+}
+    </tbody>
+</table>
+
+
+<partial name="_pager" model="@pager" />

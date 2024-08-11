@@ -1,0 +1,48 @@
+.back_link {
+    float: left;
+    margin: 20px 0 0 0;
+}
+
+    .back_link a {
+        color: #2a2c36 !important;
+        font-weight: bold;
+    }
+
+.text-rgt {
+    float: right;
+    background-color: transparent !important;
+}
+
+div#tbTable_filter {
+    float: right;
+    margin: 0 10px 25px 0;
+}
+
+.bg-org {
+    background-color: #2c7260 !important;
+    color: #fff;
+}
+
+th.width {
+    width: 10% !important;
+}
+
+div#example1_filter {
+    float: right;
+    margin: 0 10px 25px 0;
+}
+
+.table > thead:first-child > tr:first-child > th {
+    border-top: 0;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.table > thead:first-child > tr:first-child > td {
+    white-space: nowrap;
+}
+
+button.text-red {
+    background-color: transparent;
+    border: none;
+}
