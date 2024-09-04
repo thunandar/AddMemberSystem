@@ -26,11 +26,11 @@ namespace AddMemberSystem.Controllers
                 return RedirectToAction("Index", "Account");
             }
 
-            int totalStaffCount = _context.TB_Staffs.Where(b => b.isDeleted == true).Count();
-            int totalPositionCount = _context.TB_Positions.Where(b => b.isDeleted == true).Count();
-            int totalDepartmentCount = _context.TB_Departments.Where(b => b.isDeleted == true).Count();
-            int totalStaffPunishmentCount = _context.TB_StaffPunishments.Where(b => b.IsDeleted == true).Count();
-            int totalStaffLeaveCount = _context.TB_StaffLeaves.Where(b => b.IsDeleted == true).Count();
+            int totalStaffCount = _context.TB_Staffs.Where(b => b.isDeleted == false).Count();
+            int totalPositionCount = _context.TB_Positions.Where(b => b.isDeleted == false).Count();
+            int totalDepartmentCount = _context.TB_Departments.Where(b => b.isDeleted == false).Count();
+            int totalStaffPunishmentCount = _context.TB_StaffPunishments.Where(b => b.IsDeleted == false).Count();
+            int totalStaffLeaveCount = _context.TB_StaffLeaves.Where(b => b.IsDeleted == false).Count();
 
 
             ViewBag.totalStaffCount = totalStaffCount;
