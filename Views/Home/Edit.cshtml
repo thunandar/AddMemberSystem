@@ -73,9 +73,12 @@
             </select>
             <span asp-validation-for="PositionId" class="text-danger"></span>
         </div>
+
+    
+
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="InitialPositionId" class="control-label"><span style="font-weight: 600;">စတင်ခဲ့သည့် ရာထူး</span></label>
-            <select id="lstInitialPositions" asp-for="InitialPositionId" class="form-control" asp-items="ViewBag.InitialPositionPkid">
+            <select id="lstInitialPosition" asp-for="InitialPositionId" class="form-control" asp-items="ViewBag.InitialPositionPkid">
                 <option value="" selected disabled>----စတင်ခဲ့သည့်  ရာထူးရွေးချယ်ပါ ----</option>
             </select>
             <span asp-validation-for="InitialPositionId" class="text-danger"></span>

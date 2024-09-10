@@ -2,7 +2,7 @@
 @model IEnumerable<AddMemberSystem.Models.TB_Staff>
 
 @{
-    ViewData["Title"] = "ိ်ျူျိ်ူျ‌ေိ်ြဝန်ထမ်းများစာရင်း";
+    ViewData["Title"] = "ိ်ျူျိ်ူျ‌ေိ်ြStaff Lists";
 
     Pager pager = new Pager();
 
@@ -18,10 +18,10 @@
 
 <div class="row" style="display: flex; align-items: center;">
     <div class="col-md-10" style="margin-top: -10px;">
-        <h1 style="font-size: 32px;">ဝန်ထမ်းအချက်အလက်များ</h1>
+        <h1 style="font-size: 32px;">Staff Lists</h1>
     </div>
     <div class="col-md-2">
-        <button class="btn btn-primary"><a asp-action="Create" style="color: #fff;">+ အသစ်ဖန်တီးမည်</a></button>
+        <button class="btn btn-primary"><a asp-action="Create" style="color: #fff;">+ Create New</a></button>
     </div>
 </div>
 
@@ -29,7 +29,7 @@
     <form asp-controller="Home" asp-action="" method="get" class="row g-3" id="ListForm">
         <div class="col-md-3">
             <select id="SearchCriteria" name="SearchCriteria" class="form-control" asp-items="ViewBag.SearchCriteriaItems">
-               <option value="">-----ရှာဖွေရန် ရွေးချယ်ပါ-----</option>
+               <option value="">-----Choose to search-----</option>
                 @if (string.IsNullOrEmpty(ViewBag.SearchTerm))
                 {
 
@@ -43,11 +43,11 @@
                 <span class="input-group-addon">
                     <i class="glyphicon glyphicon-search"></i>
                 </span>
-                <input type="text" id="SearchTerm" name="SearchTerm" class="form-control" placeholder="ရှာဖွေမည့်စကားလုံးရိုက်ထည့်ပါ" value="@ViewBag.SearchTerm" />
+                <input type="text" id="SearchTerm" name="SearchTerm" class="form-control" placeholder="Enter your search" value="@ViewBag.SearchTerm" />
             </div>
         </div>
         <div class="col-md-2">
-            <button id="btnSearchStaff" class="btn btn-primary search-btn col-md-12">ရှာဖွေမည်</button>
+            <button id="btnSearchStaff" class="btn btn-primary search-btn col-md-12">Search</button>
         </div>
         <div class="col-md-2">
             <button id="btnExportToExcel" class="btn btn-primary">Download Excel</button>
@@ -87,10 +87,10 @@
             <th>စဉ်</th>
             <th>အမှတ်စဉ်</th>
             <th>ဝန်ထမ်းအမှတ်</th>
-            <th> ဝန်ထမ်းအမည်</th>          
-            <th>ဖုန်းနံပါတ်</th>                     
-            <th>ဝန်ထမ်းစတင်ရက်ဆွဲ</th>         
-            <th>ဝန်ထမ်း ဓာတ်ပုံ</th>                  
+            <th> ဝန်ထမ်းအမည်</th>
+            <th>ဖုန်းနံပါတ်</th>
+            <th>ဝန်ထမ်းစတင်ရက်ဆွဲ</th>
+            <th>ဝန်ထမ်း ဓာတ်ပုံ</th>
             <th>ပြုပြင်ရန်</th>
             <th>ကြည့်ရန်</th>
             <th>ဖျက်ရန်</th>
@@ -146,16 +146,16 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                <h3 class="modal-title" id="myModalLabel">အတည်ပြုခြင်း</h3>
+                                <h3 class="modal-title" id="myModalLabel">Confirmation</h3>
                             </div>
                             <div class="modal-body">
-                                <h4>ဒီဝန်ထမ်းကို ဖျက်ချင်တာသေချာပါသလား</h4>
+                                <h4>Are you sure you want to delete this staff?</h4>
                             </div>
                             <div class="modal-footer">
                                 <form asp-action="Delete">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">ပိတ်မည်</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                                     <input type="hidden" name="Id" asp-for="@item.StaffPkid" />
-                                    <button type="submit" class="btn btn-danger">ဖျက်မည်</button>
+                                    <button type="submit" class="btn btn-danger">Delete</button>
                                 </form>
                             </div>
                         </div>

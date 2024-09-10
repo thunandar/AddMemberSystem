@@ -195,6 +195,13 @@ namespace AddMemberSystem.Controllers
                 return RedirectToAction("Index", "Account");
             }
 
+            var staff = _context.TB_Staffs.FirstOrDefault(s => s.StaffID == staffID);
+            if (staff == null)
+            {
+                TempData["ErrorMessage"] = "The Staff ID does not exist.";
+                return RedirectToAction("List");
+            }
+
             var staffLeaveModel = new TB_StaffLeave();
             int totalLeaveDays = 36;
 
@@ -218,7 +225,8 @@ namespace AddMemberSystem.Controllers
         [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult Create(TB_StaffLeave staffL, string staffID)
-        {
+        {         
+
             staffL.CreatedDate = DateTime.UtcNow;
             staffL.IsDeleted = false;
 

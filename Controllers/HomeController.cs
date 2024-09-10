@@ -69,9 +69,9 @@ namespace AddMemberSystem.Controllers
 
             var searchCriteriaItems = new List<SelectListItem>
             {
-                new SelectListItem { Value = "Name", Text = "၀န်ထမ်းအမည်" },
-                new SelectListItem { Value = "Department", Text = "ဌာန" },
-                new SelectListItem { Value = "Position", Text = "ရာထူး" },
+                new SelectListItem { Value = "Name", Text = "Name" },
+                new SelectListItem { Value = "Department", Text = "Department" },
+                new SelectListItem { Value = "Position", Text = "Current Position" },
             };
 
             List<TB_Staff> staffs = _context.TB_Staffs
@@ -411,9 +411,9 @@ namespace AddMemberSystem.Controllers
         {
             var searchCriteriaItems = new List<SelectListItem>
         {
-            new SelectListItem { Value = "Name", Text = "၀န်ထမ်းအမည်" },
-            new SelectListItem { Value = "Department", Text = "ဌာန" },
-            new SelectListItem { Value = "Position", Text = "ရာထူး" },
+            new SelectListItem { Value = "Name", Text = "Name" },
+            new SelectListItem { Value = "Department", Text = "Department" },
+            new SelectListItem { Value = "Position", Text = "Current Position" },
         };
 
             searchCriteriaItems.ForEach(item => item.Selected = item.Value == searchCriteria);
@@ -438,10 +438,10 @@ namespace AddMemberSystem.Controllers
                             query = query.Where(m => m.Name.Contains(searchTerm));
                             break;
                         case "Department":
-                            query = query.Where(m => m.DepartmentId.ToString().Contains(searchTerm));
+                            query = query.Where(m => m.Department.Department.Contains(searchTerm));
                             break;
                         case "Position":
-                            query = query.Where(m => m.PositionId.ToString().Contains(searchTerm));
+                            query = query.Where(m => m.Position.Position.Contains(searchTerm));
                             break;
                         default:
                             break;
@@ -451,8 +451,8 @@ namespace AddMemberSystem.Controllers
                 {
                     query = query.Where(m =>
                         m.Name.Contains(searchTerm) ||
-                        m.DepartmentId.ToString().Contains(searchTerm) ||
-                        m.PositionId.ToString().Contains(searchTerm));
+                m.Department.Department.Contains(searchTerm) ||
+                m.Position.Position.Contains(searchTerm));
                 }
             }
 

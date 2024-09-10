@@ -12,9 +12,19 @@
         pager = ViewBag.Pager;
         pageNo = pager.CurrentPage;
     }
+    var errorMessage = TempData["ErrorMessage"] as string;
+
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">
+        @errorMessage
+    </div>
 }
 
 <link rel="stylesheet" href="~/Content/css/box_StaffID.css" asp-append-version="true">
+
 
 <div class="row" style="display: flex; align-items: center;">
     <div class="col-md-10" style="margin-top: -10px;">
@@ -27,7 +37,7 @@
 
 <div id="overlay"></div>
 <form id="staffForm" method="get" action="@Url.Action("Create", "StaffLeave")">
-    <label for="staffID">သင့်ရဲ့ Staff IDကို ရိုက်ထည့်ပေးပါ။</label>
+    <label for="staffID">သင့်ရဲ့ ၀န်ထမ်းအမှတ် ကို ရိုက်ထည့်ပေးပါ။</label>
     <input type="text" id="staffID" name="staffID" required>
     <button type="submit">တင်သွင်းမည်</button>
 </form>

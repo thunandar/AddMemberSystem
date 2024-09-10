@@ -120,6 +120,14 @@ namespace AddMemberSystem.Controllers
                 return RedirectToAction("Index", "Account");
             }
 
+            var staff = _context.TB_Staffs.FirstOrDefault(s => s.StaffID == staffID);
+            if (staff == null)
+            {
+                TempData["ErrorMessage"] = "The Staff ID does not exist.";
+                return RedirectToAction("List");
+            }
+
+
             TB_StaffPunishment StaffPunishment = new TB_StaffPunishment();
 
             var staffInfo = GetStaffInfoByStaffID(staffID);
