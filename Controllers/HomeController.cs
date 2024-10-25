@@ -185,13 +185,13 @@ namespace AddMemberSystem.Controllers
         private string GetPositionName(int PositionPkid)
         {
             string positionName = _context.TB_Positions.Where(p => p.PositionPkid == PositionPkid).SingleOrDefault().Position;
-            return positionName;
+            return positionName ?? "Position Not Found";
         }
 
         private string GetInitialPositionName(int InitialPositionPkid)
         {
             string initialPositionName = _context.TB_InitialPositions.Where(p => p.InitialPositionPkid == InitialPositionPkid).SingleOrDefault().InitialPosition;
-            return initialPositionName;
+            return initialPositionName ?? "Position Not Found";
         }
 
         [HttpGet]
@@ -269,8 +269,14 @@ namespace AddMemberSystem.Controllers
 
             TB_Staff staff = GetStaff(Id);
             ViewBag.Department = GetDepartmentName(staff.DepartmentId);
-            ViewBag.Position = GetPositionName(staff.PositionId);
-            ViewBag.InitialPosition = GetInitialPositionName(staff.DepartmentId);
+            // ViewBag.Position = GetPositionName(staff.PositionId);
+            ViewBag.Position = staff.PositionId.HasValue
+       ? GetPositionName(staff.PositionId.Value)
+       : "Position Not Assigned";
+
+            ViewBag.InitialPosition = staff.InitialPositionId.HasValue
+                ? GetInitialPositionName(staff.InitialPositionId.Value)
+                : "Initial Position Not Assigned";
             return View(staff);
         }
 

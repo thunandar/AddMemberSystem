@@ -215,7 +215,11 @@ namespace AddMemberSystem.Controllers
             ViewBag.StaffName = staffName.Name;
 
             ViewBag.SelectedDepartment = GetSelectedDepartment(staffInfo.DepartmentId);
-            ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
+
+            // ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
+            ViewBag.SelectedPosition = staffInfo.PositionId.HasValue
+        ? GetSelectedPosition(staffInfo.PositionId.Value)
+        : "Position Not Assigned";
 
             SetViewDataAndViewBag(staffID, totalLeaveDays, takenLeaveDays, remainingLeaveDays);
 
@@ -242,7 +246,10 @@ namespace AddMemberSystem.Controllers
             staffL.DepartmentId = Department.DepartmentPkid;
 
             var Position = _context.TB_Positions.FirstOrDefault(d => d.PositionPkid == staffInfo.PositionId);
-            staffL.PositionId = Position.PositionPkid;
+            staffL.PositionId = Position?.PositionPkid;
+
+   
+
 
             if (isValidLeaveDays > totalLeaveDays)
             {
@@ -332,8 +339,10 @@ namespace AddMemberSystem.Controllers
             ViewBag.StaffName = staffInfo.Name;
 
             ViewBag.SelectedDepartment = GetSelectedDepartment(staffInfo.DepartmentId);
-            ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
-
+            // ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
+            ViewBag.SelectedPosition = staffInfo.PositionId.HasValue
+        ? GetSelectedPosition(staffInfo.PositionId.Value)
+        : "Position Not Assigned";
             ViewBag.TotalLeaveDays = totalLeaveDays;
             ViewBag.TakenLeaveDays = takenLeaveDays;
             ViewBag.RemaningLeaveDays = remainingLeaveDays;
@@ -432,7 +441,8 @@ namespace AddMemberSystem.Controllers
             ViewBag.StaffName = staffInfo.Name;
 
             ViewBag.Department = GetDepartmentName(staffL.DepartmentId);
-            ViewBag.Position = GetPositionName(staffL.PositionId);
+           // ViewBag.Position = GetPositionName(staffL.PositionId);
+            ViewBag.Position = staffL.PositionId.HasValue ? GetPositionName(staffL.PositionId.Value): "Position Not Assigned";
             ViewBag.LeaveTypeId = GetLeaveTypeName(staffL.LeaveTypeId);
             return View(staffL);
         }

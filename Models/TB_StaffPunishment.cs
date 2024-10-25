@@ -21,9 +21,8 @@ namespace AddMemberSystem.Models
         public int PunishmentTypeId { get; set; }
         public virtual TB_PunishmentType PunishmentType { get; set; }
 
-        [Required(ErrorMessage = "ရာထူးရွေးချယ်ဖို့ လိုအပ်ပါသည်")]
         [ForeignKey("PositionId")]
-        public int PositionId { get; set; }
+        public int? PositionId { get; set; }
         public virtual TB_Position Position { get; set; }
 
         [Required(ErrorMessage = "ဌာနရွေးချယ်ဖို့ လိုအပ်ပါသည်")]

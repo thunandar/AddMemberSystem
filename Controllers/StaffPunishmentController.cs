@@ -137,7 +137,10 @@ namespace AddMemberSystem.Controllers
             ViewBag.StaffName = staffName.Name;
             ViewBag.PunishmentTypeId = GetPunishmentTypes();
             ViewBag.SelectedDepartment = GetSelectedDepartment(staffInfo.DepartmentId);
-            ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
+            ViewBag.SelectedPosition = staffInfo.PositionId.HasValue
+       ? GetSelectedPosition(staffInfo.PositionId.Value)
+       : "Position Not Assigned";
+            //ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
 
             return View(StaffPunishment);
         }  
@@ -155,7 +158,7 @@ namespace AddMemberSystem.Controllers
             StaffPunishment.DepartmentId = Department.DepartmentPkid;
 
             var Position = _context.TB_Positions.FirstOrDefault(d => d.PositionPkid == staffInfo.PositionId);
-            StaffPunishment.PositionId = Position.PositionPkid;
+            StaffPunishment.PositionId = Position?.PositionPkid;
 
 
             if (!ModelState.IsValid)
@@ -204,7 +207,10 @@ namespace AddMemberSystem.Controllers
             ViewBag.StaffName = staffInfo.Name;
             ViewBag.PunishmentTypeId = GetPunishmentTypes();
             ViewBag.SelectedDepartment = GetSelectedDepartment(staffInfo.DepartmentId);
-            ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
+            // ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
+            ViewBag.SelectedPosition = staffInfo.PositionId.HasValue
+        ? GetSelectedPosition(staffInfo.PositionId.Value)
+        : "Position Not Assigned";
 
             return View(staffPunish);
            
@@ -263,8 +269,8 @@ namespace AddMemberSystem.Controllers
             ViewBag.StaffName = staffInfo.Name;
             ViewBag.PunishmentTypeId = GetPunishmentTypes();
             ViewBag.SelectedDepartment = GetSelectedDepartment(staffInfo.DepartmentId);
-            ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
-
+            // ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
+            ViewBag.SelectedPosition = staffInfo.PositionId.HasValue ? GetSelectedPosition(staffInfo.PositionId.Value) : "Position Not Assigned";
             ViewBag.PunishmentTypeId = GetPunishmentTypeName(staffPunishment.PunishmentTypeId);
             return View(staffPunishment);
         }

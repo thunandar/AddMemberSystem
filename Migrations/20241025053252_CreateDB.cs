@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AddMemberSystem.Migrations
 {
-    public partial class YRTCHRMigrations : Migration
+    public partial class CreateDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -210,7 +210,7 @@ namespace AddMemberSystem.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StaffID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     StaffLeaveName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    PositionId = table.Column<int>(type: "int", nullable: false),
+                    PositionId = table.Column<int>(type: "int", nullable: true),
                     DepartmentId = table.Column<int>(type: "int", nullable: false),
                     LeaveDateFrom = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LeaveDateTo = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -242,8 +242,7 @@ namespace AddMemberSystem.Migrations
                         name: "FK_TB_StaffLeaves_TB_Positions_PositionId",
                         column: x => x.PositionId,
                         principalTable: "TB_Positions",
-                        principalColumn: "PositionPkid",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "PositionPkid");
                 });
 
             migrationBuilder.CreateTable(
@@ -263,8 +262,8 @@ namespace AddMemberSystem.Migrations
                     VisibleMark = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Address = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     Phone = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    InitialPositionId = table.Column<int>(type: "int", nullable: false),
-                    PositionId = table.Column<int>(type: "int", nullable: false),
+                    InitialPositionId = table.Column<int>(type: "int", nullable: true),
+                    PositionId = table.Column<int>(type: "int", nullable: true),
                     DepartmentId = table.Column<int>(type: "int", nullable: false),
                     Responsibility = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     StartedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -288,14 +287,12 @@ namespace AddMemberSystem.Migrations
                         name: "FK_TB_Staffs_TB_InitialPositions_InitialPositionId",
                         column: x => x.InitialPositionId,
                         principalTable: "TB_InitialPositions",
-                        principalColumn: "InitialPositionPkid",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "InitialPositionPkid");
                     table.ForeignKey(
                         name: "FK_TB_Staffs_TB_Positions_PositionId",
                         column: x => x.PositionId,
                         principalTable: "TB_Positions",
-                        principalColumn: "PositionPkid",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "PositionPkid");
                 });
 
             migrationBuilder.CreateTable(
@@ -308,7 +305,7 @@ namespace AddMemberSystem.Migrations
                     PunishmentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Punishment = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PunishmentTypeId = table.Column<int>(type: "int", nullable: false),
-                    PositionId = table.Column<int>(type: "int", nullable: false),
+                    PositionId = table.Column<int>(type: "int", nullable: true),
                     DepartmentId = table.Column<int>(type: "int", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -327,8 +324,7 @@ namespace AddMemberSystem.Migrations
                         name: "FK_TB_StaffPunishments_TB_Positions_PositionId",
                         column: x => x.PositionId,
                         principalTable: "TB_Positions",
-                        principalColumn: "PositionPkid",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "PositionPkid");
                     table.ForeignKey(
                         name: "FK_TB_StaffPunishments_TB_PunishmentType_PunishmentTypeId",
                         column: x => x.PunishmentTypeId,

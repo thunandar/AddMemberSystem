@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AddMemberSystem.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240809135232_YRTCHRMigrations")]
-    partial class YRTCHRMigrations
+    [Migration("20241025053252_CreateDB")]
+    partial class CreateDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -195,7 +195,7 @@ namespace AddMemberSystem.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("InitialPositionId")
+                    b.Property<int?>("InitialPositionId")
                         .HasColumnType("int");
 
                     b.Property<string>("NRC")
@@ -211,7 +211,7 @@ namespace AddMemberSystem.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("PositionId")
+                    b.Property<int?>("PositionId")
                         .HasColumnType("int");
 
                     b.Property<string>("Religion")
@@ -302,7 +302,7 @@ namespace AddMemberSystem.Migrations
                     b.Property<int>("LeaveTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PositionId")
+                    b.Property<int?>("PositionId")
                         .HasColumnType("int");
 
                     b.Property<string>("StaffID")
@@ -344,7 +344,7 @@ namespace AddMemberSystem.Migrations
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("PositionId")
+                    b.Property<int?>("PositionId")
                         .HasColumnType("int");
 
                     b.Property<string>("Punishment")
@@ -560,15 +560,11 @@ namespace AddMemberSystem.Migrations
 
                     b.HasOne("AddMemberSystem.Models.TB_InitialPosition", "InitialPosition")
                         .WithMany()
-                        .HasForeignKey("InitialPositionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("InitialPositionId");
 
                     b.HasOne("AddMemberSystem.Models.TB_Position", "Position")
                         .WithMany()
-                        .HasForeignKey("PositionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PositionId");
 
                     b.Navigation("Department");
 
@@ -593,9 +589,7 @@ namespace AddMemberSystem.Migrations
 
                     b.HasOne("AddMemberSystem.Models.TB_Position", "Position")
                         .WithMany()
-                        .HasForeignKey("PositionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PositionId");
 
                     b.Navigation("Department");
 
@@ -614,9 +608,7 @@ namespace AddMemberSystem.Migrations
 
                     b.HasOne("AddMemberSystem.Models.TB_Position", "Position")
                         .WithMany()
-                        .HasForeignKey("PositionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PositionId");
 
                     b.HasOne("AddMemberSystem.Models.TB_PunishmentType", "PunishmentType")
                         .WithMany()

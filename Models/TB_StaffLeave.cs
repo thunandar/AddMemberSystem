@@ -13,13 +13,12 @@ namespace AddMemberSystem.Models
         [MaxLength(50)]
         public string StaffLeaveName { get; set; }
 
-        [Required(ErrorMessage = "ရာထူးရွေးချယ်ဖို့ လိုအပ်ပါသည်")]
         [ForeignKey("PositionPkid")]
-        public int PositionId { get; set; }
+        public int? PositionId { get; set; }
         public virtual TB_Position Position { get; set; }
 
         [Required(ErrorMessage = "ဌာနရွေးချယ်ဖို့ လိုအပ်ပါသည်")]
-        [ForeignKey("PositionPkid")]
+        [ForeignKey("DepartmentPkid")]
         public int DepartmentId { get; set; }
         public virtual TB_Department Department { get; set; }
 
