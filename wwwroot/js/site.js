@@ -94,10 +94,10 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-let card = document.querySelector(".card"); 
-let displayPicture = document.querySelector(".display-picture"); 
+let card = document.querySelector(".card");
+let displayPicture = document.querySelector(".display-picture");
 
-displayPicture.addEventListener("click", function () { 
+displayPicture.addEventListener("click", function () {
     card.classList.toggle("hidden")
 })
 
@@ -138,4 +138,3 @@ $(document).ready(function () {
     });
 
 });
-
