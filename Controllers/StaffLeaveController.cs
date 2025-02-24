@@ -234,6 +234,34 @@ namespace AddMemberSystem.Controllers
             staffL.CreatedDate = DateTime.UtcNow;
             staffL.IsDeleted = false;
 
+            DateTime today = DateTime.UtcNow.Date;
+
+
+            // Server-side validation for LeaveDateFrom and LeaveDateTo
+            if (!staffL.LeaveDateFrom.HasValue || staffL.LeaveDateFrom.Value.Date < today)
+            {
+                ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDateFrom), "ခွင့်ယူသည့်ရက်မှ အနည်းဆုံး ယနေ့မှစရပါမည်။");
+            }
+
+            if (!staffL.LeaveDateTo.HasValue || staffL.LeaveDateTo.Value.Date < today)
+            {
+                ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDateTo), "ခွင့်ယူသည့်ရက်ထိ အနည်းဆုံး ယနေ့မှစရပါမည်။");
+            }
+
+            // Ensure LeaveDateTo is after or equal to LeaveDateFrom
+            if (staffL.LeaveDateFrom.HasValue && staffL.LeaveDateTo.HasValue && staffL.LeaveDateTo < staffL.LeaveDateFrom)
+            {
+                ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDateTo), "ခွင့်ယူသည့်ရက်ထိ သည် ခွင့်ယူသည့်ရက်မှ နှင့် အချိန်ကျပါမည်။");
+            }
+
+            if (ModelState.ErrorCount > 0)
+            {
+                SetViewDataAndViewBag(staffID, 36, 0, 36);
+                return View(staffL);
+            }
+
+            staffL.LeaveDays = (staffL.LeaveDateTo.Value - staffL.LeaveDateFrom.Value).Days + 1;
+
             int totalLeaveDays = 36;
             var staffLeaveRecords = _context.TB_StaffLeaves.Where(s => s.StaffID == staffID).Where(s => s.IsDeleted == false).ToList();
             int takenLeaveDays = staffLeaveRecords.Sum(s => s.LeaveDays);
@@ -248,8 +276,6 @@ namespace AddMemberSystem.Controllers
             var Position = _context.TB_Positions.FirstOrDefault(d => d.PositionPkid == staffInfo.PositionId);
             staffL.PositionId = Position?.PositionPkid;
 
-   
-
 
             if (isValidLeaveDays > totalLeaveDays)
             {
@@ -260,8 +286,6 @@ namespace AddMemberSystem.Controllers
 
 
             SetViewDataAndViewBag(staffID, totalLeaveDays, takenLeaveDays, remainingLeaveDays);
-
-            ValidateLeaveDays(staffL);
 
             if (!ModelState.IsValid)
             {
@@ -290,21 +314,6 @@ namespace AddMemberSystem.Controllers
             ViewBag.DepartmentPkid = GetDepartments();
             ViewBag.PositionPkid = GetPositions();
             ViewBag.LeaveTypeId = GetLeaveTypes();
-        }
-
-        private void ValidateLeaveDays(TB_StaffLeave staffL)
-        {
-            if (staffL.LeaveDays > 0 && staffL.LeaveDateFrom.HasValue && staffL.LeaveDateTo.HasValue)
-            {
-                var leaveFromDate = staffL.LeaveDateFrom.Value;
-                var leaveToDate = staffL.LeaveDateTo.Value;
-                var dateDifference = leaveToDate - leaveFromDate;
-
-                if (dateDifference.Days != staffL.LeaveDays - 1)
-                {
-                    ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDays), $"ခွင့်ယူသည့်ရက်မှ ခွင့်ယူသည့်ရက်ထိ ကွာခြားချက်မှာ {staffL.LeaveDays} ရက်ဖြစ်သင့်ပါသည်");
-                }
-            }
         }
 
         private TB_StaffLeave GetStaffLeave(int Id)
@@ -365,6 +374,44 @@ namespace AddMemberSystem.Controllers
             int takenLeaveDays = staffLeaveRecords.Sum(s => s.LeaveDays);
             int remainingLeaveDays = totalLeaveDays - takenLeaveDays;
 
+            DateTime today = DateTime.UtcNow.Date;
+
+            // Server-side validation for LeaveDateFrom and LeaveDateTo
+            if (!editedStaffL.LeaveDateFrom.HasValue || editedStaffL.LeaveDateFrom.Value.Date < today)
+            {
+                ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDateFrom), "ခွင့်ယူသည့်ရက်မှ အနည်းဆုံး ယနေ့မှစရပါမည်။");
+            }
+
+            if (!editedStaffL.LeaveDateTo.HasValue || editedStaffL.LeaveDateTo.Value.Date < today)
+            {
+                ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDateTo), "ခွင့်ယူသည့်ရက်ထိ အနည်းဆုံး ယနေ့မှစရပါမည်။");
+            }
+
+            // Ensure LeaveDateTo is after or equal to LeaveDateFrom
+            if (editedStaffL.LeaveDateFrom.HasValue && editedStaffL.LeaveDateTo.HasValue && editedStaffL.LeaveDateTo < editedStaffL.LeaveDateFrom)
+            {
+                ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDateTo), "ခွင့်ယူသည့်ရက်ထိ သည် ခွင့်ယူသည့်ရက်မှ နှင့် အချိန်ကျပါမည်။");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                SetViewDataAndViewBag(totalLeaveDays, takenLeaveDays, remainingLeaveDays);
+                return View(editedStaffL);
+            }
+
+            // Calculate LeaveDays dynamically
+            editedStaffL.LeaveDays = (editedStaffL.LeaveDateTo.Value - editedStaffL.LeaveDateFrom.Value).Days + 1;
+
+
+            int isValidLeaveDays = takenLeaveDays + editedStaffL.LeaveDays;
+            if (isValidLeaveDays > totalLeaveDays)
+            {
+                ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDays), "ခွင့်ပေးထားသည့်ရက် ၃၆ ရက်ထက် ကျော်လွန်နေပါသည်");
+                SetViewDataAndViewBag(totalLeaveDays, takenLeaveDays, remainingLeaveDays);
+                return View(editedStaffL);
+            }
+
+
             ViewBag.TotalLeaveDays = totalLeaveDays;
             ViewBag.TakenLeaveDays = takenLeaveDays;
             ViewBag.RemaningLeaveDays = remainingLeaveDays;
@@ -385,33 +432,11 @@ namespace AddMemberSystem.Controllers
             existingStaffL.DutyAssignPosition = editedStaffL.DutyAssignPosition;
             existingStaffL.LeaveTypeId = editedStaffL.LeaveTypeId;
 
-            int isValidLeaveDays = takenLeaveDays + editedStaffL.LeaveDays;
-
-            if (isValidLeaveDays > totalLeaveDays)
-            {
-                ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDays), "ခွင့်ပေးထားသည့်ရက်၃၆ရက်ထက် ခွင့်ယူထားသည့်ရက်များက ကျော်လွန်နေပါသည်");
-            }
-
-            // Validate leave days and dates
-            if (existingStaffL.LeaveDays > 0 && existingStaffL.LeaveDateFrom.HasValue && existingStaffL.LeaveDateTo.HasValue)
-            {
-                var leaveFromDate = existingStaffL.LeaveDateFrom.Value;
-                var leaveToDate = existingStaffL.LeaveDateTo.Value;
-
-                var dateDifference = leaveToDate - leaveFromDate;
-
-                if (dateDifference.Days != existingStaffL.LeaveDays - 1)
-                {
-                    ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDays), $"ခွင့်ယူသည့်ရက်မှ and ခွင့်ယူသည့်ရက်ထိ ကွာခြားချက်မှာ {existingStaffL.LeaveDays} ရက်ဖြစ်သင့်ပါသည်");
-                }
-            }
-
             if (!ModelState.IsValid)
             {
                 return View(editedStaffL);
             }
 
-            // Save changes to the database
             try
             {
                 _context.SaveChanges();
@@ -422,6 +447,16 @@ namespace AddMemberSystem.Controllers
                 ModelState.AddModelError(string.Empty, "An error occurred while saving the data.");
                 return View(editedStaffL);
             }
+        }
+
+        private void SetViewDataAndViewBag(int totalLeaveDays, int takenLeaveDays, int remainingLeaveDays)
+        {
+            ViewBag.TotalLeaveDays = totalLeaveDays;
+            ViewBag.TakenLeaveDays = takenLeaveDays;
+            ViewBag.RemaningLeaveDays = remainingLeaveDays;
+            ViewBag.DepartmentPkid = GetDepartments();
+            ViewBag.PositionPkid = GetPositions();
+            ViewBag.LeaveTypeId = GetLeaveTypes();
         }
 
 

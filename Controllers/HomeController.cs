@@ -208,6 +208,7 @@ namespace AddMemberSystem.Controllers
             return Json(positions);
         }
 
+
         private bool IsNrcOrPassportNumberUnique(string nrc)
         {
             return !_context.TB_Staffs.Any(m => m.NRC == nrc);
@@ -232,6 +233,15 @@ namespace AddMemberSystem.Controllers
         [HttpPost]
         public IActionResult Create(TB_Staff staff)
         {
+            DateTime today = DateTime.UtcNow.Date;
+            // Validate that DateOfBirth is not in the future
+            if (staff.DateOfBirth.HasValue && staff.DateOfBirth.Value > today)
+            {
+                ModelState.AddModelError(nameof(TB_Staff.DateOfBirth), "မွေးသက္ကရာဇ်သည် ယနေ့ရက်စွဲထက် ကြီးမြှင့်မရပါ");
+
+                return View("Create");
+            }
+
             if (!IsNrcOrPassportNumberUnique(staff.NRC))
             {
                 ModelState.AddModelError(nameof(TB_Staff.NRC), "မှတ်ပုံတင် နံပါတ်သည် သီးသန့်ဖြစ်ရန် လိုအပ်ပါသည်");
@@ -303,6 +313,7 @@ namespace AddMemberSystem.Controllers
 
             string newNrc = editedStaff.NRC;
             string oldNrc = existingMember.NRC;
+
 
             if (newNrc != oldNrc)
             {
@@ -470,6 +481,9 @@ namespace AddMemberSystem.Controllers
         {
             var query = BuildQuery(searchCriteria, searchTerm);
 
+            // Get total count of search results
+            int resultCount = query.Count();
+
             const int pageSize = 5;
             var pager = new Pager(query.Count(), pg, pageSize);
 
@@ -481,9 +495,12 @@ namespace AddMemberSystem.Controllers
 
             SetSearchCriteriaItemsInViewBag(searchCriteria);
 
+
             ViewBag.Pager = pager;
             ViewBag.searchCriteria = searchCriteria;
             ViewBag.searchTerm = searchTerm;
+
+            ViewBag.ResultCount = resultCount;
 
             return View("List", searchResults);
         }

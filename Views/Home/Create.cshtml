@@ -14,18 +14,18 @@
             <label asp-for="SerialNo" class="control-label">
                 <span style="font-weight: 600;">
                     အမှတ်စဉ်
-                </span> <span style="color: red;">*</span>
+                </span> 
             </label>
             <input asp-for="SerialNo" class="form-control" />
             <span asp-validation-for="SerialNo" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="StaffID" class="control-label"><span style="font-weight: 600;">ဝန်ထမ်းအမှတ်</span> <span style="color: red;">*</span></label>
+            <label asp-for="StaffID" class="control-label"><span style="font-weight: 600;">ဝန်ထမ်းအမှတ်</span> </label>
             <input asp-for="StaffID" class="form-control" />
             <span asp-validation-for="StaffID" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="Name" class="control-label"><span style="font-weight: 600;">ဝန်ထမ်းအမည်</span> <span style="color: red;">*</span></label>
+            <label asp-for="Name" class="control-label"><span style="font-weight: 600;">ဝန်ထမ်းအမည်</span> </label>
             <input asp-for="Name" class="form-control" />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
@@ -34,24 +34,24 @@
             <label asp-for="FatherName" class="control-label">
                 <span style="font-weight: 600;">
                     ဖခင်အမည်
-                </span> <span style="color: red;">*</span>
+                </span> 
             </label>
             <input asp-for="FatherName" class="form-control" />
             <span asp-validation-for="FatherName" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="DateOfBirth" class="control-label"><span style="font-weight: 600;">မွေးသက္ကရာဇ်</span> <span style="color: red;">*</span></label>
-            <input asp-for="DateOfBirth" class="form-control" />
+            <label asp-for="DateOfBirth" class="control-label"><span style="font-weight: 600;">မွေးသက္ကရာဇ်</span> </label>
+            <input asp-for="DateOfBirth" class="form-control" type="date" />
             <span asp-validation-for="DateOfBirth" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="NRC" class="control-label"><span style="font-weight: 600;">မှတ်ပုံတင်အမှတ်</span> <span style="color: red;">*</span></label>
+            <label asp-for="NRC" class="control-label"><span style="font-weight: 600;">မှတ်ပုံတင်အမှတ်</span> </label>
             <input asp-for="NRC" class="form-control" />
             <span asp-validation-for="NRC" class="text-danger"></span>
         </div>
 
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="DepartmentId" class="control-label"><span style="font-weight: 600;">ဌာန</span> <span style="color: red;">*</span></label>
+            <label asp-for="DepartmentId" class="control-label"><span style="font-weight: 600;">ဌာန</span> </label>
             <select id="lstDepartmentId" asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentPkid" onchange="FillPos(this,'lstPosition'); FillInitialPos(this,'lstInitialPosition');"></select>
 
             <span asp-validation-for="DepartmentId" class="text-danger"></span>
@@ -72,12 +72,7 @@
                 <option value="" selected disabled>----စတင်ခဲ့သည့်  ရာထူးရွေးချယ်ပါ ----</option>
             </select>
             <span asp-validation-for="InitialPositionId" class="text-danger"></span>
-        </div>
-        <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="Responsibility" class="control-label"><span style="font-weight: 600;">လုပ်ငန်းတာဝန်</span></label>
-            <input asp-for="Responsibility" class="form-control" />
-            <span asp-validation-for="Responsibility" class="text-danger"></span>
-        </div>
+        </div>       
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="Salary" class="control-label"><span style="font-weight: 600;">လစာ</span> </label>
             <input asp-for="Salary" class="form-control" />
@@ -99,11 +94,7 @@
             <span asp-validation-for="VisibleMark" class="text-danger"></span>
         </div>
 
-        <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="Address" class="control-label"><span style="font-weight: 600;">နေရပ်လိပ်စာ</span></label>
-            <input asp-for="Address" class="form-control" />
-            <span asp-validation-for="Address" class="text-danger"></span>
-        </div>
+     
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="Phone" class="control-label"><span style="font-weight: 600;">ဖုန်းနံပါတ်</span></label>
             <input asp-for="Phone" class="form-control" />
@@ -116,7 +107,7 @@
                 </span>
 
             </label>
-            <input asp-for="StartedDate" class="form-control" />
+            <input asp-for="StartedDate" class="form-control" type="date" />
             <span asp-validation-for="StartedDate" class="text-danger"></span>
         </div>
 
@@ -124,6 +115,16 @@
             <label asp-for="Remarks" class="control-label"><span style="font-weight: 600;">မှတ်ချက်</span></label>
             <input asp-for="Remarks" class="form-control" />
             <span asp-validation-for="Remarks" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="Address" class="control-label"><span style="font-weight: 600;">နေရပ်လိပ်စာ</span></label>
+            <textarea asp-for="Address" class="form-control"></textarea>
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="Responsibility" class="control-label"><span style="font-weight: 600;">လုပ်ငန်းတာဝန်</span></label>
+            <textarea asp-for="Responsibility" class="form-control"></textarea>
+            <span asp-validation-for="Responsibility" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="ImageFile" class="control-label"><span style="font-weight: 600;">ဝန်ထမ်း ဓာတ်ပုံ</span></label>

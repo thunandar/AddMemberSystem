@@ -20,39 +20,39 @@
             <label asp-for="SerialNo" class="control-label">
                 <span style="font-weight: 600;">
                     အမှတ်စဉ်
-                </span> <span style="color: red;">*</span>
+                </span> 
             </label>
             <input asp-for="SerialNo" class="form-control" readonly />
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="StaffID" class="control-label"><span style="font-weight: 600;">ဝန်ထမ်းအမှတ်</span> <span style="color: red;">*</span></label>
+            <label asp-for="StaffID" class="control-label"><span style="font-weight: 600;">ဝန်ထမ်းအမှတ်</span> </label>
             <input asp-for="StaffID" class="form-control" readonly />
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="Name" class="control-label"><span style="font-weight: 600;">ဝန်ထမ်းအမည်</span> <span style="color: red;">*</span></label>
+            <label asp-for="Name" class="control-label"><span style="font-weight: 600;">ဝန်ထမ်းအမည်</span> </label>
             <input asp-for="Name" class="form-control" readonly />
         </div>
     
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="FatherName" class="control-label"><span style="font-weight: 600;">ဖခင်အမည်</span> <span style="color: red;">*</span></label>
+            <label asp-for="FatherName" class="control-label"><span style="font-weight: 600;">ဖခင်အမည်</span> </label>
             <input asp-for="FatherName" class="form-control" readonly />
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="DateOfBirth" class="control-label"><span style="font-weight: 600;">မွေးသက္ကရာဇ်</span> <span style="color: red;">*</span></label>
-            <input asp-for="DateOfBirth" class="form-control" readonly />
+            <label asp-for="DateOfBirth" class="control-label"><span style="font-weight: 600;">မွေးသက္ကရာဇ်</span> </label>
+            <input asp-for="DateOfBirth" class="form-control" type="date" readonly />
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="NRC" class="control-label"><span style="font-weight: 600;">မှတ်ပုံတင်အမှတ်</span> <span style="color: red;">*</span></label>
+            <label asp-for="NRC" class="control-label"><span style="font-weight: 600;">မှတ်ပုံတင်အမှတ်</span> </label>
             <input asp-for="NRC" class="form-control" readonly />
         </div>
   
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="DepartmentId" class="control-label"><span style="font-weight: 600;">ဌာန</span> <span style="color: red;">*</span></label>
+            <label asp-for="DepartmentId" class="control-label"><span style="font-weight: 600;">ဌာန</span> </label>
             <input type="hidden" asp-for="DepartmentId" class="form-control" />
             <input type="text" value="@ViewBag.Department" class="form-control" readonly />
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="PositionId" class="control-label"><span style="font-weight: 600;">ရာထူး</span> <span style="color: red;">*</span></label>
+            <label asp-for="PositionId" class="control-label"><span style="font-weight: 600;">ရာထူး</span> </label>
             <input type="hidden" asp-for="PositionId" class="form-control" />
             <input type="text" value="@ViewBag.Position" class="form-control" readonly />
         </div>
@@ -62,46 +62,48 @@
             <input type="text" value="@ViewBag.InitialPosition" class="form-control" readonly />
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="Responsibility" class="control-label"><span style="font-weight: 600;">လုပ်ငန်းတာဝန်</span> <span style="color: red;">*</span></label>
-            <input asp-for="Responsibility" class="form-control" readonly />
-        </div>
-        <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="Salary" class="control-label"><span style="font-weight: 600;">လစာ</span> <span style="color: red;">*</span></label>
+            <label asp-for="Salary" class="control-label"><span style="font-weight: 600;">လစာ</span> </label>
             <input asp-for="Salary" class="form-control" readonly />
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="Age" class="control-label"><span style="font-weight: 600;">အသက်</span> <span style="color: red;">*</span></label>
+            <label asp-for="Age" class="control-label"><span style="font-weight: 600;">အသက်</span> </label>
             <input asp-for="Age" class="form-control" readonly />
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="Religion" class="control-label"><span style="font-weight: 600;">ကိုးကွယ်သည့်ဘာသာ</span> <span style="color: red;">*</span></label>
+            <label asp-for="Religion" class="control-label"><span style="font-weight: 600;">ကိုးကွယ်သည့်ဘာသာ</span> </label>
             <input asp-for="Religion" class="form-control" readonly />
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="VisibleMark" class="control-label"><span style="font-weight: 600;">ထင်ရှားသည့်အမှတ်အသား</span> <span style="color: red;">*</span></label>
+            <label asp-for="VisibleMark" class="control-label"><span style="font-weight: 600;">ထင်ရှားသည့်အမှတ်အသား</span> </label>
             <input asp-for="VisibleMark" class="form-control" readonly />
         </div>
-  
+ 
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="Address" class="control-label"><span style="font-weight: 600;">နေရပ်လိပ်စာ</span> <span style="color: red;">*</span></label>
-            <input asp-for="Address" class="form-control" readonly />
-        </div>
-        <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="Phone" class="control-label"><span style="font-weight: 600;">ဖုန်းနံပါတ်</span> <span style="color: red;">*</span></label>
+            <label asp-for="Phone" class="control-label"><span style="font-weight: 600;">ဖုန်းနံပါတ်</span> </label>
             <input asp-for="Phone" class="form-control" readonly />
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="StartedDate" class="control-label">
                 <span style="font-weight: 600;">
                     ဝန်ထမ်းစတင်ရက်ဆွဲ
-                </span> <span style="color: red;">*</span>
+                </span> 
             </label>
-            <input asp-for="StartedDate" class="form-control" readonly />
+            <input asp-for="StartedDate" class="form-control" type="date" readonly />
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="Remarks" class="control-label"><span style="font-weight: 600;">မှတ်ချက်</span> <span style="color: red;">*</span></label>
+            <label asp-for="Remarks" class="control-label"><span style="font-weight: 600;">မှတ်ချက်</span> </label>
             <input asp-for="Remarks" class="form-control" readonly />
         </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="Address" class="control-label"><span style="font-weight: 600;">နေရပ်လိပ်စာ</span></label>
+            <textarea asp-for="Address" class="form-control" readonly></textarea>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="Responsibility" class="control-label"><span style="font-weight: 600;">လုပ်ငန်းတာဝန်</span></label>
+            <textarea asp-for="Responsibility" class="form-control" readonly></textarea>
+        </div>
+       
+       
     </div>
 
 </form>
