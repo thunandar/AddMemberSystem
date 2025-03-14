@@ -125,7 +125,8 @@
             <label asp-for="Responsibility" class="control-label"><span style="font-weight: 600;">လုပ်ငန်းတာဝန်</span></label>
             <textarea asp-for="Responsibility" class="form-control"></textarea>
             <span asp-validation-for="Responsibility" class="text-danger"></span>
-        </div>
+        </div>       
+
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="ImageFile" class="control-label"><span style="font-weight: 600;">ဝန်ထမ်း ဓာတ်ပုံ</span></label>
             <input asp-for="ImageFile" accept="image/*" id="photoInput" onchange="handleFileChange(e)" />
@@ -138,6 +139,19 @@
                 </button>
             </div>
             <span asp-validation-for="ImageFile" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <div class="form-check">
+                <input asp-for="SocialSecurity" class="form-check-input" type="checkbox" />
+                <label asp-for="SocialSecurity" class="form-check-label">လူမှုဖူလုံရေး</label>
+            </div>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <div class="form-check">
+                <input asp-for="RiceOil" class="form-check-input" type="checkbox" />
+                <label asp-for="RiceOil" class="form-check-label">ဆန်၊ ဆီ</label>
+            </div>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-12">
             <input type="submit" value="သိမ်းမည်" class="btn btn-primary col-md-2" />

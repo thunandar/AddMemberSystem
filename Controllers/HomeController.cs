@@ -1,8 +1,10 @@
-﻿using ClosedXML.Excel;
+﻿//using AddMemberSystem.Views.Home;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
+using System.Globalization;
 using System.Net.Mime;
 
 namespace AddMemberSystem.Controllers
@@ -367,6 +369,8 @@ namespace AddMemberSystem.Controllers
             existingMember.Responsibility = editedStaff.Responsibility;
             existingMember.StartedDate = editedStaff.StartedDate;
             existingMember.Remarks = editedStaff.Remarks;
+            existingMember.SocialSecurity = editedStaff.SocialSecurity;
+            existingMember.RiceOil = editedStaff.RiceOil;
             existingMember.StaffPhoto = editedStaff.StaffPhoto;
             existingMember.Salary = editedStaff.Salary;
 
@@ -591,6 +595,307 @@ namespace AddMemberSystem.Controllers
             var excelData = GenerateExcelData(searchResults, "SearchResults");
 
             return File(excelData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "SearchResults.xlsx");
+        }
+
+        //[HttpGet]
+        //public IActionResult StaffBenefitCalculation(string staffID, int month)
+        //{
+        //    if (string.IsNullOrEmpty(staffID)) return NotFound();
+
+        //    var staff = _context.TB_Staffs.FirstOrDefault(s => s.StaffID == staffID);
+
+        //    if (staff == null) return NotFound();
+
+        //    bool socialSecurity = staff.SocialSecurity;
+        //    bool riceOil = staff.RiceOil;
+
+        //    var socialSecurityBenefit = _context.TB_StaffBenefit
+        //        .FirstOrDefault(b => b.BenefitName == "Social Security" && !b.IsDeleted);
+
+        //    var riceOilBenefit = _context.TB_StaffBenefit
+        //        .FirstOrDefault(b => b.BenefitName == "Rice Oil" && !b.IsDeleted);
+
+        //    // Prepare benefit data for the UI
+        //    var benefitData = new List<TB_StaffBenefit>();
+        //    decimal totalDeductables = 0;
+
+        //    // Social Security
+        //    decimal socialSecurityAmount = 0;
+        //    if (socialSecurity && socialSecurityBenefit != null)
+        //    {
+        //        if (decimal.TryParse(socialSecurityBenefit.Amount, out decimal parsedAmount))
+        //        {
+        //            socialSecurityAmount = parsedAmount;
+        //            totalDeductables += socialSecurityAmount; // Add to total deductables
+        //        }
+        //    }
+
+        //    benefitData.Add(new TB_StaffBenefit
+        //    {
+        //        BenefitName = "Social Security",
+        //        Amount = socialSecurity ? socialSecurityAmount.ToString() : "0",
+        //        IsDeleted = false,
+        //        CreatedDate = DateTime.Now,
+        //        CreatedBy = 1
+        //    });
+
+        //    // Rice Oil
+        //    decimal riceOilAmount = 0;
+        //    if (riceOil && riceOilBenefit != null)
+        //    {
+        //        if (decimal.TryParse(riceOilBenefit.Amount, out decimal parsedAmount))
+        //        {
+        //            riceOilAmount = parsedAmount;
+        //            totalDeductables += riceOilAmount; // Add to total deductables
+        //        }
+        //    }
+
+        //    benefitData.Add(new TB_StaffBenefit
+        //    {
+        //        BenefitName = "Rice Oil",
+        //        Amount = riceOil ? riceOilAmount.ToString() : "0",
+        //        IsDeleted = false,
+        //        CreatedDate = DateTime.Now,
+        //        CreatedBy = 1
+        //    });
+
+        //    // Retrieve Excess Leave information for the selected month
+        //    var excessLeaveDays = 0;
+        //    var staffLeaves = _context.TB_StaffLeaves
+        //        .Where(sl => sl.StaffID == staffID)
+        //        .ToList();
+
+        //    foreach (var leave in staffLeaves)
+        //    {
+        //        // Check if the selected month falls within the leave period
+        //        if (leave.LeaveDateFrom.HasValue && leave.LeaveDateTo.HasValue)
+        //        {
+        //            var leaveStartMonth = leave.LeaveDateFrom.Value.Month;
+        //            var leaveEndMonth = leave.LeaveDateTo.Value.Month;
+
+        //            // Check if the selected month is within the leave period
+        //            if ((month >= leaveStartMonth && month <= leaveEndMonth) ||
+        //                (leaveStartMonth <= month && leaveEndMonth >= month))
+        //            {
+        //                var leaveType = _context.TB_LeaveTypes
+        //                    .FirstOrDefault(lt => lt.LeaveTypePkid == leave.LeaveTypeId);
+
+        //                if (leaveType != null && leaveType.LeaveTypeName == "Excess Leave")
+        //                {
+        //                    excessLeaveDays += leave.LeaveDays;
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    // Calculate salary deduction for Excess Leave
+        //    decimal salaryDeduction = 0;
+        //    if (decimal.TryParse(staff.Salary, out decimal salary))
+        //    {
+        //        salaryDeduction = (salary / 30) * excessLeaveDays;
+        //        totalDeductables += salaryDeduction; // Add to total deductables
+        //    }
+
+        //    // Calculate Net Salary Payment
+        //    decimal netSalaryPayment = salary - totalDeductables;
+
+        //    // Pass data to the view
+        //    ViewBag.ExcessLeaveDays = excessLeaveDays;
+        //    ViewBag.SalaryDeduction = salaryDeduction;
+        //    ViewBag.Benefits = benefitData;
+        //    ViewBag.TotalDeductables = totalDeductables;
+        //    ViewBag.BasicSalary = salary;
+        //    ViewBag.NetSalaryPayment = netSalaryPayment;
+
+        //    // Map month number to month name
+        //    var monthName = new DateTime(2023, month, 1).ToString("MMMM", CultureInfo.InvariantCulture);
+        //    ViewBag.MonthName = monthName;
+
+        //    return View(staff);
+        //}
+
+        [HttpGet]
+        public IActionResult StaffBenefitCalculation(string staffID, int month)
+        {
+            if (string.IsNullOrEmpty(staffID)) return NotFound();
+
+            var staff = _context.TB_Staffs.FirstOrDefault(s => s.StaffID == staffID);
+
+            if (staff == null) return NotFound();
+
+            bool socialSecurity = staff.SocialSecurity;
+            bool riceOil = staff.RiceOil;
+
+            var socialSecurityBenefit = _context.TB_StaffBenefit
+                .FirstOrDefault(b => b.BenefitName == "Social Security" && !b.IsDeleted);
+
+            var riceOilBenefit = _context.TB_StaffBenefit
+                .FirstOrDefault(b => b.BenefitName == "Rice Oil" && !b.IsDeleted);
+
+            // Prepare benefit data for the UI
+            var benefitData = new List<TB_StaffBenefit>();
+            decimal totalDeductables = 0;
+
+            // Social Security
+            decimal socialSecurityAmount = 0;
+            if (socialSecurity && socialSecurityBenefit != null)
+            {
+                if (decimal.TryParse(socialSecurityBenefit.Amount, out decimal parsedAmount))
+                {
+                    socialSecurityAmount = parsedAmount;
+                    totalDeductables += socialSecurityAmount; // Add to total deductables
+                }
+            }
+
+            benefitData.Add(new TB_StaffBenefit
+            {
+                BenefitName = "Social Security",
+                Amount = socialSecurity ? socialSecurityAmount.ToString() : "0",
+                IsDeleted = false,
+                CreatedDate = DateTime.Now,
+                CreatedBy = 1
+            });
+
+            // Rice Oil
+            decimal riceOilAmount = 0;
+            if (riceOil && riceOilBenefit != null)
+            {
+                if (decimal.TryParse(riceOilBenefit.Amount, out decimal parsedAmount))
+                {
+                    riceOilAmount = parsedAmount;
+                    totalDeductables += riceOilAmount; // Add to total deductables
+                }
+            }
+
+            benefitData.Add(new TB_StaffBenefit
+            {
+                BenefitName = "Rice Oil",
+                Amount = riceOil ? riceOilAmount.ToString() : "0",
+                IsDeleted = false,
+                CreatedDate = DateTime.Now,
+                CreatedBy = 1
+            });
+
+            // Retrieve Excess Leave information for the selected month and current year
+            var excessLeaveDays = 0;
+            var staffLeaves = _context.TB_StaffLeaves
+                .Where(sl => sl.StaffID == staffID)
+                .ToList();
+
+            foreach (var leave in staffLeaves)
+            {
+                // Check if the selected month and current year fall within the leave period
+                if (leave.LeaveDateFrom.HasValue && leave.LeaveDateTo.HasValue)
+                {
+                    var leaveStartMonth = leave.LeaveDateFrom.Value.Month;
+                    var leaveEndMonth = leave.LeaveDateTo.Value.Month;
+                    var leaveStartYear = leave.LeaveDateFrom.Value.Year;
+                    var leaveEndYear = leave.LeaveDateTo.Value.Year;
+
+                    // Check if the selected month and current year are within the leave period
+                    if ((month >= leaveStartMonth && month <= leaveEndMonth) &&
+                        (DateTime.Now.Year >= leaveStartYear && DateTime.Now.Year <= leaveEndYear))
+                    {
+                        var leaveType = _context.TB_LeaveTypes
+                            .FirstOrDefault(lt => lt.LeaveTypePkid == leave.LeaveTypeId);
+
+                        if (leaveType != null && leaveType.LeaveTypeName == "Excess Leave")
+                        {
+                            excessLeaveDays += leave.LeaveDays;
+                        }
+                    }
+                }
+            }
+
+            // Calculate salary deduction for Excess Leave
+            decimal salaryDeduction = 0;
+            if (decimal.TryParse(staff.Salary, out decimal salary))
+            {
+                salaryDeduction = (salary / 30) * excessLeaveDays;
+                totalDeductables += salaryDeduction; // Add to total deductables
+            }
+
+            // Calculate Net Salary Payment
+            decimal netSalaryPayment = salary - totalDeductables;
+
+            // Pass data to the view
+            ViewBag.ExcessLeaveDays = excessLeaveDays;
+            ViewBag.SalaryDeduction = salaryDeduction;
+            ViewBag.Benefits = benefitData;
+            ViewBag.TotalDeductables = totalDeductables;
+            ViewBag.BasicSalary = salary;
+            ViewBag.NetSalaryPayment = netSalaryPayment;
+
+            // Map month number to month name
+            var monthName = new DateTime(DateTime.Now.Year, month, 1).ToString("MMMM", CultureInfo.InvariantCulture);
+            ViewBag.MonthName = monthName;
+
+            return View(staff);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveSalary([FromBody] TB_Salary salary)
+        {
+            try
+            {
+                if (salary == null || !ModelState.IsValid)
+                {
+                    return BadRequest("Invalid data.");
+                }
+
+                // Set additional fields
+                salary.IsDeleted = false;
+                salary.CreatedDate = DateTime.Now;
+
+                // Add to the database
+                _context.TB_Salaries.Add(salary);
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(500, "An error occurred while saving salary details.");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProcessPayment([FromBody] TB_Payroll payroll)
+        {
+            try
+            {
+                if (payroll == null || !ModelState.IsValid)
+                {
+                    return BadRequest("Invalid data.");
+                }
+
+                // Check if a record with the same StaffID already exists
+                var existingPayroll = await _context.TB_Payrolls
+                    .FirstOrDefaultAsync(p => p.StaffID == payroll.StaffID);
+
+                if (existingPayroll != null)
+                {
+                    // Update existing record
+                    existingPayroll.TotalSalary = payroll.TotalSalary;
+                    existingPayroll.PaymentDate = payroll.PaymentDate;
+                }
+                else
+                {
+                    // Add new record
+                    payroll.IsDeleted = false;
+                    _context.TB_Payrolls.Add(payroll);
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(500, "An error occurred while processing payment.");
+            }
         }
 
     }

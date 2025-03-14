@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AddMemberSystem.Migrations
 {
-    public partial class CreateDB : Migration
+    public partial class createYRTCDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -63,6 +63,22 @@ namespace AddMemberSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TB_Payrolls",
+                columns: table => new
+                {
+                    PayrollPkid = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StaffID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    TotalSalary = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TB_Payrolls", x => x.PayrollPkid);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TB_PunishmentType",
                 columns: table => new
                 {
@@ -74,6 +90,42 @@ namespace AddMemberSystem.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TB_PunishmentType", x => x.PunishmentTypePkid);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TB_Salaries",
+                columns: table => new
+                {
+                    SalaryPkid = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StaffID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    BaseSalary = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Deductions = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    MonthOfSalary = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    YearOfSalary = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TB_Salaries", x => x.SalaryPkid);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TB_StaffBenefit",
+                columns: table => new
+                {
+                    StaffBenefitPkid = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BenefitName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Amount = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TB_StaffBenefit", x => x.StaffBenefitPkid);
                 });
 
             migrationBuilder.CreateTable(
@@ -270,6 +322,8 @@ namespace AddMemberSystem.Migrations
                     Remarks = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     StaffPhoto = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Salary = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SocialSecurity = table.Column<bool>(type: "bit", nullable: false),
+                    RiceOil = table.Column<bool>(type: "bit", nullable: false),
                     isDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<int>(type: "int", nullable: false)
@@ -407,6 +461,15 @@ namespace AddMemberSystem.Migrations
 
             migrationBuilder.DropTable(
                 name: "TB_Manufacturers");
+
+            migrationBuilder.DropTable(
+                name: "TB_Payrolls");
+
+            migrationBuilder.DropTable(
+                name: "TB_Salaries");
+
+            migrationBuilder.DropTable(
+                name: "TB_StaffBenefit");
 
             migrationBuilder.DropTable(
                 name: "TB_StaffLeaves");

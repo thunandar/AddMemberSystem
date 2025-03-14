@@ -68,10 +68,14 @@ namespace AddMemberSystem.Models
         [NotMapped]
         public IFormFile ImageFile { get; set; }
 
+        public bool SocialSecurity { get; set; } 
+        public bool RiceOil { get; set; }
+
         public bool isDeleted { get; set; }
 
         public DateTime? CreatedDate { get; set; }
 
         public int CreatedBy { get; set; }
+
     }
 }

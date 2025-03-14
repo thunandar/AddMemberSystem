@@ -102,8 +102,21 @@
             <label asp-for="Responsibility" class="control-label"><span style="font-weight: 600;">လုပ်ငန်းတာဝန်</span></label>
             <textarea asp-for="Responsibility" class="form-control" readonly></textarea>
         </div>
-       
-       
+
+
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <div class="form-check">
+                <input asp-for="SocialSecurity" class="form-check-input" type="checkbox" readonly />
+                <label asp-for="SocialSecurity" class="form-check-label">လူမှုဖူလုံရေး</label>
+            </div>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <div class="form-check">
+                <input asp-for="RiceOil" class="form-check-input" type="checkbox" readonly />
+                <label asp-for="RiceOil" class="form-check-label">ဆန်၊ ဆီ</label>
+            </div>
+        </div>
+
     </div>
 
 </form>

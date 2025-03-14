@@ -117,6 +117,32 @@ namespace AddMemberSystem.Migrations
                     b.ToTable("TB_Manufacturers");
                 });
 
+            modelBuilder.Entity("AddMemberSystem.Models.TB_Payroll", b =>
+                {
+                    b.Property<int>("PayrollPkid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PayrollPkid"), 1L, 1);
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("StaffID")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal?>("TotalSalary")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("PayrollPkid");
+
+                    b.ToTable("TB_Payrolls");
+                });
+
             modelBuilder.Entity("AddMemberSystem.Models.TB_Position", b =>
                 {
                     b.Property<int>("PositionPkid")
@@ -159,6 +185,42 @@ namespace AddMemberSystem.Migrations
                     b.HasKey("PunishmentTypePkid");
 
                     b.ToTable("TB_PunishmentType");
+                });
+
+            modelBuilder.Entity("AddMemberSystem.Models.TB_Salary", b =>
+                {
+                    b.Property<int>("SalaryPkid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SalaryPkid"), 1L, 1);
+
+                    b.Property<decimal?>("BaseSalary")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("Deductions")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MonthOfSalary")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("StaffID")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("YearOfSalary")
+                        .HasColumnType("int");
+
+                    b.HasKey("SalaryPkid");
+
+                    b.ToTable("TB_Salaries");
                 });
 
             modelBuilder.Entity("AddMemberSystem.Models.TB_Staff", b =>
@@ -224,11 +286,17 @@ namespace AddMemberSystem.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<bool>("RiceOil")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Salary")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SerialNo")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("SocialSecurity")
+                        .HasColumnType("bit");
 
                     b.Property<string>("StaffID")
                         .HasMaxLength(50)
@@ -257,6 +325,35 @@ namespace AddMemberSystem.Migrations
                     b.HasIndex("PositionId");
 
                     b.ToTable("TB_Staffs");
+                });
+
+            modelBuilder.Entity("AddMemberSystem.Models.TB_StaffBenefit", b =>
+                {
+                    b.Property<int>("StaffBenefitPkid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StaffBenefitPkid"), 1L, 1);
+
+                    b.Property<string>("Amount")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BenefitName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.HasKey("StaffBenefitPkid");
+
+                    b.ToTable("TB_StaffBenefit");
                 });
 
             modelBuilder.Entity("AddMemberSystem.Models.TB_StaffLeave", b =>
