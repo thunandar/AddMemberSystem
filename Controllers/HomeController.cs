@@ -135,6 +135,7 @@ namespace AddMemberSystem.Controllers
 
             List<SelectListItem> lstPositions = _context.TB_Positions
                 .Where(d => d.DepartmentId == DepartmentPkid)
+                .Where(d => d.isDeleted == false)
                 .OrderBy(p => p.Position)
                 .Select(p =>
                 new SelectListItem
@@ -159,6 +160,7 @@ namespace AddMemberSystem.Controllers
 
             List<SelectListItem> lstInitialPositions = _context.TB_InitialPositions
                 .Where(d => d.DepartmentId == DepartmentPkid)
+                .Where(d => d.isDeleted == false)
                 .OrderBy(p => p.InitialPosition)
                 .Select(p =>
                 new SelectListItem
