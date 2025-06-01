@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AddMemberSystem.Migrations
 {
-    public partial class createYRTCDb : Migration
+    public partial class createDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,7 +16,9 @@ namespace AddMemberSystem.Migrations
                     DepartmentPkid = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Department = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    isDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,7 +44,9 @@ namespace AddMemberSystem.Migrations
                 {
                     LeaveTypePkid = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LeaveTypeName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    LeaveTypeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LeaveDays = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -69,13 +73,35 @@ namespace AddMemberSystem.Migrations
                     PayrollPkid = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StaffID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    TotalSalary = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    BaseSalary = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Deductions = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    NetSalary = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    MonthOfSalary = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    YearOfSalary = table.Column<int>(type: "int", nullable: true),
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TB_Payrolls", x => x.PayrollPkid);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TB_Positions",
+                columns: table => new
+                {
+                    PositionPkid = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Position = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TB_Positions", x => x.PositionPkid);
                 });
 
             migrationBuilder.CreateTable(
@@ -101,10 +127,12 @@ namespace AddMemberSystem.Migrations
                     StaffID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     BaseSalary = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Deductions = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    NetSalary = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     MonthOfSalary = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     YearOfSalary = table.Column<int>(type: "int", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -213,48 +241,6 @@ namespace AddMemberSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TB_InitialPositions",
-                columns: table => new
-                {
-                    InitialPositionPkid = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    InitialPosition = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DepartmentId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TB_InitialPositions", x => x.InitialPositionPkid);
-                    table.ForeignKey(
-                        name: "FK_TB_InitialPositions_TB_Departments_DepartmentId",
-                        column: x => x.DepartmentId,
-                        principalTable: "TB_Departments",
-                        principalColumn: "DepartmentPkid",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TB_Positions",
-                columns: table => new
-                {
-                    PositionPkid = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Position = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DepartmentId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TB_Positions", x => x.PositionPkid);
-                    table.ForeignKey(
-                        name: "FK_TB_Positions_TB_Departments_DepartmentId",
-                        column: x => x.DepartmentId,
-                        principalTable: "TB_Departments",
-                        principalColumn: "DepartmentPkid",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "TB_StaffLeaves",
                 columns: table => new
                 {
@@ -262,8 +248,6 @@ namespace AddMemberSystem.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StaffID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     StaffLeaveName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    PositionId = table.Column<int>(type: "int", nullable: true),
-                    DepartmentId = table.Column<int>(type: "int", nullable: false),
                     LeaveDateFrom = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LeaveDateTo = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LeaveDays = table.Column<int>(type: "int", nullable: false),
@@ -279,22 +263,49 @@ namespace AddMemberSystem.Migrations
                 {
                     table.PrimaryKey("PK_TB_StaffLeaves", x => x.StaffLeavePkid);
                     table.ForeignKey(
-                        name: "FK_TB_StaffLeaves_TB_Departments_DepartmentId",
-                        column: x => x.DepartmentId,
-                        principalTable: "TB_Departments",
-                        principalColumn: "DepartmentPkid",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_TB_StaffLeaves_TB_LeaveTypes_LeaveTypeId",
                         column: x => x.LeaveTypeId,
                         principalTable: "TB_LeaveTypes",
                         principalColumn: "LeaveTypePkid",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TB_JobHistorys",
+                columns: table => new
+                {
+                    JobHistoryPkid = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StaffID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    DepartmentId = table.Column<int>(type: "int", nullable: false),
+                    PositionId = table.Column<int>(type: "int", nullable: false),
+                    FromDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ToDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    JobYear = table.Column<decimal>(type: "decimal(18,0)", nullable: true),
+                    JobMonth = table.Column<decimal>(type: "decimal(18,0)", nullable: true),
+                    JobDay = table.Column<decimal>(type: "decimal(18,0)", nullable: true),
+                    Duration = table.Column<decimal>(type: "decimal(18,0)", nullable: true),
+                    Remark = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    IsCurrent = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TB_JobHistorys", x => x.JobHistoryPkid);
                     table.ForeignKey(
-                        name: "FK_TB_StaffLeaves_TB_Positions_PositionId",
+                        name: "FK_TB_JobHistorys_TB_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "TB_Departments",
+                        principalColumn: "DepartmentPkid",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TB_JobHistorys_TB_Positions_PositionId",
                         column: x => x.PositionId,
                         principalTable: "TB_Positions",
-                        principalColumn: "PositionPkid");
+                        principalColumn: "PositionPkid",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -304,19 +315,19 @@ namespace AddMemberSystem.Migrations
                     StaffPkid = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SerialNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StaffID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    StaffID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     FatherName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    MotherName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    LevelOfEducation = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    SpouseAndChildrenNames = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
                     NRC = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Age = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
                     Religion = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     VisibleMark = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Address = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     Phone = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    InitialPositionId = table.Column<int>(type: "int", nullable: true),
-                    PositionId = table.Column<int>(type: "int", nullable: true),
-                    DepartmentId = table.Column<int>(type: "int", nullable: false),
                     Responsibility = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     StartedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Remarks = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
@@ -324,6 +335,21 @@ namespace AddMemberSystem.Migrations
                     Salary = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SocialSecurity = table.Column<bool>(type: "bit", nullable: false),
                     RiceOil = table.Column<bool>(type: "bit", nullable: false),
+                    StaffBenefitId = table.Column<int>(type: "int", nullable: true),
+                    ChangeAmount = table.Column<bool>(type: "bit", nullable: false),
+                    CustomBenefitAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    ErSSN = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EeSSN = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Minc = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    SS1EeRate = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    SS1ErRate = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    SS1EeConAmt = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    SS1ErConAmt = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    SS2EeRate = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    SS2ErRate = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    SS2EeConAmt = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    SS2ErConAmt = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    TotalConAmt = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     isDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<int>(type: "int", nullable: false)
@@ -332,21 +358,10 @@ namespace AddMemberSystem.Migrations
                 {
                     table.PrimaryKey("PK_TB_Staffs", x => x.StaffPkid);
                     table.ForeignKey(
-                        name: "FK_TB_Staffs_TB_Departments_DepartmentId",
-                        column: x => x.DepartmentId,
-                        principalTable: "TB_Departments",
-                        principalColumn: "DepartmentPkid",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_TB_Staffs_TB_InitialPositions_InitialPositionId",
-                        column: x => x.InitialPositionId,
-                        principalTable: "TB_InitialPositions",
-                        principalColumn: "InitialPositionPkid");
-                    table.ForeignKey(
-                        name: "FK_TB_Staffs_TB_Positions_PositionId",
-                        column: x => x.PositionId,
-                        principalTable: "TB_Positions",
-                        principalColumn: "PositionPkid");
+                        name: "FK_TB_Staffs_TB_StaffBenefit_StaffBenefitId",
+                        column: x => x.StaffBenefitId,
+                        principalTable: "TB_StaffBenefit",
+                        principalColumn: "StaffBenefitPkid");
                 });
 
             migrationBuilder.CreateTable(
@@ -359,8 +374,6 @@ namespace AddMemberSystem.Migrations
                     PunishmentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Punishment = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PunishmentTypeId = table.Column<int>(type: "int", nullable: false),
-                    PositionId = table.Column<int>(type: "int", nullable: true),
-                    DepartmentId = table.Column<int>(type: "int", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<int>(type: "int", nullable: false)
@@ -368,17 +381,6 @@ namespace AddMemberSystem.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TB_StaffPunishments", x => x.StaffPunishmentPkid);
-                    table.ForeignKey(
-                        name: "FK_TB_StaffPunishments_TB_Departments_DepartmentId",
-                        column: x => x.DepartmentId,
-                        principalTable: "TB_Departments",
-                        principalColumn: "DepartmentPkid",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_TB_StaffPunishments_TB_Positions_PositionId",
-                        column: x => x.PositionId,
-                        principalTable: "TB_Positions",
-                        principalColumn: "PositionPkid");
                     table.ForeignKey(
                         name: "FK_TB_StaffPunishments_TB_PunishmentType_PunishmentTypeId",
                         column: x => x.PunishmentTypeId,
@@ -394,39 +396,19 @@ namespace AddMemberSystem.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_TB_InitialPositions_DepartmentId",
-                table: "TB_InitialPositions",
+                name: "IX_TB_JobHistorys_DepartmentId",
+                table: "TB_JobHistorys",
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TB_Positions_DepartmentId",
-                table: "TB_Positions",
-                column: "DepartmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TB_StaffLeaves_DepartmentId",
-                table: "TB_StaffLeaves",
-                column: "DepartmentId");
+                name: "IX_TB_JobHistorys_PositionId",
+                table: "TB_JobHistorys",
+                column: "PositionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TB_StaffLeaves_LeaveTypeId",
                 table: "TB_StaffLeaves",
                 column: "LeaveTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TB_StaffLeaves_PositionId",
-                table: "TB_StaffLeaves",
-                column: "PositionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TB_StaffPunishments_DepartmentId",
-                table: "TB_StaffPunishments",
-                column: "DepartmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TB_StaffPunishments_PositionId",
-                table: "TB_StaffPunishments",
-                column: "PositionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TB_StaffPunishments_PunishmentTypeId",
@@ -439,25 +421,18 @@ namespace AddMemberSystem.Migrations
                 column: "StaffId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TB_Staffs_DepartmentId",
+                name: "IX_TB_Staffs_StaffBenefitId",
                 table: "TB_Staffs",
-                column: "DepartmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TB_Staffs_InitialPositionId",
-                table: "TB_Staffs",
-                column: "InitialPositionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TB_Staffs_PositionId",
-                table: "TB_Staffs",
-                column: "PositionId");
+                column: "StaffBenefitId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "TB_FuelTypes");
+
+            migrationBuilder.DropTable(
+                name: "TB_JobHistorys");
 
             migrationBuilder.DropTable(
                 name: "TB_Manufacturers");
@@ -467,9 +442,6 @@ namespace AddMemberSystem.Migrations
 
             migrationBuilder.DropTable(
                 name: "TB_Salaries");
-
-            migrationBuilder.DropTable(
-                name: "TB_StaffBenefit");
 
             migrationBuilder.DropTable(
                 name: "TB_StaffLeaves");
@@ -493,6 +465,12 @@ namespace AddMemberSystem.Migrations
                 name: "TB_YBSTypes");
 
             migrationBuilder.DropTable(
+                name: "TB_Departments");
+
+            migrationBuilder.DropTable(
+                name: "TB_Positions");
+
+            migrationBuilder.DropTable(
                 name: "TB_LeaveTypes");
 
             migrationBuilder.DropTable(
@@ -502,13 +480,7 @@ namespace AddMemberSystem.Migrations
                 name: "TB_Staffs");
 
             migrationBuilder.DropTable(
-                name: "TB_InitialPositions");
-
-            migrationBuilder.DropTable(
-                name: "TB_Positions");
-
-            migrationBuilder.DropTable(
-                name: "TB_Departments");
+                name: "TB_StaffBenefit");
         }
     }
 }

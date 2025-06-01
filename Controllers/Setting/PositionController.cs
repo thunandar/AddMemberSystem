@@ -24,89 +24,65 @@ namespace AddMemberSystem.Controllers.Setting
                 return RedirectToAction("Index", "Account");
             }
 
-            List<TB_Department> departments = _context.TB_Departments.Where(dep => dep.isDeleted == false).ToList();
+            List<TB_Position> positionTypes = _context.TB_Positions.Where(dep => dep.IsDeleted == false).ToList();
 
-            SelectList departmentList = new SelectList(departments, "DepartmentPkid", "Department");
+            SelectList positionTypeList = new SelectList(positionTypes, "PositionPkid", "Position");
 
-            List<TB_Position> positions = _context.TB_Positions.ToList();
-
-            ViewBag.DepartmentId = departmentList;
-            ViewBag.Positions = positions;
+            ViewBag.LeaveTypeId = positionTypeList;
 
             return View("~/Views/Setting/Position/PositionCrud.cshtml");
         }
 
         [HttpGet]
-        public IActionResult GetPositionsByDepartment(int departmentId)
+
+        public IActionResult GetAllPositionTypes(int? positionTypeId)
         {
-            List<TB_Position> positions = _context.TB_Positions
-                .Where(p => p.DepartmentId == departmentId)
-                .Include(p => p.Department)
-                 .Where(position => position.isDeleted == false)
-                 .Where(dep => dep.isDeleted == false)
-                .ToList();
-
-            return Json(positions);
-        }
-
-        private List<SelectListItem> GetDepartments()
-        {
-            List<TB_Department> departments = _context.TB_Departments.Where(dep => dep.isDeleted == false).ToList();
-
-            List<SelectListItem> departmentList = departments
-                .Select(d => new SelectListItem()
-                {
-                    Value = d.DepartmentPkid.ToString(),
-                    Text = d.Department ?? "Unknown Department"
-                })
-                .ToList();
-
-            return departmentList;
-        }
-
-
-        [HttpGet]
-        public IActionResult Create()
-        {
-            if (!IsUserLoggedIn())
+            if (positionTypeId.HasValue)
             {
-                return RedirectToAction("Index", "Account");
+                var positionType = _context.TB_Positions.Find(positionTypeId.Value);
+                Console.WriteLine("PSI" + positionType);
+
+                if (positionType != null)
+                {
+                    return Json(new { positionType = positionType.Position });
+                }
             }
 
-            ViewBag.DepartmentId = GetDepartments();
-            return View();
+            var positionTypes = _context.TB_Positions.Where(dep => dep.IsDeleted == false).ToList();
+            return Json(positionTypes);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(TB_Position pos, string actionType)
-        {          
+        public IActionResult Create(TB_Position lt, string actionType)
+        {
             if (ModelState.IsValid)
             {
                 if (actionType == "Create")
                 {
-                    if (_context.TB_Positions.Any(p => p.Position == pos.Position && p.DepartmentId == pos.DepartmentId))
+                    if (_context.TB_Positions.Any(d => d.Position == lt.Position && !d.IsDeleted))
                     {
-                        ModelState.AddModelError("Position", "Position with this name already exists in the selected department.");
-                        ViewBag.DepartmentId = GetDepartments();
-                        return View("~/Views/Setting/Position/PositionCrud.cshtml", pos);
+                        ModelState.AddModelError("Position", "Position with this name already exists.");
+                        return View("~/Views/Setting/Position/PositionCrud.cshtml");
                     }
-                    _context.TB_Positions.Add(pos);
+
+                    _context.TB_Positions.Add(lt);
                 }
                 else if (actionType == "Edit")
                 {
-                    if (_context.TB_Positions.Any(p => p.Position == pos.Position && p.DepartmentId == pos.DepartmentId))
+                    if (_context.TB_Positions.Any(d => d.Position == lt.Position && !d.IsDeleted))
                     {
-                        ModelState.AddModelError("Position", "EDit Position with this name already exists in the selected department.");
-                        ViewBag.DepartmentId = GetDepartments();
-                        return View("~/Views/Setting/Position/PositionCrud.cshtml", pos);
+                        ModelState.AddModelError("Position", "Edit Position with this name already exists.");
+                        return View("~/Views/Setting/Position/PositionCrud.cshtml");
                     }
 
-                    var existingPosition = _context.TB_Positions.Find(pos.PositionPkid);
-                    if (existingPosition != null)
+                    var existingSettingName = _context.TB_Positions.Find(lt.PositionPkid);
+
+                    if (existingSettingName != null)
                     {
-                        existingPosition.Position = pos.Position;
-                        _context.TB_Positions.Update(existingPosition);
+                        existingSettingName.Position = lt.Position;
+
+                        _context.TB_Positions.Update(existingSettingName);
                     }
                 }
 
@@ -115,68 +91,33 @@ namespace AddMemberSystem.Controllers.Setting
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.DepartmentId = GetDepartments();
-
-            return View("~/Views/Setting/Position/PositionCrud.cshtml", pos);
+            return View("~/Views/Setting/Position/PositionCrud.cshtml");
         }
 
-        [HttpGet]
-        public IActionResult GetAllPositionsAndDepartments()
+        private TB_Position GetPositionType(int Id)
         {
-            List<TB_Position> positions = _context.TB_Positions
-                .Include(p => p.Department)
-                 .Where(position => position.isDeleted == false)
-                 .Where(dep => dep.isDeleted == false)
-                .ToList();
-
-            return Json(positions);
-        }
-
-        [HttpGet]
-        public IActionResult GetDepartmentAndPositionData(int positionId)
-        {
-            var position = _context.TB_Positions
-                .Include(p => p.Department)
-                .FirstOrDefault(p => p.PositionPkid == positionId);
-
-            if (position != null)
-            {
-                var data = new
-                {
-                    department = position.Department.Department,
-                    position = position.Position
-                };
-
-                return Json(data);
-            }
-
-            return Json(null);
-        }
-
-        private TB_Position GetPosition(int Id)
-        {
-            TB_Position position = _context.TB_Positions
+            TB_Position lt = _context.TB_Positions
               .Where(p => p.PositionPkid == Id).FirstOrDefault();
-            return position;
+            return lt;
         }
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult PositionDelete(int positionId)
+        public IActionResult Delete(int positionTypeId)
         {
             if (!IsUserLoggedIn())
             {
                 return RedirectToAction("Index", "Account");
             }
 
-            TB_Position position = GetPosition(positionId);
+            TB_Position lt = GetPositionType(positionTypeId);
 
-            if (position != null)
+
+            if (lt != null)
             {
+                lt.IsDeleted = true;
 
-                position.isDeleted = true;
-
-                _context.Entry(position).State = EntityState.Modified;
+                _context.Entry(lt).State = EntityState.Modified;
 
                 _context.SaveChanges();
 
@@ -184,7 +125,10 @@ namespace AddMemberSystem.Controllers.Setting
 
             }
 
-            return View("~/Views/Setting/Position/PositionCrud.cshtml", position);
+            return View("~/Views/Setting/Position/PositionCrud.cshtml", lt);
         }
+
+
+
     }
 }

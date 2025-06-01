@@ -1,0 +1,84 @@
+﻿@model AddMemberSystem.Models.TB_JobHistory
+@using Newtonsoft.Json
+
+@{
+    ViewData["Title"] = "Create New Staff";
+}
+
+<h2>Create Job History</h2>
+<hr />
+
+<form asp-action="Create" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="StaffID" class="control-label"><span style="font-weight: 600;">ဝန်ထမ်းအမှတ်</span> </label>
+            <input asp-for="StaffID" class="form-control" />
+            <span asp-validation-for="StaffID" class="text-danger"></span>
+        </div>    
+        <div class="form-group col-sm-12 col-md-4 col-lg-4">
+            <label asp-for="Department" class="control-label">ဌာန</label>
+            <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentId"></select>
+            <span asp-validation-for="Department" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="Position" class="control-label">ရာထူး</label>
+            <select asp-for="PositionId" class="form-control" asp-items="ViewBag.PositionId"></select>
+            <span asp-validation-for="Position" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-12">
+            <div class="form-check">
+                <input asp-for="IsCurrent" class="form-check-input" type="checkbox" />
+                <label asp-for="IsCurrent" class="form-check-label"><span style="font-weight: 600;">ယခု အလုပ်လုပ်နေသည့်ရာထူးဖြစ်သည်</span></label>
+                <span asp-validation-for="IsCurrent" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="FromDate" class="control-label"><span style="font-weight: 600;">စတင်သည့်ရက်</span></label>
+            <input asp-for="FromDate" id="DateOfBirth" class="form-control" type="date" />
+            <span asp-validation-for="FromDate" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="ToDate" class="control-label"><span style="font-weight: 600;">ပြီးဆုံးသည့်ရက်</span></label>
+            <input asp-for="ToDate" id="DateOfBirth" class="form-control" type="date" />
+            <span asp-validation-for="ToDate" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="JobYear" class="control-label"><span style="font-weight:600;">အလုပ်နှစ်</span></label>
+            <input asp-for="JobYear" class="form-control" />
+            <span asp-validation-for="JobYear" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="JobMonth" class="control-label"><span style="font-weight:600;">အလုပ်လ</span></label>
+            <input asp-for="JobMonth" class="form-control" />
+            <span asp-validation-for="JobMonth" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="JobDay" class="control-label"><span style="font-weight:600;">အလုပ်ရက်</span></label>
+            <input asp-for="JobDay" class="form-control" />
+            <span asp-validation-for="JobDay" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="Duration" class="control-label"><span style="font-weight:600;">အလုပ်သက်တမ်း</span></label>
+            <input asp-for="Duration" class="form-control" />
+            <span asp-validation-for="Duration" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="Remark" class="control-label"><span style="font-weight: 600;">မှတ်ချက်</span> </label>
+            <input asp-for="Remark" class="form-control" />
+            <span asp-validation-for="Remark" class="text-danger"></span>
+        </div>
+             
+        <div class="form-group col-sm-12 col-md-12 col-lg-12">
+            <input type="submit" value="သိမ်းမည်" class="btn btn-primary col-md-2" />
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+

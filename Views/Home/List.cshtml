@@ -128,7 +128,9 @@
             <th>စဉ်</th>
             <th>အမှတ်စဉ်</th>
             <th>ဝန်ထမ်းအမှတ်</th>
-            <th> ဝန်ထမ်းအမည်</th>
+            <th>ဝန်ထမ်းအမည်</th>
+            <th>ဌာန</th>
+            <th>ရာထူး</th>
             <th>ဖုန်းနံပါတ်</th>
             <th>ဝန်ထမ်းစတင်ရက်ဆွဲ</th>
             <th>ဝန်ထမ်း ဓာတ်ပုံ</th>
@@ -155,7 +157,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
-            </td>          
+            </td>
+                <td>@Html.DisplayFor(modelItem => item.CurrentDepartment)</td>
+                <td>@Html.DisplayFor(modelItem => item.CurrentPosition)</td>
             <td>
                 @Html.DisplayFor(modelItem => item.Phone)
             </td>            

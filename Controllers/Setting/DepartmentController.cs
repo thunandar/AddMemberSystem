@@ -44,7 +44,7 @@ namespace AddMemberSystem.Controllers.Setting
             {
                 if (actionType == "Create")
                 {
-                    if (_context.TB_Departments.Any(d => d.Department == dep.Department))
+                    if (_context.TB_Departments.Any(d => d.Department == dep.Department && !d.isDeleted))
                     {
                         ModelState.AddModelError("Department", "Department with this name already exists.");
                         return View("~/Views/Setting/Department/DepartmentCrud.cshtml", dep);
@@ -54,7 +54,7 @@ namespace AddMemberSystem.Controllers.Setting
                 }
                 else if (actionType == "Edit")
                 {
-                    if (_context.TB_Departments.Any(d => d.Department == dep.Department))
+                    if (_context.TB_Departments.Any(d => d.Department == dep.Department && !d.isDeleted))
                     {
                         ModelState.AddModelError("Department", "Edit Department with this name already exists in the selected department.");
                         return View("~/Views/Setting/Department/DepartmentCrud.cshtml", dep);

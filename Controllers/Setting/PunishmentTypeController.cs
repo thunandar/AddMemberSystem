@@ -42,6 +42,8 @@ namespace AddMemberSystem.Controllers.Setting
             {
                 var punishmentType = _context.TB_PunishmentType.Find(punishmentTypeId.Value);
 
+                Console.WriteLine("PNI" + punishmentType);
+
                 if (punishmentType != null)
                 {
                     return Json(new { punishmentType = punishmentType.Punishment });
@@ -60,7 +62,7 @@ namespace AddMemberSystem.Controllers.Setting
             {
                 if (actionType == "Create")
                 {
-                    if (_context.TB_PunishmentType.Any(d => d.Punishment == lt.Punishment))
+                    if (_context.TB_PunishmentType.Any(d => d.Punishment == lt.Punishment && !d.IsDeleted))
                     {
                         ModelState.AddModelError("Punishment", "Punishment with this name already exists.");
                         return View("~/Views/Setting/PunishmentType/PunishmentTypeCrud.cshtml");
@@ -70,7 +72,7 @@ namespace AddMemberSystem.Controllers.Setting
                 }
                 else if (actionType == "Edit")
                 {
-                    if (_context.TB_PunishmentType.Any(d => d.Punishment == lt.Punishment))
+                    if (_context.TB_PunishmentType.Any(d => d.Punishment == lt.Punishment && !d.IsDeleted))
                     {
                         ModelState.AddModelError("Punishment", "Edit Punishment with this name already exists.");
                         return View("~/Views/Setting/PunishmentType/PunishmentTypeCrud.cshtml");

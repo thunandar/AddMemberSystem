@@ -1,0 +1,156 @@
+﻿@model IEnumerable<AddMemberSystem.Models.TB_JobHistory>
+@inject AddMemberSystem.Data.AppDBContext _context
+
+@{
+    ViewData["Title"] = "အလုပ်သမိုင်း မှတ်တမ်းများ";
+
+    Pager pager = new Pager();
+
+    int pageNo = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<div class="row" style="display: flex; align-items: center;">
+    <div class="col-md-10" style="margin-top: -10px;">
+        <h1 style="font-size: 32px;">အလုပ်သမိုင်း မှတ်တမ်းများ</h1>
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-primary"><a asp-action="Create" style="color: #fff;">+ Create New</a></button>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>စဉ်</th>
+            <th>၀န်ထမ်းအမှတ်</th>
+            <th>စတင်သည့်ရက်</th>
+            <th>ပြီးဆုံးသည့်ရက်</th>
+            <th>အလုပ်နှစ်</th>
+            <th>အလုပ်လ</th>
+            <th>အလုပ်ရက်</th>
+            <th>အလုပ်သက်တမ်း</th>
+            <th>ပြုပြင်ရန်</th>
+            <th>ကြည့်ရန်</th>
+            <th>ဖျက်ရန်</th>
+        </tr>
+    </thead>
+    <tbody class="text-center">
+        @{
+            var counter = 1;
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @counter
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StaffID)
+                </td>
+                <td>
+                    @item.FromDate?.ToString("yyyy-MM-dd")
+                </td>
+                <td>
+                    @item.ToDate?.ToString("yyyy-MM-dd")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.JobYear)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.JobMonth)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.JobDay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Duration)
+                </td>
+                <td>
+                    <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@item.JobHistoryPkid">
+                        <i class="fa fa-pencil"></i>
+                    </a>
+                </td>
+                <td>
+                    <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@item.JobHistoryPkid">
+                        <i class="fa fa-info-circle"></i>
+                    </a>
+                </td>
+                <td>
+                    <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="@("#deleteModal" + @item.JobHistoryPkid)">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </td>
+                <!-- Delete Modal Box -->
+                <div class="modal fade" id="@("deleteModal" + @item.JobHistoryPkid)" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h3 class="modal-title" id="myModalLabel">အတည်ပြုခြင်း</h3>
+                            </div>
+                            <div class="modal-body">
+                                <h4>ဒီအလုပ်သမိုင်းမှတ်တမ်းကို ဖျက်ချင်တာသေချာပါသလား</h4>
+                            </div>
+                            <div class="modal-footer">
+                                <form asp-action="Delete">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">ပိတ်မည်</button>
+                                    <input type="hidden" name="Id" asp-for="@item.JobHistoryPkid" />
+                                    <button type="submit" class="btn btn-danger">ဖျက်မည်</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </tr>
+            counter++;
+        }
+    </tbody>
+</table>
+
+
+
+<div class="container">
+    @if (pager.TotalPages > 0)
+    {
+        <ul class="pagination justify-content-end">
+            @if (pager.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-controller="JobHistory" asp-action="List" asp-route-pg="1">First</a>
+                </li>
+                <li>
+                    <a class="page-link" asp-controller="JobHistory" asp-action="List" asp-route-pg="@(pager.CurrentPage - 1)">Previous</a>
+                </li>
+            }
+
+            @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+            {
+                if (pge == 0)
+                {
+                    continue;
+                }
+                <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
+                    <a class="page-link" asp-controller="JobHistory" asp-action="List" asp-route-pg="@pge">@pge</a>
+                </li>
+            }
+
+            @if (pager.CurrentPage < pager.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-controller="JobHistory" asp-action="List" asp-route-pg="@(pager.CurrentPage + 1)">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" asp-controller="JobHistory" asp-action="List" asp-route-pg="@(pager.TotalPages)">Last</a>
+                </li>
+            }
+        </ul>
+    }
+</div>

@@ -1,4 +1,5 @@
 ﻿@model AddMemberSystem.Models.TB_Staff
+@using Newtonsoft.Json
 
 @{
     ViewData["Title"] = "Create New Staff";
@@ -40,8 +41,23 @@
             <span asp-validation-for="FatherName" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="DateOfBirth" class="control-label"><span style="font-weight: 600;">မွေးသက္ကရာဇ်</span> </label>
-            <input asp-for="DateOfBirth" class="form-control" type="date" />
+            <label asp-for="MotherName" class="control-label"><span style="font-weight:600;">မိခင်အမည်</span></label>
+            <input asp-for="MotherName" class="form-control" />
+            <span asp-validation-for="MotherName" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="LevelOfEducation" class="control-label"><span style="font-weight:600;">ပညာအရည်အချင်း</span></label>
+            <input asp-for="LevelOfEducation" class="form-control" />
+            <span asp-validation-for="LevelOfEducation" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="SpouseAndChildrenNames" class="control-label"><span style="font-weight:600;">လင်မယားနဲ့ကလေးများအမည်</span></label>
+            <input asp-for="SpouseAndChildrenNames" class="form-control" />
+            <span asp-validation-for="SpouseAndChildrenNames" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="DateOfBirth" class="control-label"><span style="font-weight: 600;">မွေးသက္ကရာဇ်</span></label>
+            <input asp-for="DateOfBirth" id="DateOfBirth" class="form-control" type="date" />
             <span asp-validation-for="DateOfBirth" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
@@ -49,30 +65,7 @@
             <input asp-for="NRC" class="form-control" />
             <span asp-validation-for="NRC" class="text-danger"></span>
         </div>
-
-        <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="DepartmentId" class="control-label"><span style="font-weight: 600;">ဌာန</span> </label>
-            <select id="lstDepartmentId" asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentPkid" onchange="FillPos(this,'lstPosition'); FillInitialPos(this,'lstInitialPosition');"></select>
-
-            <span asp-validation-for="DepartmentId" class="text-danger"></span>
-        </div>
-        <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="PositionId" class="control-label"><span style="font-weight: 600;">ရာထူး</span></label>
-            <select id="lstPosition" asp-for="PositionId" class="form-control" asp-items="ViewBag.PositionPkid">
-                <option value="" selected disabled>---- ရာထူးရွေးချယ်ပါ ----</option>
-            </select>
-            <span asp-validation-for="PositionId" class="text-danger"></span>
-        </div>
-
-
-
-        <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="InitialPositionId" class="control-label"><span style="font-weight: 600;">စတင်ခဲ့သည့် ရာထူး</span></label>
-            <select id="lstInitialPosition" asp-for="InitialPositionId" class="form-control" asp-items="ViewBag.InitialPositionPkid">
-                <option value="" selected disabled>----စတင်ခဲ့သည့်  ရာထူးရွေးချယ်ပါ ----</option>
-            </select>
-            <span asp-validation-for="InitialPositionId" class="text-danger"></span>
-        </div>       
+  
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="Salary" class="control-label"><span style="font-weight: 600;">လစာ</span> </label>
             <input asp-for="Salary" class="form-control" />
@@ -80,7 +73,7 @@
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="Age" class="control-label"><span style="font-weight: 600;">အသက်</span></label>
-            <input asp-for="Age" class="form-control" />
+            <input asp-for="Age" id="Age" class="form-control" readonly />
             <span asp-validation-for="Age" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
@@ -92,9 +85,7 @@
             <label asp-for="VisibleMark" class="control-label"><span style="font-weight: 600;">ထင်ရှားသည့်အမှတ်အသား</span></label>
             <input asp-for="VisibleMark" class="form-control" />
             <span asp-validation-for="VisibleMark" class="text-danger"></span>
-        </div>
-
-     
+        </div>    
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="Phone" class="control-label"><span style="font-weight: 600;">ဖုန်းနံပါတ်</span></label>
             <input asp-for="Phone" class="form-control" />
@@ -141,18 +132,112 @@
             <span asp-validation-for="ImageFile" class="text-danger"></span>
         </div>
 
-        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+        <div class="form-group col-sm-12 col-md-12 col-lg-12">
             <div class="form-check">
-                <input asp-for="SocialSecurity" class="form-check-input" type="checkbox" />
-                <label asp-for="SocialSecurity" class="form-check-label">လူမှုဖူလုံရေး</label>
+                <input asp-for="RiceOil" class="form-check-input" type="checkbox" id="chkRiceOil" />
+                <label asp-for="RiceOil" class="form-check-label"><span style="font-weight: 600;">ဆန်၊ ဆီ</span></label>
             </div>
         </div>
-        <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <div class="form-check">
-                <input asp-for="RiceOil" class="form-check-input" type="checkbox" />
-                <label asp-for="RiceOil" class="form-check-label">ဆန်၊ ဆီ</label>
+
+        <div id="RiceOilDetails">
+            <div class="form-group col-sm-12 col-md-12 col-lg-4">
+                <label asp-for="StaffBenefitId" class="control-label"><span style="font-weight: 600;">အကျိုးခံစားခွင့် အမျိုးအစား</span></label>
+                <select asp-for="StaffBenefitId" id="StaffBenefitId" class="form-control" asp-items="ViewBag.StaffBenefitId"></select>
+                <span asp-validation-for="StaffBenefitId" class="text-danger"></span>
+            </div>       
+            <div class="form-group col-sm-12 col-md-12 col-lg-4">
+                <label  class="control-label d-flex align-items-center"><span style="font-weight: 600;">ပမာဏ</span></label>
+                <input id="BenefitAmount" class="form-control" readonly />
+            </div>
+            <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                <div class="form-check">
+                    <input asp-for="ChangeAmount" id="ChangeAmount" class="form-check-input" type="checkbox" />
+                    <label asp-for="ChangeAmount" class="form-check-label"><span style="font-weight: 600;">ပမာဏ ချိန်းချင်ပါသလား။</span></label>
+                </div>
+            </div>
+
+            <div class="form-group col-sm-12 col-md-12 col-lg-4" id="customAmountDiv" style="display:none;">                
+                <label asp-for="CustomBenefitAmount"><span style="font-weight: 600;">ပမာဏ</span></label>
+                <input asp-for="CustomBenefitAmount" id="customAmountInput" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="CustomBenefitAmount" class="text-danger"></span>
             </div>
         </div>
+
+
+        <div class="form-group  col-sm-12 col-md-12 col-lg-12">
+            <div class="form-check">
+                <input asp-for="SocialSecurity" class="form-check-input" type="checkbox" id="chkSocialSecurity" />
+                <label asp-for="SocialSecurity" class="form-check-label"><span style="font-weight: 600;">လူမှုဖူလုံရေး</span></label>
+            </div>
+        </div>
+
+        <div class="form-group" id="ssDetails" style="display:none;">
+                <div class="form-group col-sm-12 col-md-12 col-lg-4">
+                    <label asp-for="ErSSN" class="control-label"><span style="font-weight:600;">EmployER SSN</span></label>
+                    <input asp-for="ErSSN" class="form-control" />
+                    <span asp-validation-for="ErSSN" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-12 col-md-12 col-lg-4">
+                    <label asp-for="EeSSN" class="control-label"><span style="font-weight:600;">EmployEE SSN</span></label>
+                    <input asp-for="EeSSN" class="form-control" />
+                    <span asp-validation-for="EeSSN" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-12 col-md-12 col-lg-4">
+                    <label asp-for="Minc" class="control-label"><span style="font-weight:600;">Minc</span></label>
+                    <input asp-for="Minc" class="form-control" type="number" step="0.01" />
+                    <span asp-validation-for="Minc" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-sm-12 col-md-12 col-lg-4">
+                    <label asp-for="SS1EeRate" class="control-label text-success"><span style="font-weight:600;">SS1 EE Rate</span></label>
+                    <input asp-for="SS1EeRate" id="SS1EeRate" class="form-control" type="number" step="0.01" readonly />
+                    <span asp-validation-for="SS1EeRate" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-12 col-md-12 col-lg-4">
+                <label asp-for="SS1ErRate" class="control-label text-success"><span style="font-weight:600;">SS1 ER Rate</span></label>
+                    <input asp-for="SS1ErRate" id="SS1ErRate" class="form-control" type="number" step="0.01" readonly />
+                    <span asp-validation-for="SS1ErRate" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-12 col-md-12 col-lg-4">
+                <label asp-for="SS1EeConAmt" class="control-label text-success"><span style="font-weight:600;">SS1 EE Contribution</span></label>
+                <input asp-for="SS1EeConAmt" id="SS1EeConAmt" class="form-control" type="number" step="0.01" readonly />
+                    <span asp-validation-for="SS1EeConAmt" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-12 col-md-12 col-lg-4">
+                <label asp-for="SS1ErConAmt" class="control-label text-success"><span style="font-weight:600;">SS1 ER Contribution</span></label>
+                <input asp-for="SS1ErConAmt" id="SS1ErConAmt" class="form-control" type="number" step="0.01" readonly />
+                    <span asp-validation-for="SS1ErConAmt" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group col-sm-12 col-md-12 col-lg-4">
+                    <label asp-for="SS2EeRate" class="control-label text-info"><span style="font-weight:600;">SS2 EE Rate</span></label>
+                    <input asp-for="SS2EeRate" id="SS2EeRate" class="form-control" type="number" step="0.01" readonly />
+                    <span asp-validation-for="SS2EeRate" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-12 col-md-12 col-lg-4">
+                <label asp-for="SS2ErRate" class="control-label text-info"><span style="font-weight:600;">SS2 ER Rate</span></label>
+                    <input asp-for="SS2ErRate" id="SS2ErRate" class="form-control" type="number" step="0.01" readonly />
+                    <span asp-validation-for="SS2ErRate" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-12 col-md-12 col-lg-4">
+                <label asp-for="SS2EeConAmt" class="control-label text-info"><span style="font-weight:600;">SS2 EE Contribution</span></label>
+                <input asp-for="SS2EeConAmt" id="SS2EeConAmt" class="form-control" type="number" step="0.01" readonly />
+                    <span asp-validation-for="SS2EeConAmt" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-12 col-md-12 col-lg-4">
+                <label asp-for="SS2ErConAmt" class="control-label text-info"><span style="font-weight:600;">SS2 ER Contribution</span></label>
+                <input asp-for="SS2ErConAmt" id="SS2ErConAmt" class="form-control" type="number" step="0.01" readonly />
+                    <span asp-validation-for="SS2ErConAmt" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-sm-12 col-md-12 col-lg-4">
+                    <label asp-for="TotalConAmt" class="control-label"><span style="font-weight:600;">Total Contribution</span></label>
+                    <input asp-for="TotalConAmt" id="TotalConAmt" class="form-control" type="number" step="0.01" readonly />
+                    <span asp-validation-for="TotalConAmt" class="text-danger"></span>
+                </div>
+        </div>
+
         <div class="form-group col-sm-12 col-md-12 col-lg-12">
             <input type="submit" value="သိမ်းမည်" class="btn btn-primary col-md-2" />
         </div>
@@ -163,4 +248,200 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+  <script>
+        // Corrected show/hide for social security checkbox
+        $(function () {
+            const $ssDetails = $("#ssDetails");
+            const $chkSocialSecurity = $("#chkSocialSecurity");
+
+            $chkSocialSecurity.on("change", function () {
+                const isChecked = this.checked;
+                $ssDetails.toggle(isChecked);  
+
+                // Clear fields when unchecked
+                if (!isChecked) {
+                    // $ssDetails.find("input").val("");
+                    // $ssDetails.find(".text-danger").text("");
+
+                    $('#ErSSN, #EeSSN, #Minc').val('');
+                    updateContributions();
+                  
+                }
+            }).trigger("change");  
+        });
+
+    //show hide for Rice Oil Check box
+    $(function () {
+        const $RiceOilDetails = $("#RiceOilDetails");
+        $("#chkRiceOil")
+            .on("change", function () {
+                $RiceOilDetails.toggle(this.checked);
+
+                 if (!this.checked) {
+                        $('#StaffBenefitId').val('');
+                        $('#BenefitAmount').val('');
+                        $('#customAmountInput').val('');
+                        $('#ChangeAmount').prop('checked', false);
+                    }
+            })
+            .trigger("change");
+    });  
+
+        $(function () {
+            var $changeAmountCheckbox = $('#ChangeAmount');
+            var $customAmountDiv = $('#customAmountDiv');
+
+            function toggleCustomAmountInput() {
+                if ($changeAmountCheckbox.prop('checked')) {
+                    $customAmountDiv.show();
+                } else {
+                    $customAmountDiv.hide();
+                    $('#customAmountInput').val(''); 
+                }
+            }
+
+            // Run on load and on change
+            toggleCustomAmountInput();
+            $changeAmountCheckbox.on('change', toggleCustomAmountInput);
+        });
+
+    //TotalConAmt Calculation
+    document.addEventListener('DOMContentLoaded', function () {
+        var ss1Ee = document.getElementById('SS1EeConAmt');
+        var ss1Er = document.getElementById('SS1ErConAmt');
+        var ss2Er = document.getElementById('SS2ErConAmt');
+        var total = document.getElementById('TotalConAmt');
+
+        function updateTotal() {
+            var a = parseFloat(ss1Ee.value) || 0;
+            var b = parseFloat(ss1Er.value) || 0;
+            var c = parseFloat(ss2Er.value) || 0;
+            total.value = (a + b + c).toFixed(2);
+        }
+
+        ss1Ee.addEventListener('input', updateTotal);
+        ss1Er.addEventListener('input', updateTotal);
+        ss2Er.addEventListener('input', updateTotal);
+
+        updateTotal();
+    });
+
+    //show benefit amount according to chosen benefit name for RiceOil check box
+    document.addEventListener('DOMContentLoaded', function () {
+        var benefitAmounts = @Html.Raw(JsonConvert.SerializeObject(ViewBag.BenefitAmounts));
+
+        var select = document.getElementById('StaffBenefitId');
+        var amountBox = document.getElementById('BenefitAmount');
+
+        function updateAmount() {
+            amountBox.value = benefitAmounts[select.value] || '';
+        }
+
+        select.addEventListener('change', updateAmount);
+
+        updateAmount();
+    });
+
+    //age and ssb calculation
+        var updateContributions;
+    $(function () {
+        // cache selectors
+        var $dob = $('#DateOfBirth'),
+            $age = $('#Age'),
+            $eeRate1 = $('#SS1EeRate'),
+            $erRate1 = $('#SS1ErRate'),
+            $eeRate2 = $('#SS2EeRate'),
+            $erRate2 = $('#SS2ErRate'),
+            $minc = $('#Minc'),
+            $c1EeAmt = $('#SS1EeConAmt'),
+            $c1ErAmt = $('#SS1ErConAmt'),
+            $c2EeAmt = $('#SS2EeConAmt'),
+            $c2ErAmt = $('#SS2ErConAmt'),
+            $totalAmt = $('#TotalConAmt');
+
+        function computeAge(birthDate) {
+            var today = new Date(),
+                dob = new Date(birthDate),
+                age = today.getFullYear() - dob.getFullYear(),
+                m = today.getMonth() - dob.getMonth();
+
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        function updateRatesAndAge() {
+            var dobVal = $dob.val();
+            if (!dobVal) {
+                // clear all
+                $age.val('');
+                $eeRate1.val(''); $erRate1.val('');
+                $eeRate2.val(''); $erRate2.val('');
+                $c1EeAmt.val(''); $c1ErAmt.val('');
+                $c2EeAmt.val(''); $c2ErAmt.val('');
+                $totalAmt.val('');
+                return;
+            }
+
+            // age + SS1 & SS2 rates
+            var age = computeAge(dobVal);
+            $age.val(age);
+
+            if (age < 60) {
+                $eeRate1.val('2.00');
+                $erRate1.val('2.00');
+            } else {
+                $eeRate1.val('2.50');
+                $erRate1.val('2.50');
+            }
+
+            // SS2 flat rates
+            $eeRate2.val('0.00');
+            $erRate2.val('1.00');
+
+            // recalc contributions now that rates are fresh
+            updateContributions();
+        }
+
+            updateContributions = function () {
+            var base = parseFloat($minc.val()) || 0,
+                r1ee = parseFloat($eeRate1.val()) || 0,
+                r1er = parseFloat($erRate1.val()) || 0,
+                r2ee = parseFloat($eeRate2.val()) || 0,
+                r2er = parseFloat($erRate2.val()) || 0;
+
+            // compute each contribution
+            var c1ee = (base * r1ee / 100).toFixed(2),
+                c1er = (base * r1er / 100).toFixed(2),
+                c2ee = (base * r2ee / 100).toFixed(2),
+                c2er = (base * r2er / 100).toFixed(2);
+
+            $c1EeAmt.val(c1ee);
+            $c1ErAmt.val(c1er);
+            $c2EeAmt.val(c2ee);
+            $c2ErAmt.val(c2er);
+
+            // total them up
+            var total = (
+                parseFloat(c1ee) +
+                parseFloat(c1er) +
+                parseFloat(c2ee) +
+                parseFloat(c2er)
+            ).toFixed(2);
+
+            $totalAmt.val(total);
+        }
+
+        // initial run (in case editing existing record)
+        updateRatesAndAge();
+
+        // re-run on DOB-change and Minc-input
+        $dob.on('change', updateRatesAndAge);
+        $minc.on('input', updateContributions);
+    });
+  
+  </script>
 }
+
+

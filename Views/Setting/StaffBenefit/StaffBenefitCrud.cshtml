@@ -1,18 +1,29 @@
 ﻿@inject IConfiguration Configuration
-@model AddMemberSystem.Models.TB_PunishmentType
+@model AddMemberSystem.Models.TB_StaffBenefit
 
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <div class="row">
     <div class="col-md-6" id="originalSection">
         <form asp-action="Create" method="post" class="setting-form">
-            <div class="row mt-3">
+            <div class="row">
                 <div class="form-group col-md-4">
-                    <label asp-for="Punishment" class="control-label d-flex align-items-center"><span style="font-weight: 600;">ပြစ်မှုအမျိုးအစား: &nbsp;</span></label>
+                    <label asp-for="BenefitName" class="control-label d-flex align-items-center"><span style="font-weight: 600;">အကျိုးခံစားခွင့်အမည်: &nbsp;</span></label>
                 </div>
                 <div class="col-md-8">
                     <input type="hidden" id="actionType" name="actionType" value="Create" />
-                    <input asp-for="Punishment" class="form-control setting-input" id="settingNameInput">
-                    <span asp-validation-for="Punishment" class="text-danger"></span>
+                    <input asp-for="BenefitName" class="form-control setting-input" id="settingNameInput">
+                    <span asp-validation-for="BenefitName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label asp-for="Amount" class="control-label d-flex align-items-center"><span style="font-weight: 600;">ပမာဏ: &nbsp;</span></label>
+                </div>
+                <div class="col-md-8">
+                    <input type="hidden" id="actionType" name="actionType" value="Create" />
+                    <input asp-for="Amount" class="form-control setting-input" id="settingAmountInput">
+                    <span asp-validation-for="Amount" class="text-danger"></span>
                 </div>
             </div>
             <div class="row mt-3">
@@ -26,14 +37,22 @@
     </div>
     <div class="col-md-6" id="confirmationSection" style="display: none;">
         <form asp-action="Delete" method="post" class="setting-form ">
-            <input type="hidden" id="confirmPunishmentTypeId" name="punishmentTypeId" value="" />
+            <input type="hidden" id="confirmStaffBenefitId" name="staffBenefitId" value="" />
 
             <div class="row">
                 <div class="col-md-4">
-                    <label class="control-label d-flex align-items-center"><span style="font-weight: 600;">ပြစ်မှုအမျိုးအစား: </span></label>
+                    <label id="ိleaveTypeLabel" class="control-label d-flex align-items-center"><span style="font-weight: 600;">အကျိုးခံစားခွင့်အမည်: </span></label>
                 </div>
                 <div class="col-md-8">
                     <p id="confirmInfo" style="margin: 0;"></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label id="ိleaveTypeLabel" class="control-label d-flex align-items-center"><span style="font-weight: 600;">ပမာဏ: </span></label>
+                </div>
+                <div class="col-md-8">
+                    <p id="amountData" style="margin: 0;"></p>
                 </div>
             </div>
             <div class="row mt-3">
@@ -50,7 +69,8 @@
             <thead style="background-color: #6c85c3;">
                 <tr>
                     <th>နံပါတ်</th>
-                    <th>ဌာန</th>
+                    <th>အကျိုးခံစားခွင့်အမည်</th>
+                    <th>ပမာဏ</th>
                     <th>ပြုပြင်ရန်</th>
                     <th>ဖျက်ရန်</th>
                 </tr>
@@ -66,33 +86,36 @@
     <script>
         const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
 
-        $("#settingNameInput, #submitButton").prop("disabled", true);
+        $("#settingNameInput, #submitButton, #settingAmountInput").prop("disabled", true);
 
-
+        
         $(document).on("click", ".edit-link", function () {
 
-            $("#settingNameInput, #submitButton").prop("disabled", false);
+            $("#settingNameInput, #submitButton, #settingAmountInput").prop("disabled", false);
             $("#actionType").val("Edit");
 
             var settingNameId = $(this).data("setting-id");
             var settingName = $(this).data("setting-name");
+            var settingAmount = $(this).data("setting-amount");
 
-            $("#PunishmentTypePkid").remove();
+            $("#StaffBenefitPkid").remove();
             $("<input>").attr({
                 type: "hidden",
-                id: "PunishmentTypePkid",
-                name: "PunishmentTypePkid",
+                id: "StaffBenefitPkid",
+                name: "StaffBenefitPkid",
                 value: settingNameId
             }).appendTo("form");
 
             $("#actionType").val("Edit");
 
-            $("#PunishmentTypePkid").val(settingNameId);
+            $("#StaffBenefitPkid").val(settingNameId);
             $("#settingNameInput").val(settingName);
+            $("#settingAmountInput").val(settingAmount);
 
 
         });
 
+        //Delete
         $(document).on("click", ".delete-Link", function (e) {
 
             const settingNameId = $(this).data("setting-id");
@@ -100,11 +123,12 @@
             $('#originalSection').hide();
             $("#confirmationSection").show();
 
-            $.getJSON(commonUrl + `/PunishmentType/GetAllPunishmentTypes?punishmentTypeId=${settingNameId}`, (data) => {
-                console.log(data);
+            $.getJSON(commonUrl + `/StaffBenefit/GetAllStaffBenefits?staffBenefitId=${settingNameId}`, (data) => {
+                console.log("Delete Data", data);
                 if (data) {
-                    $("#confirmInfo").text(data.punishmentType);
-                    $("#confirmPunishmentTypeId").val(settingNameId);
+                    $("#confirmInfo").text(data.benefit);
+                    $("#amountData").text(data.amount);
+                    $("#confirmStaffBenefitId").val(settingNameId);
                 }
             });
 
@@ -116,8 +140,9 @@
 
         });
 
+        //Add New
         $("#addNewButton").on("click", function () {
-            $("#settingNameInput, #submitButton").prop("disabled", false);
+            $("#settingNameInput, #submitButton, #settingAmountInput").prop("disabled", false);
             $("#actionType").val("Create");
 
         });
@@ -133,20 +158,22 @@
 
             selectedId = selectedName;
 
-            $.getJSON(commonUrl + "/PunishmentType/GetAllPunishmentTypes", (data) => {
+            $.getJSON(commonUrl + "/StaffBenefit/GetAllStaffBenefits", (data) => {
+                console.log(data);
                 if (data && data.length > 0) {
                     const rows = data.map((item, index) => `
-                                                    <tr>
-                                        <td>${index + 1}</td>
-                                        <td>${item.punishment}</td>
-                                        <td><a href="javascript:void(0);" class="edit-link btn btn-primary btn-sm all-edit"
-                                                            data-setting-id="${item.punishmentTypePkid}" data-setting-name="${item.punishment}">
-                                            <i class="fa fa-pencil"></i>
-                                        </a></td>
-                                                        <td><a href="#" class="delete-Link btn btn-danger btn-sm" data-setting-id="${item.punishmentTypePkid}">
-                                            <i class="fa fa-trash"></i></a></td>
-                                    </tr>
-                                    `).join('');
+                                            <tr>
+                                <td>${index + 1}</td>
+                                        <td>${item.benefitName}</td>
+                                        <td>${item.amount}</td>
+                                <td><a href="javascript:void(0);" class="edit-link btn btn-primary btn-sm all-edit"
+                                                                            data-setting-id="${item.staffBenefitPkid}" data-setting-name="${item.benefitName}" data-setting-amount="${item.amount}">
+                                    <i class="fa fa-pencil"></i>
+                                </a></td>
+                                                                <td><a href="#" class="delete-Link btn btn-danger btn-sm" data-setting-id="${item.staffBenefitPkid}">
+                                    <i class="fa fa-trash"></i></a></td>
+                            </tr>
+                            `).join('');
 
                     targetElement.find("tbody").html(rows);
 
@@ -164,5 +191,12 @@
             });
         });
 
+
+
+
+
     </script>
 }
+
+
+

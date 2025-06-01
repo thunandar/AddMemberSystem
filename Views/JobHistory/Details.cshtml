@@ -1,0 +1,65 @@
+﻿@model AddMemberSystem.Models.TB_JobHistory
+
+@{
+    ViewData["Title"] = "Detail";
+}
+
+<h2>အလုပ်သမိုင်း မှတ်တမ်းအချက်အလက်များ</h2>
+<hr />
+
+<form asp-action="Details">
+    <div class="row">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="JobHistoryPkid" />
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="StaffID" class="control-label"><span style="font-weight: 600;">ဝန်ထမ်းအမှတ်</span> </label>
+            <input asp-for="StaffID" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="DepartmentId" class="control-label">ဌာန</label>
+            <input type="hidden" asp-for="DepartmentId" class="form-control" />
+            <input type="text" value="@ViewBag.DepartmentId" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="PositionId" class="control-label">ရာထူး</label>
+            <input type="hidden" asp-for="PositionId" class="form-control" />
+            <input type="text" value="@ViewBag.PositionId" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-12">
+            <div class="form-check">
+                <input asp-for="IsCurrent" class="form-check-input" type="checkbox" readonly />
+                <label asp-for="IsCurrent" class="form-check-label"><span style="font-weight: 600;">ယခု အလုပ်လုပ်နေသည့်ရာထူးဖြစ်သည်</span></label>
+            </div>
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="FromDate" class="control-label"><span style="font-weight: 600;">စတင်သည့်ရက်</span></label>
+            <input asp-for="FromDate" id="DateOfBirth" class="form-control" type="date" readonly />
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="ToDate" class="control-label"><span style="font-weight: 600;">ပြီးဆုံးသည့်ရက်</span></label>
+            <input asp-for="ToDate" id="DateOfBirth" class="form-control" type="date" readonly />
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="JobYear" class="control-label"><span style="font-weight:600;">အလုပ်နှစ်</span></label>
+            <input asp-for="JobYear" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="JobMonth" class="control-label"><span style="font-weight:600;">အလုပ်လ</span></label>
+            <input asp-for="JobMonth" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="JobDay" class="control-label"><span style="font-weight:600;">အလုပ်ရက်</span></label>
+            <input asp-for="JobDay" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="Duration" class="control-label"><span style="font-weight:600;">အလုပ်သက်တမ်း</span></label>
+            <input asp-for="Duration" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="Remark" class="control-label"><span style="font-weight: 600;">မှတ်ချက်</span> </label>
+            <input asp-for="Remark" class="form-control" readonly />
+        </div>
+       
+    </div>
+</form>
+

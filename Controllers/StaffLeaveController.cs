@@ -88,104 +88,57 @@ namespace AddMemberSystem.Controllers
 
             return lstLeaveTypes;
         }
-
-        private List<SelectListItem> GetDepartments()
-        {
-            var lstDepartments = new List<SelectListItem>();
-
-            List<TB_Department> TB_Departments = _context.TB_Departments.Where(d => d.isDeleted == false).ToList();
-
-            lstDepartments = TB_Departments.Select(d => new SelectListItem()
-            {
-                Value = d.DepartmentPkid.ToString(),
-                Text = d.Department ?? "Unknown Department"
-            }).ToList();
-
-            var defItem = new SelectListItem()
-            {
-                Value = "",
-                Text = "----ဌာနရွေးချယ်ပါ----"
-            };
-
-            lstDepartments.Insert(0, defItem);
-
-            return lstDepartments;
-        }
-
-        private List<SelectListItem> GetPositions(int DepartmentPkid = 1)
-        {
-
-            List<SelectListItem> lstPositions = _context.TB_Positions
-                .Where(d => d.DepartmentId == DepartmentPkid)
-                .OrderBy(p => p.Position)
-                .Select(p =>
-                new SelectListItem
-                {
-                    Value = p.PositionPkid.ToString(),
-                    Text = p.Position ?? "DefaultTextIfNull"
-                }).ToList();
-
-            var defItem = new SelectListItem()
-            {
-                Value = "",
-                Text = "----ရာထူးရွေးချယ်ပါ----"
-            };
-
-            lstPositions.Insert(0, defItem);
-
-            return lstPositions;
-        }
-
-
-        private string GetDepartmentName(int DepartmentPkid)
-        {
-            string departmentName = _context.TB_Departments.Where(d => d.DepartmentPkid == DepartmentPkid).SingleOrDefault().Department;
-            return departmentName;
-        }
-
-        private string GetPositionName(int PositionPkid)
-        {
-            string positionName = _context.TB_Positions.Where(p => p.PositionPkid == PositionPkid).SingleOrDefault().Position;
-            return positionName;
-        }
-
+ 
         private string GetLeaveTypeName(int LeaveTypePkid)
         {
             string LeaveTypeName = _context.TB_LeaveTypes.Where(p => p.LeaveTypePkid == LeaveTypePkid).SingleOrDefault().LeaveTypeName;
             return LeaveTypeName;
         }
-
-        [HttpGet]
-        public JsonResult GetPositionsByDepartment(int DepartmentPkid)
-        {
-            List<SelectListItem> positions = GetPositions(DepartmentPkid);
-            return Json(positions);
-        }
+  
 
         private TB_Staff GetStaffInfoByStaffID(string staffID)
         {
             return _context.TB_Staffs.FirstOrDefault(s => s.StaffID == staffID);
         }
-
-        private string GetSelectedDepartment(int selectedDepartmentId)
+ 
+        [HttpGet]
+        public JsonResult GetTakenLeaveDays(string staffID, int leaveTypeId)
         {
-            var department = _context.TB_Departments
-                .Where(d => d.DepartmentPkid == selectedDepartmentId && !d.isDeleted)
-                .Select(d => d.Department)
-                .FirstOrDefault();
+            var records = _context.TB_StaffLeaves
+                .Where(s => s.StaffID == staffID
+                    && s.LeaveTypeId == leaveTypeId
+                    && s.IsDeleted == false)
+                .ToList();
 
-            return department ?? "Unknown Department";
+            return Json(new
+            {
+                takenLeaveDays = records.Sum(s => s.LeaveDays)
+            });
         }
 
-        private string GetSelectedPosition(int selectedPositionId)
+        private TB_Staff GetStaffInfo2ByStaffID(string staffID)
         {
-            var position = _context.TB_Positions
-                .Where(d => d.PositionPkid == selectedPositionId)
-                .Select(d => d.Position)
-                .FirstOrDefault();
-            return position ?? "Unknown Position";
-        }
+            var staff = _context.TB_Staffs
+                .FirstOrDefault(s => s.StaffID == staffID);
 
+            if (staff != null)
+            {
+                // Get current job history
+                var currentJob = _context.TB_JobHistorys
+                    .Where(j => j.StaffID == staffID && j.IsCurrent)
+                    .Include(j => j.Department)
+                    .Include(j => j.Position)
+                    .FirstOrDefault();
+
+                if (currentJob != null)
+                {
+                    staff.CurrentDepartment = currentJob.Department?.Department;
+                    staff.CurrentPosition = currentJob.Position?.Position;
+                }
+            }
+
+            return staff;
+        }
 
         [HttpGet]
         public IActionResult Create(string staffID)
@@ -203,23 +156,38 @@ namespace AddMemberSystem.Controllers
             }
 
             var staffLeaveModel = new TB_StaffLeave();
-            int totalLeaveDays = 36;
+            var leaveTypes = _context.TB_LeaveTypes.ToList();
+            ViewBag.LeaveTypes = leaveTypes;
 
-            var staffLeaveRecords = _context.TB_StaffLeaves.Where(s => s.StaffID == staffID).Where(s => s.IsDeleted == false).ToList();
-            int takenLeaveDays = staffLeaveRecords.Sum(s => s.LeaveDays);
-            int remainingLeaveDays = totalLeaveDays - takenLeaveDays;
+            int totalLeaveDays = 0;
+            int takenLeaveDays = 0;
+            int remainingLeaveDays = 0;
+
+            if (leaveTypes.Any())
+            {
+                var defaultLeaveType = leaveTypes.First();
+                totalLeaveDays = defaultLeaveType.LeaveDays;
+
+                // Filter by leave type
+                var staffLeaveRecords = _context.TB_StaffLeaves
+                         .Where(s => s.StaffID == staffID
+                             && s.LeaveTypeId == defaultLeaveType.LeaveTypePkid
+                             && s.IsDeleted == false)
+                         .ToList();
+
+                takenLeaveDays = staffLeaveRecords.Sum(s => s.LeaveDays);
+                remainingLeaveDays = totalLeaveDays - takenLeaveDays;
+            }
 
             var staffInfo = GetStaffInfoByStaffID(staffID);
 
             var staffName = _context.TB_Staffs.FirstOrDefault(s => s.StaffPkid == staffInfo.StaffPkid);
             ViewBag.StaffName = staffName.Name;
 
-            ViewBag.SelectedDepartment = GetSelectedDepartment(staffInfo.DepartmentId);
+            var staffInfo2 = GetStaffInfo2ByStaffID(staffID);
+            ViewBag.SelectedDepartment = staffInfo2.CurrentDepartment ?? "N/A";
+            ViewBag.SelectedPosition = staffInfo2.CurrentPosition ?? "N/A";
 
-            // ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
-            ViewBag.SelectedPosition = staffInfo.PositionId.HasValue
-        ? GetSelectedPosition(staffInfo.PositionId.Value)
-        : "Position Not Assigned";
 
             SetViewDataAndViewBag(staffID, totalLeaveDays, takenLeaveDays, remainingLeaveDays);
 
@@ -229,59 +197,74 @@ namespace AddMemberSystem.Controllers
         [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult Create(TB_StaffLeave staffL, string staffID)
-        {         
+        {
 
             staffL.CreatedDate = DateTime.UtcNow;
             staffL.IsDeleted = false;
 
             DateTime today = DateTime.UtcNow.Date;
 
+            var staffInfo2 = GetStaffInfo2ByStaffID(staffID);
+            ViewBag.SelectedDepartment = staffInfo2.CurrentDepartment ?? "N/A";
+            ViewBag.SelectedPosition = staffInfo2.CurrentPosition ?? "N/A";
+
+            var staffInfoFirst = GetStaffInfoByStaffID(staffID);
+
+            var staffName = _context.TB_Staffs.FirstOrDefault(s => s.StaffPkid == staffInfoFirst.StaffPkid);
+
+            ViewBag.LeaveTypes = _context.TB_LeaveTypes.ToList();
 
             // Server-side validation for LeaveDateFrom and LeaveDateTo
             if (!staffL.LeaveDateFrom.HasValue || staffL.LeaveDateFrom.Value.Date < today)
             {
+                ViewBag.StaffName = staffName.Name;
+ 
                 ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDateFrom), "ခွင့်ယူသည့်ရက်မှ အနည်းဆုံး ယနေ့မှစရပါမည်။");
-            }
-
-            if (!staffL.LeaveDateTo.HasValue || staffL.LeaveDateTo.Value.Date < today)
-            {
-                ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDateTo), "ခွင့်ယူသည့်ရက်ထိ အနည်းဆုံး ယနေ့မှစရပါမည်။");
             }
 
             // Ensure LeaveDateTo is after or equal to LeaveDateFrom
             if (staffL.LeaveDateFrom.HasValue && staffL.LeaveDateTo.HasValue && staffL.LeaveDateTo < staffL.LeaveDateFrom)
             {
+                ViewBag.StaffName = staffName.Name;
+  
+
                 ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDateTo), "ခွင့်ယူသည့်ရက်ထိ သည် ခွင့်ယူသည့်ရက်မှ နှင့် အချိန်ကျပါမည်။");
             }
 
-            if (ModelState.ErrorCount > 0)
+
+            var selectedLeaveType = _context.TB_LeaveTypes.Find(staffL.LeaveTypeId);
+            if (selectedLeaveType == null)
             {
-                SetViewDataAndViewBag(staffID, 36, 0, 36);
+                ModelState.AddModelError("LeaveTypeId", "Invalid leave type selected.");
+                ViewBag.LeaveTypes = _context.TB_LeaveTypes.ToList();
                 return View(staffL);
             }
+            int totalLeaveDays = selectedLeaveType.LeaveDays;
 
-            staffL.LeaveDays = (staffL.LeaveDateTo.Value - staffL.LeaveDateFrom.Value).Days + 1;
+            var staffLeaveRecords = _context.TB_StaffLeaves
+                   .Where(s => s.StaffID == staffID
+                       && s.LeaveTypeId == staffL.LeaveTypeId
+                       && s.IsDeleted == false)
+                   .ToList();
 
-            int totalLeaveDays = 36;
-            var staffLeaveRecords = _context.TB_StaffLeaves.Where(s => s.StaffID == staffID).Where(s => s.IsDeleted == false).ToList();
             int takenLeaveDays = staffLeaveRecords.Sum(s => s.LeaveDays);
             int isValidLeaveDays = takenLeaveDays + staffL.LeaveDays;
             int remainingLeaveDays = totalLeaveDays - takenLeaveDays;
 
             var staffInfo = GetStaffInfoByStaffID(staffID);
 
-            var Department = _context.TB_Departments.FirstOrDefault(d => d.DepartmentPkid == staffInfo.DepartmentId);
-            staffL.DepartmentId = Department.DepartmentPkid;
+            //var Department = _context.TB_Departments.FirstOrDefault(d => d.DepartmentPkid == staffInfo.DepartmentId);
+            //staffL.DepartmentId = Department.DepartmentPkid;
 
-            var Position = _context.TB_Positions.FirstOrDefault(d => d.PositionPkid == staffInfo.PositionId);
-            staffL.PositionId = Position?.PositionPkid;
-
+            //var Position = _context.TB_Positions.FirstOrDefault(d => d.PositionPkid == staffInfo.PositionId);
+            //staffL.PositionId = Position?.PositionPkid;
 
             if (isValidLeaveDays > totalLeaveDays)
             {
-                ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDays), "ခွင့်ပေးထားသည့်ရက်၃၆ရက်ထက် ခွင့်ယူထားသည့်ရက်များက ကျော်လွန်နေပါသည်");
+
+                ViewBag.LeaveTypes = _context.TB_LeaveTypes.ToList();
                 SetViewDataAndViewBag(staffID, totalLeaveDays, takenLeaveDays, remainingLeaveDays);
-                return View(staffL);
+                ModelState.AddModelError(nameof(TB_StaffLeave.LeaveTypeId), "ခွင့်ပေးထားသည့်ရက်ထက် ခွင့်ယူထားသည့်ရက်များက ကျော်လွန်နေပါသည်");
             }
 
 
@@ -311,8 +294,7 @@ namespace AddMemberSystem.Controllers
             ViewBag.TotalLeaveDays = totalLeaveDays;
             ViewBag.TakenLeaveDays = takenLeaveDays;
             ViewBag.RemaningLeaveDays = remainingLeaveDays;
-            ViewBag.DepartmentPkid = GetDepartments();
-            ViewBag.PositionPkid = GetPositions();
+  
             ViewBag.LeaveTypeId = GetLeaveTypes();
         }
 
@@ -323,128 +305,127 @@ namespace AddMemberSystem.Controllers
             return staffL;
         }
 
+
         [HttpGet]
         public IActionResult Edit(int id)
-            
         {
-            if (!IsUserLoggedIn())
-            {
-                return RedirectToAction("Index", "Account");
-            }
+            if (!IsUserLoggedIn()) return RedirectToAction("Index", "Account");
 
-           TB_StaffLeave staffL = GetStaffLeave(id);
+            var staffLeave = _context.TB_StaffLeaves
+                .Include(s => s.LeaveType)
+                .FirstOrDefault(s => s.StaffLeavePkid == id);
 
-            var staffInfo = _context.TB_Staffs.FirstOrDefault(s => s.StaffID == staffL.StaffID); 
+            if (staffLeave == null) return NotFound();
 
-            int totalLeaveDays = 36;
+            var staffInfo = _context.TB_Staffs.FirstOrDefault(s => s.StaffID == staffLeave.StaffID);
+            if (staffInfo == null) return NotFound();
+ 
+            ViewBag.StaffName = staffInfo.Name ?? "N/A";
 
-            var staffLeaveRecords = _context.TB_StaffLeaves.Where(s => s.StaffID == staffL.StaffID).Where(s => s.IsDeleted == false).ToList();
+            var leaveTypes = _context.TB_LeaveTypes.ToList();
+            var currentLeaveType = leaveTypes.FirstOrDefault(lt => lt.LeaveTypePkid == staffLeave.LeaveTypeId);
 
-            int takenLeaveDays = staffLeaveRecords.Sum(s => s.LeaveDays);
-            int remainingLeaveDays = totalLeaveDays - takenLeaveDays;
+            ViewBag.LeaveTypes = leaveTypes;
+            ViewBag.SelectedLeaveTypeId = staffLeave.LeaveTypeId;
+            ViewBag.InitialTotalDays = currentLeaveType?.LeaveDays ?? 0;
 
-            ViewBag.StaffID = staffInfo.StaffID;
+            var query = _context.TB_StaffLeaves
+        .Where(s => s.StaffID == staffLeave.StaffID
+                 && s.LeaveTypeId == staffLeave.LeaveTypeId
+                 && s.IsDeleted == false
+                );
 
-            ViewBag.StaffName = staffInfo.Name;
+            var InitialTakenDays = query.Sum(s => (int?)s.LeaveDays) ?? 0;
+            ViewBag.InitialTakenDays = InitialTakenDays;
 
-            ViewBag.SelectedDepartment = GetSelectedDepartment(staffInfo.DepartmentId);
-            // ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
-            ViewBag.SelectedPosition = staffInfo.PositionId.HasValue
-        ? GetSelectedPosition(staffInfo.PositionId.Value)
-        : "Position Not Assigned";
-            ViewBag.TotalLeaveDays = totalLeaveDays;
-            ViewBag.TakenLeaveDays = takenLeaveDays;
-            ViewBag.RemaningLeaveDays = remainingLeaveDays;
+            var staffInfo2 = GetStaffInfo2ByStaffID(staffInfo.StaffID);
+            ViewBag.SelectedDepartment = staffInfo2.CurrentDepartment ?? "N/A";
+            ViewBag.SelectedPosition = staffInfo2.CurrentPosition ?? "N/A";
 
-            ViewBag.DepartmentPkid = GetDepartments();
-            ViewBag.PositionPkid = GetPositions(staffL.DepartmentId);
-            ViewBag.LeaveTypeId = GetLeaveTypes();
-            return View(staffL);
+
+            return View(staffLeave);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(TB_StaffLeave editedStaffL)
         {
-            TB_StaffLeave existingStaffL = GetStaffLeave(editedStaffL.StaffLeavePkid);
+            var existingStaffL = _context.TB_StaffLeaves
+                .FirstOrDefault(s => s.StaffLeavePkid == editedStaffL.StaffLeavePkid);
 
-            int totalLeaveDays = 36;
-            var staffLeaveRecords = _context.TB_StaffLeaves.Where(s => s.StaffID == existingStaffL.StaffID).Where(s => s.IsDeleted == false).ToList();
+            var staffInfo = _context.TB_Staffs.FirstOrDefault(s => s.StaffID == editedStaffL.StaffID);
+            if (staffInfo == null) return NotFound();
+            ViewBag.StaffID = staffInfo.StaffID;
+            ViewBag.StaffName = staffInfo.Name ?? "N/A";
 
-            int takenLeaveDays = staffLeaveRecords.Sum(s => s.LeaveDays);
-            int remainingLeaveDays = totalLeaveDays - takenLeaveDays;
+            var staffInfo2 = GetStaffInfo2ByStaffID(editedStaffL.StaffID);
+            ViewBag.SelectedDepartment = staffInfo2.CurrentDepartment ?? "N/A";
+            ViewBag.SelectedPosition = staffInfo2.CurrentPosition ?? "N/A";
 
-            DateTime today = DateTime.UtcNow.Date;
+            if (existingStaffL == null) return NotFound();
 
-            // Server-side validation for LeaveDateFrom and LeaveDateTo
-            if (!editedStaffL.LeaveDateFrom.HasValue || editedStaffL.LeaveDateFrom.Value.Date < today)
+            // Populate essential ViewBag data
+            ViewBag.LeaveTypes = _context.TB_LeaveTypes.ToList();
+ 
+            // Validation logic
+            var leaveType = _context.TB_LeaveTypes.Find(editedStaffL.LeaveTypeId)
+                ?? throw new ArgumentException("Invalid leave type");
+
+            // Date validations
+            var today = DateTime.UtcNow.Date;
+            if (editedStaffL.LeaveDateFrom?.Date < today)
+                ModelState.AddModelError("LeaveDateFrom", "ခွင့်ယူသည့်ရက်မှ အနည်းဆုံး ယနေ့မှစရပါမည်။");
+
+            if (editedStaffL.LeaveDateTo < editedStaffL.LeaveDateFrom)
+                ModelState.AddModelError("LeaveDateTo", "ခွင့်ယူသည့်ရက်ထိ သည် ခွင့်ယူသည့်ရက်မှ နှင့် အချိန်ကျပါမည်။");
+
+            // Calculate leave days
+            editedStaffL.LeaveDays = (editedStaffL.LeaveDateTo.Value - editedStaffL.LeaveDateFrom.Value).Days + 1;
+
+            // Taken days calculation (exclude current record)
+            var takenDays = _context.TB_StaffLeaves
+                .Where(s => s.StaffID == existingStaffL.StaffID
+                         && s.LeaveTypeId == editedStaffL.LeaveTypeId
+                          && s.IsDeleted == false)
+                .Sum(s => s.LeaveDays);
+
+            var remainingDays = leaveType.LeaveDays - takenDays;
+
+            // Consistency with Create page validation
+            if (editedStaffL.LeaveDays > remainingDays)
             {
-                ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDateFrom), "ခွင့်ယူသည့်ရက်မှ အနည်းဆုံး ယနေ့မှစရပါမည်။");
-            }
-
-            if (!editedStaffL.LeaveDateTo.HasValue || editedStaffL.LeaveDateTo.Value.Date < today)
-            {
-                ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDateTo), "ခွင့်ယူသည့်ရက်ထိ အနည်းဆုံး ယနေ့မှစရပါမည်။");
-            }
-
-            // Ensure LeaveDateTo is after or equal to LeaveDateFrom
-            if (editedStaffL.LeaveDateFrom.HasValue && editedStaffL.LeaveDateTo.HasValue && editedStaffL.LeaveDateTo < editedStaffL.LeaveDateFrom)
-            {
-                ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDateTo), "ခွင့်ယူသည့်ရက်ထိ သည် ခွင့်ယူသည့်ရက်မှ နှင့် အချိန်ကျပါမည်။");
+                ModelState.AddModelError(
+                    nameof(TB_StaffLeave.LeaveTypeId),
+                    "ခွင့်ပေးထားသည့်ရက်ထက် ခွင့်ယူထားသည့်ရက်များက ကျော်လွန်နေပါသည်"
+                );
             }
 
             if (!ModelState.IsValid)
             {
-                SetViewDataAndViewBag(totalLeaveDays, takenLeaveDays, remainingLeaveDays);
+                // Maintain view state consistency
+                ViewBag.TotalLeaveDays = leaveType.LeaveDays;
+                ViewBag.TakenLeaveDays = takenDays;
+                ViewBag.RemainingLeaveDays = remainingDays;
                 return View(editedStaffL);
             }
 
-            // Calculate LeaveDays dynamically
-            editedStaffL.LeaveDays = (editedStaffL.LeaveDateTo.Value - editedStaffL.LeaveDateFrom.Value).Days + 1;
-
-
-            int isValidLeaveDays = takenLeaveDays + editedStaffL.LeaveDays;
-            if (isValidLeaveDays > totalLeaveDays)
-            {
-                ModelState.AddModelError(nameof(TB_StaffLeave.LeaveDays), "ခွင့်ပေးထားသည့်ရက် ၃၆ ရက်ထက် ကျော်လွန်နေပါသည်");
-                SetViewDataAndViewBag(totalLeaveDays, takenLeaveDays, remainingLeaveDays);
-                return View(editedStaffL);
-            }
-
-
-            ViewBag.TotalLeaveDays = totalLeaveDays;
-            ViewBag.TakenLeaveDays = takenLeaveDays;
-            ViewBag.RemaningLeaveDays = remainingLeaveDays;
-            ViewBag.DepartmentPkid = GetDepartments();
-            ViewBag.PositionPkid = GetPositions();
-            ViewBag.LeaveTypeId = GetLeaveTypes();
-
-            existingStaffL.StaffID = editedStaffL.StaffID;
-            existingStaffL.StaffLeaveName = editedStaffL.StaffLeaveName;
-            existingStaffL.DepartmentId = editedStaffL.DepartmentId;
-            existingStaffL.PositionId = editedStaffL.PositionId;
-            existingStaffL.CreatedDate = editedStaffL.CreatedDate;
+            // Update record
+            existingStaffL.LeaveTypeId = editedStaffL.LeaveTypeId;
             existingStaffL.LeaveDateFrom = editedStaffL.LeaveDateFrom;
             existingStaffL.LeaveDateTo = editedStaffL.LeaveDateTo;
             existingStaffL.LeaveDays = editedStaffL.LeaveDays;
             existingStaffL.LeaveAddress = editedStaffL.LeaveAddress;
             existingStaffL.DutyAssignedTo = editedStaffL.DutyAssignedTo;
             existingStaffL.DutyAssignPosition = editedStaffL.DutyAssignPosition;
-            existingStaffL.LeaveTypeId = editedStaffL.LeaveTypeId;
-
-            if (!ModelState.IsValid)
-            {
-                return View(editedStaffL);
-            }
 
             try
             {
                 _context.SaveChanges();
                 return RedirectToAction(nameof(List));
             }
-            catch (Exception ex)
+            catch
             {
-                ModelState.AddModelError(string.Empty, "An error occurred while saving the data.");
+                ModelState.AddModelError("", "အချက်အလက်များသိမ်းဆည်းရာတွင်အမှားတစ်ခုဖြစ်ပေါ်ခဲ့သည်။ ကျေးဇူးပြု၍ ထပ်ကြိုးစားပါ။");
                 return View(editedStaffL);
             }
         }
@@ -454,14 +435,13 @@ namespace AddMemberSystem.Controllers
             ViewBag.TotalLeaveDays = totalLeaveDays;
             ViewBag.TakenLeaveDays = takenLeaveDays;
             ViewBag.RemaningLeaveDays = remainingLeaveDays;
-            ViewBag.DepartmentPkid = GetDepartments();
-            ViewBag.PositionPkid = GetPositions();
+ 
             ViewBag.LeaveTypeId = GetLeaveTypes();
         }
 
 
         [HttpGet]
-        public IActionResult Details(int Id)
+        public IActionResult Details(int Id, string staffID)
         {
             if (!IsUserLoggedIn())
             {
@@ -475,9 +455,10 @@ namespace AddMemberSystem.Controllers
 
             ViewBag.StaffName = staffInfo.Name;
 
-            ViewBag.Department = GetDepartmentName(staffL.DepartmentId);
-           // ViewBag.Position = GetPositionName(staffL.PositionId);
-            ViewBag.Position = staffL.PositionId.HasValue ? GetPositionName(staffL.PositionId.Value): "Position Not Assigned";
+            var staffInfo2 = GetStaffInfo2ByStaffID(staffInfo.StaffID);
+            ViewBag.SelectedDepartment = staffInfo2.CurrentDepartment ?? "N/A";
+            ViewBag.SelectedPosition = staffInfo2.CurrentPosition ?? "N/A";
+
             ViewBag.LeaveTypeId = GetLeaveTypeName(staffL.LeaveTypeId);
             return View(staffL);
         }

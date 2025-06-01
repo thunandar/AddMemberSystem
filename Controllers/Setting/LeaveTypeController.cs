@@ -44,7 +44,7 @@ namespace AddMemberSystem.Controllers.Setting
 
                 if (leaveType != null)
                 {
-                    return Json(new { leaveType = leaveType.LeaveTypeName });
+                    return Json(new { leaveType = leaveType.LeaveTypeName, leaveDays = leaveType.LeaveDays });
                 }
             }
 
@@ -60,7 +60,7 @@ namespace AddMemberSystem.Controllers.Setting
             {
                 if (actionType == "Create")
                 {
-                    if (_context.TB_LeaveTypes.Any(d => d.LeaveTypeName == lt.LeaveTypeName))
+                    if (_context.TB_LeaveTypes.Any(d => d.LeaveTypeName == lt.LeaveTypeName &&  !d.IsDeleted))
                     {
                         ModelState.AddModelError("LeaveTypeName", "LeaveType with this name already exists.");
                         return View("~/Views/Setting/LeaveType/LeaveTypeCrud.cshtml", lt);
@@ -70,17 +70,24 @@ namespace AddMemberSystem.Controllers.Setting
                 }
                 else if (actionType == "Edit")
                 {
-                    if (_context.TB_LeaveTypes.Any(d => d.LeaveTypeName == lt.LeaveTypeName))
-                    {
-                        ModelState.AddModelError("LeaveTypeName", "Edit LeaveType with this name already exists.");
-                        return View("~/Views/Setting/LeaveType/LeaveTypeCrud.cshtml", lt);
-                    }
+                    //if (_context.TB_LeaveTypes.Any(d => d.LeaveTypeName == lt.LeaveTypeName))
+                    //{
+                    //    ModelState.AddModelError("LeaveTypeName", "Edit LeaveType with this name already exists.");
+                    //    return View("~/Views/Setting/LeaveType/LeaveTypeCrud.cshtml", lt);
+                    //}
 
                     var existingSettingName = _context.TB_LeaveTypes.Find(lt.LeaveTypePkid);
 
                     if (existingSettingName != null)
                     {
+                        if (_context.TB_LeaveTypes.Any(d => d.LeaveTypeName == lt.LeaveTypeName && d.LeaveTypePkid != lt.LeaveTypePkid && !d.IsDeleted))
+                        {
+                            ModelState.AddModelError("LeaveTypeName", "Edit LeaveType with this name already exists.");
+                            return View("~/Views/Setting/LeaveType/LeaveTypeCrud.cshtml", lt);
+                        }
+
                         existingSettingName.LeaveTypeName = lt.LeaveTypeName;
+                        existingSettingName.LeaveDays = lt.LeaveDays;
 
                         _context.TB_LeaveTypes.Update(existingSettingName);
                     }
@@ -101,6 +108,30 @@ namespace AddMemberSystem.Controllers.Setting
             return lt;
         }
 
+        //[ValidateAntiForgeryToken]
+        //[HttpPost]
+        //public IActionResult Delete(int leaveTypeId)
+        //{
+        //    if (!IsUserLoggedIn())
+        //    {
+        //        return RedirectToAction("Index", "Account");
+        //    }
+
+        //    TB_LeaveType lt = GetLeaveType(leaveTypeId);
+
+
+        //    if (lt != null)
+        //    {
+        //        _context.Remove(lt);
+        //        _context.SaveChanges();
+
+        //        return RedirectToAction(nameof(Index));
+
+        //    }
+
+        //    return View("~/Views/Setting/LeaveType/LeaveTypeCrud.cshtml", lt);
+        //}
+
         [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult Delete(int leaveTypeId)
@@ -115,7 +146,10 @@ namespace AddMemberSystem.Controllers.Setting
 
             if (lt != null)
             {
-                _context.Remove(lt);
+                lt.IsDeleted = true;
+
+                _context.Entry(lt).State = EntityState.Modified;
+
                 _context.SaveChanges();
 
                 return RedirectToAction(nameof(Index));
@@ -124,7 +158,6 @@ namespace AddMemberSystem.Controllers.Setting
 
             return View("~/Views/Setting/LeaveType/LeaveTypeCrud.cshtml", lt);
         }
-
 
 
     }

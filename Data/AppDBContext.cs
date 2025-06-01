@@ -12,8 +12,7 @@ namespace AddMemberSystem.Data
         public DbSet<TB_FuelType> TB_FuelTypes { get; set; }
         public DbSet<TB_Manufacturer> TB_Manufacturers { get; set; }
         public DbSet<TB_Position> TB_Positions { get; set; }
-
-        public DbSet<TB_InitialPosition> TB_InitialPositions { get; set; }
+        public DbSet<TB_JobHistory> TB_JobHistorys { get; set; }
 
         public DbSet<TB_Staff> TB_Staffs { get; set; }
         public DbSet<TB_VehicleData> TB_VehicleDatas { get; set; }

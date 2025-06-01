@@ -11,6 +11,7 @@
     <div class="row">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="StaffLeavePkid" />
+
     <div class="form-group col-sm-12 col-md-12 col-lg-4">
         <label asp-for="StaffID" class="control-label">ဝန်ထမ်းအမှတ်</label>
             <input asp-for="StaffID" class="form-control" id="staffIDInput" readonly />
@@ -21,36 +22,38 @@
             <input class="form-control" value="@ViewBag.StaffName" readonly />
         <span asp-validation-for="StaffLeaveName" class="text-danger"></span>
     </div>
-        <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="DepartmentId" class="control-label">ဌာန</label>
-            <input class="form-control"
-                   value="@ViewBag.SelectedDepartment"
-                   readonly />
-            <input asp-for="DepartmentId" type="hidden" />
-            <span asp-validation-for="DepartmentId" class="text-danger"></span>
-        </div>
-        <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="PositionId" class="control-label">ရာထူး</label>
-            <input class="form-control" value="@ViewBag.SelectedPosition" readonly />
-            <input asp-for="PositionId" type="hidden" />
-            <span asp-validation-for="PositionId" class="text-danger"></span>
-        </div>
+ 
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="LeaveAddress" class="control-label">ခွင့်ခံစားစဉ်နေရပ်လိပ်စာ</label>
             <input asp-for="LeaveAddress" class="form-control" />
             <span asp-validation-for="LeaveAddress" class="text-danger"></span>
         </div>
+        <!-- Leave Type Dropdown -->
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="LeaveTypeId" class="control-label">ခွင့်အမျိုးအစား</label>
-            <select asp-for="LeaveTypeId" class="form-control" asp-items="ViewBag.LeaveTypeId"></select>
+            <select asp-for="LeaveTypeId" class="form-control" id="leaveTypeSelect">
+                @foreach (var leaveType in ViewBag.LeaveTypes)
+                {
+                    <option value="@leaveType.LeaveTypePkid"
+                            data-leave-days="@leaveType.LeaveDays"
+                            selected="@(leaveType.LeaveTypePkid == ViewBag.SelectedLeaveTypeId)">
+                        @leaveType.LeaveTypeName
+                    </option>
+                }
+            </select>
             <span asp-validation-for="LeaveTypeId" class="text-danger"></span>
         </div>
+
+        <!-- Leave Days Display -->
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label class="control-label">ခွင့်ရက်</label>
+            <label class="control-label">ခွင့်ရက်/ ယူထားသောရက်/ ကျန်ခွင့်</label>
             <div style="display: flex; gap: 10px;">
-                <input class="form-control" value="@ViewBag.TotalLeaveDays" readonly style="width: 70px" />
-                <input class="form-control" value="@ViewBag.TakenLeaveDays" readonly style="width: 70px">
-                <input class="form-control" value="@ViewBag.RemaningLeaveDays" readonly style="width: 70px">
+                <input id="totalLeaveDays" class="form-control" readonly style="width: 70px"
+                       value="@ViewBag.InitialTotalDays" />
+                <input id="takenLeaveDays" class="form-control" readonly style="width: 70px"
+                       value="@ViewBag.InitialTakenDays" />
+                <input id="remainingLeaveDays" class="form-control" readonly style="width: 70px"
+                       value="@(ViewBag.InitialTotalDays - ViewBag.InitialTakenDays)" />
             </div>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
@@ -70,10 +73,17 @@
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label for="LeaveDays" class="control-label">ရက်</label>
-            <input id="LeaveDays" class="form-control" type="number" readonly value="0" />
+            <input asp-for="LeaveDays" class="form-control" type="number" readonly />
             <span asp-validation-for="LeaveDays" class="text-danger"></span>
         </div>
-
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">ဌာန  </label>
+            <input class="form-control" value="@ViewBag.SelectedDepartment" readonly />
+        </div>
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">ရာထူး </label>
+            <input class="form-control" value="@ViewBag.SelectedPosition" readonly />
+        </div>
     <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="DutyAssignedTo" class="control-label">ခွင့်ခံစားစဉ်တာ၀န်ယူမည့်သူ</label>
         <input asp-for="DutyAssignedTo" class="form-control" />
@@ -93,6 +103,31 @@
 @section Scripts {
     <script src="~/js/site.js"></script>
     <script>
+
+        document.getElementById('leaveTypeSelect').addEventListener('change', updateLeaveDays);
+
+        // Function to update total, taken, and remaining leave days
+        function updateLeaveDays() {
+            var leaveTypeSelect = document.getElementById('leaveTypeSelect');
+            var selectedOption = leaveTypeSelect.options[leaveTypeSelect.selectedIndex];
+            var totalDays = parseInt(selectedOption.getAttribute('data-leave-days'));
+            var staffID = document.getElementById('staffIDInput').value;
+            var leaveTypeId = selectedOption.value;
+
+            fetch(`/StaffLeave/GetTakenLeaveDays?staffID=${staffID}&leaveTypeId=${leaveTypeId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Update using element IDs
+                    document.getElementById('totalLeaveDays').value = totalDays;
+                    document.getElementById('takenLeaveDays').value = data.takenLeaveDays;
+                    document.getElementById('remainingLeaveDays').value = totalDays - data.takenLeaveDays;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Initial update on page load
+        updateLeaveDays();
+
         //Calculating Auto LeaveDays for StaffLeave
         document.getElementById('LeaveDateTo').addEventListener('change', calculateLeaveDays);
         document.getElementById('LeaveDateFrom').addEventListener('change', calculateLeaveDays);
@@ -100,15 +135,18 @@
         function calculateLeaveDays() {
             const fromDate = new Date(document.getElementById('LeaveDateFrom').value);
             const toDate = new Date(document.getElementById('LeaveDateTo').value);
+            let leaveDays = 0;
 
             if (fromDate && toDate && toDate >= fromDate) {
-                const diffTime = Math.abs(toDate - fromDate);
-                const leaveDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Include start date
-                document.getElementById('LeaveDays').value = leaveDays;
-            } else {
-                document.getElementById('LeaveDays').value = 0;
+                const timeDiff = toDate - fromDate;
+                leaveDays = Math.floor(timeDiff / (1000 * 3600 * 24)) + 1;
             }
+
+            const leaveDaysInput = document.getElementById('LeaveDays');
+            leaveDaysInput.value = leaveDays;
+            leaveDaysInput.dispatchEvent(new Event('change'));
         }
+
     </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

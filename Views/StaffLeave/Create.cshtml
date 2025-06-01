@@ -28,15 +28,20 @@
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="LeaveTypeId" class="control-label">ခွင့်အမျိုးအစား</label>
-            <select asp-for="LeaveTypeId" class="form-control" asp-items="ViewBag.LeaveTypeId"></select>
+            <select asp-for="LeaveTypeId" class="form-control" id="leaveTypeSelect">
+                @foreach (var leaveType in ViewBag.LeaveTypes as List<TB_LeaveType>)
+                {
+                    <option value="@leaveType.LeaveTypePkid" data-leave-days="@leaveType.LeaveDays">@leaveType.LeaveTypeName</option>
+                }
+            </select>
             <span asp-validation-for="LeaveTypeId" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label class="control-label">ခွင့်ရက်</label>
+            <label class="control-label">ခွင့်ရက်/ ယူထားသောရက်/ ကျန်ခွင့် </label>
             <div style="display: flex; gap: 10px;">
-                <input class="form-control" value="@ViewBag.TotalLeaveDays" readonly style="width: 70px" />
-                <input class="form-control" value="@ViewBag.TakenLeaveDays" readonly style="width: 70px">
-                <input class="form-control" value="@ViewBag.RemaningLeaveDays" readonly style="width: 70px">
+                <input id="totalLeaveDays" class="form-control" readonly style="width: 70px" />
+                <input id="takenLeaveDays" class="form-control" readonly style="width: 70px">
+                <input id="remainingLeaveDays" class="form-control" readonly style="width: 70px">
             </div>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
@@ -54,31 +59,19 @@
             <input asp-for="LeaveDateTo" class="form-control" type="date" />
             <span asp-validation-for="LeaveDateTo" class="text-danger"></span>
         </div>
-        @*<div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="LeaveDays" class="control-label">ရက်</label>
-            <input asp-for="LeaveDays" class="form-control" type="number" min="1"/>
-            <span asp-validation-for="LeaveDays" class="text-danger"></span>
-        </div>*@
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label for="LeaveDays" class="control-label">ရက်</label>
-            <input id="LeaveDays" class="form-control" type="number" readonly value="0" />
+            <label asp-for="LeaveDays" for="LeaveDays" class="control-label">ရက်</label>
+            <input asp-for="LeaveDays" id="LeaveDays" class="form-control" type="number" readonly value="0" />
             <span asp-validation-for="LeaveDays" class="text-danger"></span>
         </div>
-
-        <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="DepartmentId" class="control-label">ဌာန</label>
+         <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">ဌာန  </label>
             <input class="form-control" value="@ViewBag.SelectedDepartment" readonly />
-            @*<select id="lstDepartmentId" asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentPkid" onchange="FillPos(this,'lstPosition');"></select>*@
-            <span asp-validation-for="DepartmentId" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="PositionId" class="control-label">ရာထူး</label>
+            <label class="control-label">ရာထူး </label>
             <input class="form-control" value="@ViewBag.SelectedPosition" readonly />
-            @*<select id="lstPosition" asp-for="PositionId" class="form-control" asp-items="ViewBag.PositionPkid">
-                <option value="" selected disabled>---- ရာထူးရွေးချယ်ပါ ----</option>
-            </select>*@
-            <span asp-validation-for="PositionId" class="text-danger"></span>
-        </div>         
+        </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
         <label asp-for="DutyAssignedTo" class="control-label">ခွင့်ခံစားစဉ်တာ၀န်ယူမည့်သူ</label>
             <input asp-for="DutyAssignedTo" class="form-control" />
@@ -98,6 +91,30 @@
 @section Scripts {
     <script src="~/js/site.js"></script>
     <script>
+        document.getElementById('leaveTypeSelect').addEventListener('change', updateLeaveDays);
+
+        // Function to update total, taken, and remaining leave days
+        function updateLeaveDays() {
+            var leaveTypeSelect = document.getElementById('leaveTypeSelect');
+            var selectedOption = leaveTypeSelect.options[leaveTypeSelect.selectedIndex];
+            var totalDays = parseInt(selectedOption.getAttribute('data-leave-days'));
+            var staffID = document.getElementById('staffIDInput').value;
+            var leaveTypeId = selectedOption.value;
+
+            fetch(`/StaffLeave/GetTakenLeaveDays?staffID=${staffID}&leaveTypeId=${leaveTypeId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Update using element IDs
+                    document.getElementById('totalLeaveDays').value = totalDays;
+                    document.getElementById('takenLeaveDays').value = data.takenLeaveDays;
+                    document.getElementById('remainingLeaveDays').value = totalDays - data.takenLeaveDays;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Initial update on page load
+        updateLeaveDays();
+
         //Calculating Auto LeaveDays for StaffLeave
         document.getElementById('LeaveDateTo').addEventListener('change', calculateLeaveDays);
         document.getElementById('LeaveDateFrom').addEventListener('change', calculateLeaveDays);
@@ -108,12 +125,14 @@
 
             if (fromDate && toDate && toDate >= fromDate) {
                 const diffTime = Math.abs(toDate - fromDate);
-                const leaveDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Include start date
+                const leaveDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; 
                 document.getElementById('LeaveDays').value = leaveDays;
             } else {
                 document.getElementById('LeaveDays').value = 0;
             }
         }
+
+
     </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

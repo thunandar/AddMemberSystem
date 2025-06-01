@@ -24,7 +24,15 @@
             <label class="control-label">၀န်ထမ်း အမည်</label>
             <input class="form-control" value="@ViewBag.StaffName" readonly /> 
         </div>
+         <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">ဌာန  </label>
+            <input class="form-control" value="@ViewBag.SelectedDepartment" readonly />
+        </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">ရာထူး </label>
+            <input class="form-control" value="@ViewBag.SelectedPosition" readonly />
+        </div>
+        @*<div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="PositionId" class="control-label">
                 ရာထူး
             </label>
@@ -39,7 +47,7 @@
                    value="@ViewBag.SelectedDepartment"
                    readonly />
             <input asp-for="DepartmentId" type="hidden" />
-        </div>
+        </div>*@
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="CreatedDate" class="control-label">
                 ယနေ့ ရက်စွဲ

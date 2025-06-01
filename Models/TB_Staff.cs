@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using FoolProof;
+using FoolProof.Core;
 
 namespace AddMemberSystem.Models
 {
@@ -9,6 +11,7 @@ namespace AddMemberSystem.Models
 
         public string SerialNo { get; set; }
 
+        [Required]
         [MaxLength(50)]
         public string StaffID { get; set; }
 
@@ -18,6 +21,15 @@ namespace AddMemberSystem.Models
         [MaxLength(50)]
         public string FatherName { get; set; }
 
+        [MaxLength(50)]
+        public string MotherName { get; set; }
+
+        [MaxLength(100)]
+        public string LevelOfEducation { get; set; }
+
+        public string SpouseAndChildrenNames { get; set; }
+
+        [Required]
         public DateTime? DateOfBirth { get; set; }
 
         [Required(ErrorMessage = "မှတ်ပုံတင်ထည့်ဖို့ လိုအပ်ပါသည်")]
@@ -39,18 +51,6 @@ namespace AddMemberSystem.Models
         [MaxLength(50)]
         public string Phone { get; set; }
 
-        [ForeignKey("InitialPositionPkid")]
-        public int? InitialPositionId { get; set; }
-        public virtual TB_InitialPosition InitialPosition { get; set; }
-       
-        [ForeignKey("PositionPkid")]
-        public int? PositionId { get; set; }
-        public virtual TB_Position Position { get; set; }
-      
-        [ForeignKey("DepartmentPkid")]
-        public int DepartmentId{ get; set; }
-        public virtual TB_Department Department { get; set; }
-
         [MaxLength(100)]
         public string Responsibility { get; set; }
 
@@ -69,7 +69,61 @@ namespace AddMemberSystem.Models
         public IFormFile ImageFile { get; set; }
 
         public bool SocialSecurity { get; set; } 
+
         public bool RiceOil { get; set; }
+
+        [ForeignKey("StaffBenefitPkid")]
+        [RequiredIfTrue("RiceOil", ErrorMessage = "အကျိုးခံစားခွင့် အမျိုးအစား ရွေးချယ်ရန် လိုအပ်ပါသည်")]
+        public int? StaffBenefitId { get; set; }
+        public virtual TB_StaffBenefit StaffBenefit { get; set; }
+
+        public bool ChangeAmount { get; set; }
+
+        [RequiredIfTrue("ChangeAmount", ErrorMessage = "ပမာဏ ထည့်ရန် လိုအပ်ပါသည်")]
+        public decimal? CustomBenefitAmount { get; set; }
+
+
+        [RequiredIfTrue("SocialSecurity", ErrorMessage = "ErSSN ထည့်ရန် လိုအပ်ပါသည်")]
+        public string? ErSSN { get; set; }
+
+        [RequiredIfTrue("SocialSecurity", ErrorMessage = "EeSSN ထည့်ရန် လိုအပ်ပါသည်")]
+        public string? EeSSN { get; set; }
+
+        [RequiredIfTrue("SocialSecurity", ErrorMessage = "Minc ထည့်ရန် လိုအပ်ပါသည်")]
+        public decimal? Minc { get; set; }
+
+        [RequiredIfTrue("SocialSecurity", ErrorMessage = "SS1EeRate ထည့်ရန် လိုအပ်ပါသည်")]
+        public decimal? SS1EeRate { get; set; }
+
+        [RequiredIfTrue("SocialSecurity", ErrorMessage = "SS1ErRate အမျိုးအစား ထည့်ရန် လိုအပ်ပါသည်")]
+        public decimal? SS1ErRate { get; set; }
+
+        [RequiredIfTrue("SocialSecurity", ErrorMessage = "SS1EeConAmt ထည့်ရန် လိုအပ်ပါသည်")]
+        public decimal? SS1EeConAmt { get; set; }
+
+        [RequiredIfTrue("SocialSecurity", ErrorMessage = "SS1ErConAmt ထည့်ရန် လိုအပ်ပါသည်")]
+        public decimal? SS1ErConAmt { get; set; }
+
+        [RequiredIfTrue("SocialSecurity", ErrorMessage = "SS2EeRate ထည့်ရန် လိုအပ်ပါသည်")]
+        public decimal? SS2EeRate { get; set; }
+
+        [RequiredIfTrue("SocialSecurity", ErrorMessage = "SS2ErRate ထည့်ရန် လိုအပ်ပါသည်")]
+        public decimal? SS2ErRate { get; set; }
+
+        [RequiredIfTrue("SocialSecurity", ErrorMessage = "SS2EeConAmt ထည့်ရန် လိုအပ်ပါသည်")]
+        public decimal? SS2EeConAmt { get; set; }
+
+        [RequiredIfTrue("SocialSecurity", ErrorMessage = "SS2ErConAmt ထည့်ရန် လိုအပ်ပါသည်")]
+        public decimal? SS2ErConAmt { get; set; }
+
+        [RequiredIfTrue("SocialSecurity", ErrorMessage = "TotalConAmt ထည့်ရန် လိုအပ်ပါသည်")]
+        public decimal? TotalConAmt { get; set; }
+
+        [NotMapped]
+        public string CurrentDepartment { get; set; }
+
+        [NotMapped]
+        public string CurrentPosition { get; set; }
 
         public bool isDeleted { get; set; }
 

@@ -1,11 +1,6 @@
-﻿//using AddMemberSystem.Views.Home;
-using ClosedXML.Excel;
-using Microsoft.AspNetCore.Mvc;
+﻿using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Diagnostics;
-using System.Diagnostics.Metrics;
 using System.Globalization;
-using System.Net.Mime;
 
 namespace AddMemberSystem.Controllers
 {
@@ -29,19 +24,17 @@ namespace AddMemberSystem.Controllers
             }
 
             int totalStaffCount = _context.TB_Staffs.Where(b => b.isDeleted == false).Count();
-            int totalPositionCount = _context.TB_Positions.Where(b => b.isDeleted == false).Count();
-            int totalDepartmentCount = _context.TB_Departments.Where(b => b.isDeleted == false).Count();
+            //int totalPositionCount = _context.TB_Positions.Where(b => b.isDeleted == false).Count();
+            //int totalDepartmentCount = _context.TB_Departments.Where(b => b.isDeleted == false).Count();
             int totalStaffPunishmentCount = _context.TB_StaffPunishments.Where(b => b.IsDeleted == false).Count();
             int totalStaffLeaveCount = _context.TB_StaffLeaves.Where(b => b.IsDeleted == false).Count();
 
-
             ViewBag.totalStaffCount = totalStaffCount;
-            ViewBag.totalPositionCount = totalPositionCount;
-            ViewBag.totalDepartmentCount = totalDepartmentCount;
+            //ViewBag.totalPositionCount = totalPositionCount;
+            //ViewBag.totalDepartmentCount = totalDepartmentCount;
             ViewBag.totalStaffPunishmentCount = totalStaffPunishmentCount;
             ViewBag.totalStaffLeaveCount = totalStaffLeaveCount;
 
-        
             return View();
         }
 
@@ -78,9 +71,27 @@ namespace AddMemberSystem.Controllers
 
             List<TB_Staff> staffs = _context.TB_Staffs
                 .Where(staff => staff.isDeleted == false)
-                .Include(d => d.Department)
-                .Include(p => p.Position)
+                //.Include(d => d.Department)
+                //.Include(p => p.Position)
                 .ToList();
+
+            var staffIds = staffs.Select(s => s.StaffID).ToList();
+            
+            var currentJobs = _context.TB_JobHistorys
+                .Where(j => staffIds.Contains(j.StaffID) && j.IsCurrent)
+                .Include(j => j.Department)
+                .Include(j => j.Position)
+                .ToList();
+
+            foreach (var staff in staffs)
+            {
+                var currentJob = currentJobs.FirstOrDefault(j => j.StaffID == staff.StaffID);
+                if (currentJob != null)
+                {
+                    staff.CurrentDepartment = currentJob.Department?.Department;
+                    staff.CurrentPosition = currentJob.Position?.Position;
+                }
+            }
 
             const int pageSize = 5;
             if (pg < 1)
@@ -107,115 +118,79 @@ namespace AddMemberSystem.Controllers
             return staff;
         }
 
-        private List<SelectListItem> GetDepartments()
+        //private List<SelectListItem> GetDepartments()
+        //{
+        //    var lstDepartments = new List<SelectListItem>();
+
+        //    List<TB_Department> TB_Departments = _context.TB_Departments.Where(d => d.isDeleted == false).ToList();
+
+        //    lstDepartments = TB_Departments.Select(d => new SelectListItem()
+        //    {
+        //        Value = d.DepartmentPkid.ToString(),
+        //        Text = d.Department ?? "Unknown Department"
+        //    }).ToList();
+
+        //    var defItem = new SelectListItem()
+        //    {
+        //        Value = "",
+        //        Text = "----ဌာနရွေးချယ်ပါ----"
+        //    };
+
+        //    lstDepartments.Insert(0, defItem);
+
+        //    return lstDepartments;
+        //}
+
+        //private string GetDepartmentName(int DepartmentPkid)
+        //{
+        //    string departmentName = _context.TB_Departments.Where(d => d.DepartmentPkid == DepartmentPkid).SingleOrDefault().Department;
+        //    return departmentName;
+        //}
+
+        //private string GetPositionName(int PositionPkid)
+        //{
+        //    string positionName = _context.TB_Positions.Where(p => p.PositionPkid == PositionPkid).SingleOrDefault().Position;
+        //    return positionName ?? "Position Not Found";
+        //}
+
+        private string GetStaffBenefitsName(int StaffBenefitPkid)
         {
-            var lstDepartments = new List<SelectListItem>();
-
-            List<TB_Department> TB_Departments = _context.TB_Departments.Where(d => d.isDeleted == false).ToList();
-
-            lstDepartments = TB_Departments.Select(d => new SelectListItem()
-            {
-                Value = d.DepartmentPkid.ToString(),
-                Text = d.Department ?? "Unknown Department"
-            }).ToList();
-
-            var defItem = new SelectListItem()
-            {
-                Value = "",
-                Text = "----ဌာနရွေးချယ်ပါ----"
-            };
-
-            lstDepartments.Insert(0, defItem);
-
-            return lstDepartments;
-        }
-
-        private List<SelectListItem> GetPositions(int DepartmentPkid = 1)
-        {
-
-            List<SelectListItem> lstPositions = _context.TB_Positions
-                .Where(d => d.DepartmentId == DepartmentPkid)
-                .Where(d => d.isDeleted == false)
-                .OrderBy(p => p.Position)
-                .Select(p =>
-                new SelectListItem
-                {
-                    Value = p.PositionPkid.ToString(),
-                    Text = p.Position ?? "DefaultTextIfNull"
-                }).ToList();
-
-            var defItem = new SelectListItem()
-            {
-                Value = "",
-                Text = "----ရာထူးရွေးချယ်ပါ----"
-            };
-
-            lstPositions.Insert(0, defItem);
-
-            return lstPositions;
-        }
-
-        private List<SelectListItem> GetInitialPositions(int DepartmentPkid = 1)
-        {
-
-            List<SelectListItem> lstInitialPositions = _context.TB_InitialPositions
-                .Where(d => d.DepartmentId == DepartmentPkid)
-                .Where(d => d.isDeleted == false)
-                .OrderBy(p => p.InitialPosition)
-                .Select(p =>
-                new SelectListItem
-                {
-                    Value = p.InitialPositionPkid.ToString(),
-                    Text = p.InitialPosition ?? "DefaultTextIfNull"
-                }).ToList();
-
-            var defItem = new SelectListItem()
-            {
-                Value = "",
-                Text = "----ရာထူးရွေးချယ်ပါ----"
-            };
-
-            lstInitialPositions.Insert(0, defItem);
-
-            return lstInitialPositions;
-        }
-
-        private string GetDepartmentName(int DepartmentPkid)
-        {
-            string departmentName = _context.TB_Departments.Where(d => d.DepartmentPkid == DepartmentPkid).SingleOrDefault().Department;
-            return departmentName;
-        }
-
-        private string GetPositionName(int PositionPkid)
-        {
-            string positionName = _context.TB_Positions.Where(p => p.PositionPkid == PositionPkid).SingleOrDefault().Position;
-            return positionName ?? "Position Not Found";
-        }
-
-        private string GetInitialPositionName(int InitialPositionPkid)
-        {
-            string initialPositionName = _context.TB_InitialPositions.Where(p => p.InitialPositionPkid == InitialPositionPkid).SingleOrDefault().InitialPosition;
-            return initialPositionName ?? "Position Not Found";
-        }
-
-        [HttpGet]
-        public JsonResult GetPositionsByDepartment(int DepartmentPkid)
-        {
-            List<SelectListItem> positions = GetPositions(DepartmentPkid);
-            return Json(positions);
-        }
-
-        [HttpGet]
-        public JsonResult GetInitialPositionsByDepartment(int DepartmentPkid)
-        {
-            List<SelectListItem> positions = GetInitialPositions(DepartmentPkid);
-            return Json(positions);
+            string BenefitTypeName = _context.TB_StaffBenefit.Where(p => p.StaffBenefitPkid == StaffBenefitPkid).SingleOrDefault().BenefitName;
+            return BenefitTypeName;
         }
 
 
         private bool IsNrcOrPassportNumberUnique(string nrc)
         {
             return !_context.TB_Staffs.Any(m => m.NRC == nrc);
+        }
+
+        private List<SelectListItem> GetStaffBenefits()
+        {
+            var result = new List<SelectListItem>();
+
+            List<TB_StaffBenefit> data = _context.TB_StaffBenefit.Where(b => !b.IsDeleted).ToList();
+
+            result = data.Select(d => new SelectListItem()
+            {
+                Value = d.StaffBenefitPkid.ToString(),
+                Text = d.BenefitName
+            }).ToList();
+
+            var defItem = new SelectListItem()
+            {
+                Value = "",
+                Text = "----အကျိုးခံစားခွင့်အမျိုးအစား ရွေးချယ်ပါ----"
+            };
+
+            result.Insert(0, defItem);
+
+            return result;
+        }
+
+        private Dictionary<int, string> GetStaffBenefitAmounts()
+        {
+            return _context.TB_StaffBenefit.Where(b => !b.IsDeleted).ToDictionary(b => b.StaffBenefitPkid, b => b.Amount);
         }
 
         [HttpGet]
@@ -227,9 +202,10 @@ namespace AddMemberSystem.Controllers
             }
 
             TB_Staff Staff = new TB_Staff();
-            ViewBag.DepartmentPkid = GetDepartments();
-            ViewBag.PositionPkid = GetPositions();
-            ViewBag.InitialPositionPkid = GetInitialPositions();
+            //ViewBag.DepartmentPkid = GetDepartments();
+            //ViewBag.PositionPkid = GetPositions();
+            ViewBag.StaffBenefitId = GetStaffBenefits();
+            ViewBag.BenefitAmounts = GetStaffBenefitAmounts();
             return View(Staff);
         }
 
@@ -237,10 +213,24 @@ namespace AddMemberSystem.Controllers
         [HttpPost]
         public IActionResult Create(TB_Staff staff)
         {
+            if (!ModelState.IsValid)
+            {
+                //ViewBag.DepartmentPkid = GetDepartments();
+                //ViewBag.PositionPkid = GetPositions();
+                ViewBag.StaffBenefitId = GetStaffBenefits();
+                ViewBag.BenefitAmounts = GetStaffBenefitAmounts();
+                return View(staff);
+            }
+
             DateTime today = DateTime.UtcNow.Date;
             // Validate that DateOfBirth is not in the future
             if (staff.DateOfBirth.HasValue && staff.DateOfBirth.Value > today)
             {
+                //ViewBag.DepartmentPkid = GetDepartments();
+                //ViewBag.PositionPkid = GetPositions();
+                ViewBag.StaffBenefitId = GetStaffBenefits();
+                ViewBag.BenefitAmounts = GetStaffBenefitAmounts();
+
                 ModelState.AddModelError(nameof(TB_Staff.DateOfBirth), "မွေးသက္ကရာဇ်သည် ယနေ့ရက်စွဲထက် ကြီးမြှင့်မရပါ");
 
                 return View("Create");
@@ -250,7 +240,10 @@ namespace AddMemberSystem.Controllers
             {
                 ModelState.AddModelError(nameof(TB_Staff.NRC), "မှတ်ပုံတင် နံပါတ်သည် သီးသန့်ဖြစ်ရန် လိုအပ်ပါသည်");
 
-                ViewBag.DepartmentPkid = GetDepartments();
+                //ViewBag.DepartmentPkid = GetDepartments();
+                //ViewBag.PositionPkid = GetPositions();
+                ViewBag.StaffBenefitId = GetStaffBenefits();
+                ViewBag.BenefitAmounts = GetStaffBenefitAmounts();
 
                 return View("Create");
             }
@@ -272,6 +265,25 @@ namespace AddMemberSystem.Controllers
             _context.SaveChanges();
             return RedirectToAction(nameof(List));
         }
+        private int GetStaffBenefitAmount(int staffBenefitId)
+        {
+            string amountStr = _context.TB_StaffBenefit
+                                       .Where(b => b.StaffBenefitPkid == staffBenefitId)
+                                       .Select(b => b.Amount)
+                                       .SingleOrDefault();
+
+            if (int.TryParse(amountStr, out int amount))
+            {
+                return amount;
+            }
+            return 0;
+        }
+
+        private string GetStaffBenefitsAmount(int StaffBenefitPkid)
+        {
+            string BenefitTypeAmount = _context.TB_StaffBenefit.Where(p => p.StaffBenefitPkid == StaffBenefitPkid).SingleOrDefault().Amount;
+            return BenefitTypeAmount;
+        }
 
         [HttpGet]
         public IActionResult Details(int Id)
@@ -282,17 +294,19 @@ namespace AddMemberSystem.Controllers
             }
 
             TB_Staff staff = GetStaff(Id);
-            ViewBag.Department = GetDepartmentName(staff.DepartmentId);
-            // ViewBag.Position = GetPositionName(staff.PositionId);
-            ViewBag.Position = staff.PositionId.HasValue
-       ? GetPositionName(staff.PositionId.Value)
-       : "Position Not Assigned";
+            //ViewBag.Department = GetDepartmentName(staff.DepartmentId);
+            //ViewBag.Position = staff.PositionId.HasValue ? GetPositionName(staff.PositionId.Value) : "Position Not Assigned";
 
-            ViewBag.InitialPosition = staff.InitialPositionId.HasValue
-                ? GetInitialPositionName(staff.InitialPositionId.Value)
-                : "Initial Position Not Assigned";
+            ViewBag.StaffBenefitId = staff.StaffBenefitId.HasValue ? GetStaffBenefitsName(staff.StaffBenefitId.Value) : "Benefit Not Found.";
+
+
+            ViewBag.StaffBenefitAmount = staff.StaffBenefitId.HasValue ? GetStaffBenefitsAmount(staff.StaffBenefitId.Value) : "Amount Not Found.";
+
+
             return View(staff);
         }
+
+
 
         [HttpGet]
         public IActionResult Edit(int id)
@@ -303,9 +317,13 @@ namespace AddMemberSystem.Controllers
             }
 
             TB_Staff staff = GetStaff(id);
-            ViewBag.DepartmentPkid = GetDepartments();
-            ViewBag.PositionPkid = GetPositions(staff.DepartmentId);
-            ViewBag.InitialPositionPkid = GetInitialPositions(staff.DepartmentId);
+
+            //ViewBag.DepartmentPkid = GetDepartments();
+            //ViewBag.PositionPkid = GetPositions(staff.DepartmentId);
+            ViewBag.StaffBenefitId = GetStaffBenefits();
+            ViewBag.BenefitAmounts = GetStaffBenefitAmounts();
+
+
             return View(staff);
         }
 
@@ -313,6 +331,15 @@ namespace AddMemberSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(TB_Staff editedStaff)
         {
+            if (!ModelState.IsValid)
+            {
+                //ViewBag.DepartmentPkid = GetDepartments();
+                //ViewBag.PositionPkid = GetPositions(editedStaff.DepartmentId);
+                ViewBag.StaffBenefitId = GetStaffBenefits();
+                ViewBag.BenefitAmounts = GetStaffBenefitAmounts();
+                return View(editedStaff);
+            }
+
             TB_Staff existingMember = GetStaff(editedStaff.StaffPkid);
 
             string newNrc = editedStaff.NRC;
@@ -349,10 +376,8 @@ namespace AddMemberSystem.Controllers
             }
             else
             {
-                editedStaff.StaffPhoto = existingMember.StaffPhoto; 
-                Console.WriteLine("NO image found" + editedStaff.StaffPhoto);
-                Console.WriteLine("NO image found" + existingMember.StaffPhoto);
-    }
+                editedStaff.StaffPhoto = existingMember.StaffPhoto;                
+            }
 
             existingMember.SerialNo = editedStaff.SerialNo;
             existingMember.StaffID = editedStaff.StaffID;
@@ -365,16 +390,46 @@ namespace AddMemberSystem.Controllers
             existingMember.VisibleMark = editedStaff.VisibleMark;
             existingMember.Address = editedStaff.Address;
             existingMember.Phone = editedStaff.Phone;
-            existingMember.PositionId = editedStaff.PositionId;
-            existingMember.InitialPositionId = editedStaff.InitialPositionId;
-            existingMember.DepartmentId = editedStaff.DepartmentId;
+            //existingMember.PositionId = editedStaff.PositionId;
+            //existingMember.DepartmentId = editedStaff.DepartmentId;
             existingMember.Responsibility = editedStaff.Responsibility;
             existingMember.StartedDate = editedStaff.StartedDate;
             existingMember.Remarks = editedStaff.Remarks;
-            existingMember.SocialSecurity = editedStaff.SocialSecurity;
-            existingMember.RiceOil = editedStaff.RiceOil;
             existingMember.StaffPhoto = editedStaff.StaffPhoto;
             existingMember.Salary = editedStaff.Salary;
+
+            existingMember.SocialSecurity = editedStaff.SocialSecurity;
+            if (existingMember.SocialSecurity)
+            {
+                existingMember.ErSSN = editedStaff.ErSSN;
+                existingMember.EeSSN = editedStaff.EeSSN;
+                existingMember.Minc = editedStaff.Minc;
+                existingMember.SS1EeRate = editedStaff.SS1EeRate;
+                existingMember.SS1ErRate = editedStaff.SS1ErRate;
+                existingMember.SS1EeConAmt = editedStaff.SS1EeConAmt;
+                existingMember.SS1ErConAmt = editedStaff.SS1ErConAmt;
+                existingMember.SS2EeRate = editedStaff.SS2EeRate;
+                existingMember.SS2ErRate = editedStaff.SS2ErRate;
+                existingMember.SS2EeConAmt = editedStaff.SS2EeConAmt;
+                existingMember.SS2ErConAmt = editedStaff.SS2ErConAmt;
+                existingMember.TotalConAmt = editedStaff.TotalConAmt;
+            }
+
+            // RiceOil handling
+            existingMember.RiceOil = editedStaff.RiceOil;
+            if (existingMember.RiceOil)
+            {
+                existingMember.StaffBenefitId = editedStaff.StaffBenefitId;
+            }
+
+            existingMember.ChangeAmount = editedStaff.ChangeAmount;
+            if (existingMember.ChangeAmount)
+            {
+                existingMember.CustomBenefitAmount = editedStaff.CustomBenefitAmount;
+
+            }
+
+            existingMember.CreatedDate = DateTime.UtcNow;
 
             _context.SaveChanges();
 
@@ -444,12 +499,48 @@ namespace AddMemberSystem.Controllers
             ViewBag.SearchCriteriaItems = searchCriteriaItems;
         }
 
+        //private IQueryable<TB_Staff> BuildQuery(string searchCriteria, string searchTerm)
+        //{
+        //    var query = _context.TB_Staffs
+        //        .Where(m => m.isDeleted == false);
+        //        //.Include("Department")
+        //        //.Include("Position");
+
+        //    if (!string.IsNullOrEmpty(searchTerm)) 
+        //    {
+        //        if (!string.IsNullOrEmpty(searchCriteria))
+        //        {
+        //            switch (searchCriteria)
+        //            {
+        //                case "Name":
+        //                    query = query.Where(m => m.Name.Contains(searchTerm));
+        //                    break;
+        //                //case "Department":
+        //                //    query = query.Where(m => m.Department.Department.Contains(searchTerm));
+        //                //    break;
+        //                //case "Position":
+        //                //    query = query.Where(m => m.Position.Position.Contains(searchTerm));
+        //                //    break;
+        //                default:
+        //                    break;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            query = query.Where(m =>
+        //                m.Name.Contains(searchTerm)); 
+        //        //m.Department.Department.Contains(searchTerm) ||
+        //        //m.Position.Position.Contains(searchTerm));
+        //        }
+        //    }
+
+        //    return query;
+        //}
+
         private IQueryable<TB_Staff> BuildQuery(string searchCriteria, string searchTerm)
         {
             var query = _context.TB_Staffs
-                .Where(m => m.isDeleted == false)
-                .Include("Department")
-                .Include("Position");
+                .Where(m => m.isDeleted == false);
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
@@ -461,10 +552,18 @@ namespace AddMemberSystem.Controllers
                             query = query.Where(m => m.Name.Contains(searchTerm));
                             break;
                         case "Department":
-                            query = query.Where(m => m.Department.Department.Contains(searchTerm));
+                            // Search in current job's department
+                            query = query.Where(s => _context.TB_JobHistorys
+                                .Any(j => j.StaffID == s.StaffID
+                                       && j.IsCurrent
+                                       && j.Department.Department.Contains(searchTerm)));
                             break;
                         case "Position":
-                            query = query.Where(m => m.Position.Position.Contains(searchTerm));
+                            // Search in current job's position
+                            query = query.Where(s => _context.TB_JobHistorys
+                                .Any(j => j.StaffID == s.StaffID
+                                       && j.IsCurrent
+                                       && j.Position.Position.Contains(searchTerm)));
                             break;
                         default:
                             break;
@@ -472,10 +571,16 @@ namespace AddMemberSystem.Controllers
                 }
                 else
                 {
+                    // Search across Name, Department, or Position
                     query = query.Where(m =>
                         m.Name.Contains(searchTerm) ||
-                m.Department.Department.Contains(searchTerm) ||
-                m.Position.Position.Contains(searchTerm));
+                        _context.TB_JobHistorys.Any(j => j.StaffID == m.StaffID
+                                                        && j.IsCurrent
+                                                        && j.Department.Department.Contains(searchTerm)) ||
+                        _context.TB_JobHistorys.Any(j => j.StaffID == m.StaffID
+                                                        && j.IsCurrent
+                                                        && j.Position.Position.Contains(searchTerm))
+                    );
                 }
             }
 
@@ -487,6 +592,14 @@ namespace AddMemberSystem.Controllers
         {
             var query = BuildQuery(searchCriteria, searchTerm);
 
+            // Fetch current job histories for the search results
+            var staffIds = query.Select(s => s.StaffID).ToList();
+            var currentJobs = _context.TB_JobHistorys
+                .Where(j => staffIds.Contains(j.StaffID) && j.IsCurrent)
+                .Include(j => j.Department)
+                .Include(j => j.Position)
+                .ToList();
+          
             // Get total count of search results
             int resultCount = query.Count();
 
@@ -498,6 +611,13 @@ namespace AddMemberSystem.Controllers
                 .Skip(recSkip)
                 .Take(pager.PageSize)
                 .ToList();
+
+            foreach (var staff in searchResults)
+            {
+                var currentJob = currentJobs.FirstOrDefault(j => j.StaffID == staff.StaffID);
+                staff.CurrentDepartment = currentJob?.Department?.Department;
+                staff.CurrentPosition = currentJob?.Position?.Position;
+            }
 
             SetSearchCriteriaItemsInViewBag(searchCriteria);
 
@@ -546,8 +666,10 @@ namespace AddMemberSystem.Controllers
                     worksheet.Cell(i + 2, 1).Value = i + 1;
                     worksheet.Cell(i + 2, 2).Value = staff.StaffID;
                     worksheet.Cell(i + 2, 3).Value = staff.Name;
-                    worksheet.Cell(i + 2, 4).Value = staff.Department?.Department;
-                    worksheet.Cell(i + 2, 5).Value = staff.Position?.Position;
+                    //worksheet.Cell(i + 2, 4).Value = staff.Department?.Department;
+                    //worksheet.Cell(i + 2, 5).Value = staff.Position?.Position;
+                    worksheet.Cell(i + 2, 4).Value = staff.CurrentDepartment; 
+                    worksheet.Cell(i + 2, 5).Value = staff.CurrentPosition;
                     worksheet.Cell(i + 2, 6).Value = staff.FatherName;
                     worksheet.Cell(i + 2, 7).Value = staff.DateOfBirth;
                     worksheet.Cell(i + 2, 8).Value = staff.NRC;
@@ -575,17 +697,33 @@ namespace AddMemberSystem.Controllers
             }
         }
 
+          
+
         [HttpGet]
         public IActionResult ExcelAllStaffExport()
         {
+            // Fetch non-deleted staffs
             var allStaff = _context.TB_Staffs
                 .Where(staff => staff.isDeleted == false)
-                .Include(d => d.Department)
-                .Include(p => p.Position)
                 .ToList();
 
-            var excelData = GenerateExcelData(allStaff, "AllStaff");
+            // Get current job data for all staff
+            var staffIds = allStaff.Select(s => s.StaffID).ToList();
+            var currentJobs = _context.TB_JobHistorys
+               .Where(j => staffIds.Contains(j.StaffID) && j.IsCurrent)
+                .Include(j => j.Department)
+                .Include(j => j.Position)
+                .ToList();
 
+            // Assign CurrentDepartment/CurrentPosition
+            foreach (var staff in allStaff)
+            {
+                var currentJob = currentJobs.FirstOrDefault(j => j.StaffID == staff.StaffID);
+                staff.CurrentDepartment = currentJob?.Department?.Department;
+                staff.CurrentPosition = currentJob?.Position?.Position;
+            }
+
+            var excelData = GenerateExcelData(allStaff, "AllStaff");
             return File(excelData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "AllStaff.xlsx");
         }
 
@@ -594,243 +732,73 @@ namespace AddMemberSystem.Controllers
         {
             var query = BuildQuery(searchCriteria, searchTerm);
             var searchResults = query.ToList();
-            var excelData = GenerateExcelData(searchResults, "SearchResults");
 
+            // Get current job data for search results
+            var staffIds = searchResults.Select(s => s.StaffID).ToList();
+            var currentJobs = _context.TB_JobHistorys
+               .Where(j => staffIds.Contains(j.StaffID) && j.IsCurrent)
+                .Include(j => j.Department)
+                .Include(j => j.Position)
+                .ToList();
+
+            // Assign CurrentDepartment/CurrentPosition
+            foreach (var staff in searchResults)
+            {
+                var currentJob = currentJobs.FirstOrDefault(j => j.StaffID == staff.StaffID);
+                staff.CurrentDepartment = currentJob?.Department?.Department;
+                staff.CurrentPosition = currentJob?.Position?.Position;
+            }
+
+            var excelData = GenerateExcelData(searchResults, "SearchResults");
             return File(excelData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "SearchResults.xlsx");
         }
-
-        //[HttpGet]
-        //public IActionResult StaffBenefitCalculation(string staffID, int month)
-        //{
-        //    if (string.IsNullOrEmpty(staffID)) return NotFound();
-
-        //    var staff = _context.TB_Staffs.FirstOrDefault(s => s.StaffID == staffID);
-
-        //    if (staff == null) return NotFound();
-
-        //    bool socialSecurity = staff.SocialSecurity;
-        //    bool riceOil = staff.RiceOil;
-
-        //    var socialSecurityBenefit = _context.TB_StaffBenefit
-        //        .FirstOrDefault(b => b.BenefitName == "Social Security" && !b.IsDeleted);
-
-        //    var riceOilBenefit = _context.TB_StaffBenefit
-        //        .FirstOrDefault(b => b.BenefitName == "Rice Oil" && !b.IsDeleted);
-
-        //    // Prepare benefit data for the UI
-        //    var benefitData = new List<TB_StaffBenefit>();
-        //    decimal totalDeductables = 0;
-
-        //    // Social Security
-        //    decimal socialSecurityAmount = 0;
-        //    if (socialSecurity && socialSecurityBenefit != null)
-        //    {
-        //        if (decimal.TryParse(socialSecurityBenefit.Amount, out decimal parsedAmount))
-        //        {
-        //            socialSecurityAmount = parsedAmount;
-        //            totalDeductables += socialSecurityAmount; // Add to total deductables
-        //        }
-        //    }
-
-        //    benefitData.Add(new TB_StaffBenefit
-        //    {
-        //        BenefitName = "Social Security",
-        //        Amount = socialSecurity ? socialSecurityAmount.ToString() : "0",
-        //        IsDeleted = false,
-        //        CreatedDate = DateTime.Now,
-        //        CreatedBy = 1
-        //    });
-
-        //    // Rice Oil
-        //    decimal riceOilAmount = 0;
-        //    if (riceOil && riceOilBenefit != null)
-        //    {
-        //        if (decimal.TryParse(riceOilBenefit.Amount, out decimal parsedAmount))
-        //        {
-        //            riceOilAmount = parsedAmount;
-        //            totalDeductables += riceOilAmount; // Add to total deductables
-        //        }
-        //    }
-
-        //    benefitData.Add(new TB_StaffBenefit
-        //    {
-        //        BenefitName = "Rice Oil",
-        //        Amount = riceOil ? riceOilAmount.ToString() : "0",
-        //        IsDeleted = false,
-        //        CreatedDate = DateTime.Now,
-        //        CreatedBy = 1
-        //    });
-
-        //    // Retrieve Excess Leave information for the selected month
-        //    var excessLeaveDays = 0;
-        //    var staffLeaves = _context.TB_StaffLeaves
-        //        .Where(sl => sl.StaffID == staffID)
-        //        .ToList();
-
-        //    foreach (var leave in staffLeaves)
-        //    {
-        //        // Check if the selected month falls within the leave period
-        //        if (leave.LeaveDateFrom.HasValue && leave.LeaveDateTo.HasValue)
-        //        {
-        //            var leaveStartMonth = leave.LeaveDateFrom.Value.Month;
-        //            var leaveEndMonth = leave.LeaveDateTo.Value.Month;
-
-        //            // Check if the selected month is within the leave period
-        //            if ((month >= leaveStartMonth && month <= leaveEndMonth) ||
-        //                (leaveStartMonth <= month && leaveEndMonth >= month))
-        //            {
-        //                var leaveType = _context.TB_LeaveTypes
-        //                    .FirstOrDefault(lt => lt.LeaveTypePkid == leave.LeaveTypeId);
-
-        //                if (leaveType != null && leaveType.LeaveTypeName == "Excess Leave")
-        //                {
-        //                    excessLeaveDays += leave.LeaveDays;
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    // Calculate salary deduction for Excess Leave
-        //    decimal salaryDeduction = 0;
-        //    if (decimal.TryParse(staff.Salary, out decimal salary))
-        //    {
-        //        salaryDeduction = (salary / 30) * excessLeaveDays;
-        //        totalDeductables += salaryDeduction; // Add to total deductables
-        //    }
-
-        //    // Calculate Net Salary Payment
-        //    decimal netSalaryPayment = salary - totalDeductables;
-
-        //    // Pass data to the view
-        //    ViewBag.ExcessLeaveDays = excessLeaveDays;
-        //    ViewBag.SalaryDeduction = salaryDeduction;
-        //    ViewBag.Benefits = benefitData;
-        //    ViewBag.TotalDeductables = totalDeductables;
-        //    ViewBag.BasicSalary = salary;
-        //    ViewBag.NetSalaryPayment = netSalaryPayment;
-
-        //    // Map month number to month name
-        //    var monthName = new DateTime(2023, month, 1).ToString("MMMM", CultureInfo.InvariantCulture);
-        //    ViewBag.MonthName = monthName;
-
-        //    return View(staff);
-        //}
 
         [HttpGet]
         public IActionResult StaffBenefitCalculation(string staffID, int month)
         {
             if (string.IsNullOrEmpty(staffID)) return NotFound();
 
-            var staff = _context.TB_Staffs.FirstOrDefault(s => s.StaffID == staffID);
+            // Include StaffBenefit relation
+            var staff = _context.TB_Staffs
+                .Include(s => s.StaffBenefit)
+                .FirstOrDefault(s => s.StaffID == staffID);
 
-            if (staff == null) return NotFound();
-
-            bool socialSecurity = staff.SocialSecurity;
-            bool riceOil = staff.RiceOil;
-
-            var socialSecurityBenefit = _context.TB_StaffBenefit
-                .FirstOrDefault(b => b.BenefitName == "Social Security" && !b.IsDeleted);
-
-            var riceOilBenefit = _context.TB_StaffBenefit
-                .FirstOrDefault(b => b.BenefitName == "Rice Oil" && !b.IsDeleted);
-
-            // Prepare benefit data for the UI
-            var benefitData = new List<TB_StaffBenefit>();
-            decimal totalDeductables = 0;
-
-            // Social Security
-            decimal socialSecurityAmount = 0;
-            if (socialSecurity && socialSecurityBenefit != null)
+            if (staff == null)
             {
-                if (decimal.TryParse(socialSecurityBenefit.Amount, out decimal parsedAmount))
-                {
-                    socialSecurityAmount = parsedAmount;
-                    totalDeductables += socialSecurityAmount; // Add to total deductables
-                }
+                TempData["ErrorMessage"] = "The Staff ID does not exist.";
+                return RedirectToAction("List");
             }
 
-            benefitData.Add(new TB_StaffBenefit
-            {
-                BenefitName = "Social Security",
-                Amount = socialSecurity ? socialSecurityAmount.ToString() : "0",
-                IsDeleted = false,
-                CreatedDate = DateTime.Now,
-                CreatedBy = 1
-            });
+            // Set current year (2025 as requested)
+            int year = 2025;
+            DateTime monthStart = new DateTime(year, month, 1);
+            DateTime monthEnd = monthStart.AddMonths(1).AddDays(-1);
 
-            // Rice Oil
-            decimal riceOilAmount = 0;
-            if (riceOil && riceOilBenefit != null)
-            {
-                if (decimal.TryParse(riceOilBenefit.Amount, out decimal parsedAmount))
-                {
-                    riceOilAmount = parsedAmount;
-                    totalDeductables += riceOilAmount; // Add to total deductables
-                }
-            }
-
-            benefitData.Add(new TB_StaffBenefit
-            {
-                BenefitName = "Rice Oil",
-                Amount = riceOil ? riceOilAmount.ToString() : "0",
-                IsDeleted = false,
-                CreatedDate = DateTime.Now,
-                CreatedBy = 1
-            });
-
-            // Retrieve Excess Leave information for the selected month and current year
-            var excessLeaveDays = 0;
-            var staffLeaves = _context.TB_StaffLeaves
-                .Where(sl => sl.StaffID == staffID)
+            // Fetch excess leaves within the selected month
+            var excessLeaves = _context.TB_StaffLeaves
+                .Include(l => l.LeaveType)
+                .Where(l => l.StaffID == staff.StaffID &&
+                            l.LeaveType.LeaveTypeName == "Excess Leave" &&
+                            l.LeaveDateFrom <= monthEnd &&
+                            l.LeaveDateTo >= monthStart)
                 .ToList();
 
-            foreach (var leave in staffLeaves)
+            // Calculate leave days within the selected month
+            int totalExcessLeaveDays = 0;
+            foreach (var leave in excessLeaves)
             {
-                // Check if the selected month and current year fall within the leave period
-                if (leave.LeaveDateFrom.HasValue && leave.LeaveDateTo.HasValue)
-                {
-                    var leaveStartMonth = leave.LeaveDateFrom.Value.Month;
-                    var leaveEndMonth = leave.LeaveDateTo.Value.Month;
-                    var leaveStartYear = leave.LeaveDateFrom.Value.Year;
-                    var leaveEndYear = leave.LeaveDateTo.Value.Year;
+                // Adjust dates to fall within the selected month
+                DateTime leaveStart = leave.LeaveDateFrom > monthStart ? leave.LeaveDateFrom.Value : monthStart;
+                DateTime leaveEnd = leave.LeaveDateTo < monthEnd ? leave.LeaveDateTo.Value : monthEnd;
 
-                    // Check if the selected month and current year are within the leave period
-                    if ((month >= leaveStartMonth && month <= leaveEndMonth) &&
-                        (DateTime.Now.Year >= leaveStartYear && DateTime.Now.Year <= leaveEndYear))
-                    {
-                        var leaveType = _context.TB_LeaveTypes
-                            .FirstOrDefault(lt => lt.LeaveTypePkid == leave.LeaveTypeId);
-
-                        if (leaveType != null && leaveType.LeaveTypeName == "Excess Leave")
-                        {
-                            excessLeaveDays += leave.LeaveDays;
-                        }
-                    }
-                }
+                // Calculate days (inclusive)
+                totalExcessLeaveDays += (int)(leaveEnd - leaveStart).TotalDays + 1;
             }
 
-            // Calculate salary deduction for Excess Leave
-            decimal salaryDeduction = 0;
-            if (decimal.TryParse(staff.Salary, out decimal salary))
-            {
-                salaryDeduction = (salary / 30) * excessLeaveDays;
-                totalDeductables += salaryDeduction; // Add to total deductables
-            }
-
-            // Calculate Net Salary Payment
-            decimal netSalaryPayment = salary - totalDeductables;
-
-            // Pass data to the view
-            ViewBag.ExcessLeaveDays = excessLeaveDays;
-            ViewBag.SalaryDeduction = salaryDeduction;
-            ViewBag.Benefits = benefitData;
-            ViewBag.TotalDeductables = totalDeductables;
-            ViewBag.BasicSalary = salary;
-            ViewBag.NetSalaryPayment = netSalaryPayment;
-
-            // Map month number to month name
-            var monthName = new DateTime(DateTime.Now.Year, month, 1).ToString("MMMM", CultureInfo.InvariantCulture);
-            ViewBag.MonthName = monthName;
+            ViewBag.TotalExcessLeaveDays = totalExcessLeaveDays;
+            ViewBag.SelectedMonth = month;
+            ViewBag.SelectedYear = year;
+            ViewBag.MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
 
             return View(staff);
         }
@@ -879,7 +847,7 @@ namespace AddMemberSystem.Controllers
                 if (existingPayroll != null)
                 {
                     // Update existing record
-                    existingPayroll.TotalSalary = payroll.TotalSalary;
+                    existingPayroll.NetSalary = payroll.NetSalary;
                     existingPayroll.PaymentDate = payroll.PaymentDate;
                 }
                 else
@@ -901,4 +869,5 @@ namespace AddMemberSystem.Controllers
         }
 
     }
+
 }

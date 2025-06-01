@@ -71,6 +71,7 @@ namespace AddMemberSystem.Controllers.Account
                         {
                             return RedirectToAction("List", "Home");
 
+
                         }
 
 

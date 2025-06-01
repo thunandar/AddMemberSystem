@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AddMemberSystem.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20250312142912_createYRTCDb")]
-    partial class createYRTCDb
+    [Migration("20250531055624_createDB")]
+    partial class createDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,6 +31,12 @@ namespace AddMemberSystem.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DepartmentPkid"), 1L, 1);
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Department")
                         .HasMaxLength(200)
@@ -61,29 +67,66 @@ namespace AddMemberSystem.Migrations
                     b.ToTable("TB_FuelTypes");
                 });
 
-            modelBuilder.Entity("AddMemberSystem.Models.TB_InitialPosition", b =>
+            modelBuilder.Entity("AddMemberSystem.Models.TB_JobHistory", b =>
                 {
-                    b.Property<int>("InitialPositionPkid")
+                    b.Property<int>("JobHistoryPkid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InitialPositionPkid"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("JobHistoryPkid"), 1L, 1);
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("InitialPosition")
+                    b.Property<decimal?>("Duration")
+                        .HasColumnType("decimal(18,0)");
+
+                    b.Property<DateTime?>("FromDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsCurrent")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal?>("JobDay")
+                        .HasColumnType("decimal(18,0)");
+
+                    b.Property<decimal?>("JobMonth")
+                        .HasColumnType("decimal(18,0)");
+
+                    b.Property<decimal?>("JobYear")
+                        .HasColumnType("decimal(18,0)");
+
+                    b.Property<int>("PositionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Remark")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("StaffID")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<bool>("isDeleted")
-                        .HasColumnType("bit");
+                    b.Property<DateTime?>("ToDate")
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("InitialPositionPkid");
+                    b.HasKey("JobHistoryPkid");
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("TB_InitialPositions");
+                    b.HasIndex("PositionId");
+
+                    b.ToTable("TB_JobHistorys");
                 });
 
             modelBuilder.Entity("AddMemberSystem.Models.TB_LeaveType", b =>
@@ -93,6 +136,12 @@ namespace AddMemberSystem.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LeaveTypePkid"), 1L, 1);
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LeaveDays")
+                        .HasColumnType("int");
 
                     b.Property<string>("LeaveTypeName")
                         .HasColumnType("nvarchar(max)");
@@ -127,8 +176,27 @@ namespace AddMemberSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PayrollPkid"), 1L, 1);
 
+                    b.Property<decimal?>("BaseSalary")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("Deductions")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<string>("MonthOfSalary")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal?>("NetSalary")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("PaymentDate")
                         .HasColumnType("datetime2");
@@ -137,8 +205,8 @@ namespace AddMemberSystem.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<decimal?>("TotalSalary")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int?>("YearOfSalary")
+                        .HasColumnType("int");
 
                     b.HasKey("PayrollPkid");
 
@@ -153,19 +221,20 @@ namespace AddMemberSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PositionPkid"), 1L, 1);
 
-                    b.Property<int>("DepartmentId")
+                    b.Property<int>("CreatedBy")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Position")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<bool>("isDeleted")
-                        .HasColumnType("bit");
-
                     b.HasKey("PositionPkid");
-
-                    b.HasIndex("DepartmentId");
 
                     b.ToTable("TB_Positions");
                 });
@@ -200,6 +269,9 @@ namespace AddMemberSystem.Migrations
                     b.Property<decimal?>("BaseSalary")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -212,6 +284,9 @@ namespace AddMemberSystem.Migrations
                     b.Property<string>("MonthOfSalary")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal?>("NetSalary")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("StaffID")
                         .HasMaxLength(50)
@@ -241,24 +316,42 @@ namespace AddMemberSystem.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
+                    b.Property<bool>("ChangeAmount")
+                        .HasColumnType("bit");
+
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal?>("CustomBenefitAmount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime?>("DateOfBirth")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int");
+                    b.Property<string>("EeSSN")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ErSSN")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FatherName")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("InitialPositionId")
-                        .HasColumnType("int");
+                    b.Property<string>("LevelOfEducation")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal?>("Minc")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("MotherName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("NRC")
                         .IsRequired()
@@ -272,9 +365,6 @@ namespace AddMemberSystem.Migrations
                     b.Property<string>("Phone")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("PositionId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Religion")
                         .HasMaxLength(50)
@@ -291,6 +381,30 @@ namespace AddMemberSystem.Migrations
                     b.Property<bool>("RiceOil")
                         .HasColumnType("bit");
 
+                    b.Property<decimal?>("SS1EeConAmt")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("SS1EeRate")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("SS1ErConAmt")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("SS1ErRate")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("SS2EeConAmt")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("SS2EeRate")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("SS2ErConAmt")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("SS2ErRate")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Salary")
                         .HasColumnType("nvarchar(max)");
 
@@ -300,7 +414,14 @@ namespace AddMemberSystem.Migrations
                     b.Property<bool>("SocialSecurity")
                         .HasColumnType("bit");
 
+                    b.Property<string>("SpouseAndChildrenNames")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("StaffBenefitId")
+                        .HasColumnType("int");
+
                     b.Property<string>("StaffID")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -311,6 +432,9 @@ namespace AddMemberSystem.Migrations
                     b.Property<DateTime?>("StartedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal?>("TotalConAmt")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("VisibleMark")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -320,11 +444,7 @@ namespace AddMemberSystem.Migrations
 
                     b.HasKey("StaffPkid");
 
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("InitialPositionId");
-
-                    b.HasIndex("PositionId");
+                    b.HasIndex("StaffBenefitId");
 
                     b.ToTable("TB_Staffs");
                 });
@@ -372,9 +492,6 @@ namespace AddMemberSystem.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("DutyAssignPosition")
                         .HasColumnType("nvarchar(max)");
 
@@ -399,9 +516,6 @@ namespace AddMemberSystem.Migrations
                     b.Property<int>("LeaveTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PositionId")
-                        .HasColumnType("int");
-
                     b.Property<string>("StaffID")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -412,11 +526,7 @@ namespace AddMemberSystem.Migrations
 
                     b.HasKey("StaffLeavePkid");
 
-                    b.HasIndex("DepartmentId");
-
                     b.HasIndex("LeaveTypeId");
-
-                    b.HasIndex("PositionId");
 
                     b.ToTable("TB_StaffLeaves");
                 });
@@ -435,14 +545,8 @@ namespace AddMemberSystem.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int");
-
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
-
-                    b.Property<int?>("PositionId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Punishment")
                         .HasColumnType("nvarchar(max)");
@@ -457,10 +561,6 @@ namespace AddMemberSystem.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("StaffPunishmentPkid");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("PositionId");
 
                     b.HasIndex("PunishmentTypeId");
 
@@ -625,88 +725,47 @@ namespace AddMemberSystem.Migrations
                     b.ToTable("TB_YBSTypes");
                 });
 
-            modelBuilder.Entity("AddMemberSystem.Models.TB_InitialPosition", b =>
+            modelBuilder.Entity("AddMemberSystem.Models.TB_JobHistory", b =>
                 {
                     b.HasOne("AddMemberSystem.Models.TB_Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Department");
-                });
-
-            modelBuilder.Entity("AddMemberSystem.Models.TB_Position", b =>
-                {
-                    b.HasOne("AddMemberSystem.Models.TB_Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Department");
-                });
-
-            modelBuilder.Entity("AddMemberSystem.Models.TB_Staff", b =>
-                {
-                    b.HasOne("AddMemberSystem.Models.TB_Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AddMemberSystem.Models.TB_InitialPosition", "InitialPosition")
-                        .WithMany()
-                        .HasForeignKey("InitialPositionId");
 
                     b.HasOne("AddMemberSystem.Models.TB_Position", "Position")
                         .WithMany()
-                        .HasForeignKey("PositionId");
+                        .HasForeignKey("PositionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Department");
-
-                    b.Navigation("InitialPosition");
 
                     b.Navigation("Position");
                 });
 
+            modelBuilder.Entity("AddMemberSystem.Models.TB_Staff", b =>
+                {
+                    b.HasOne("AddMemberSystem.Models.TB_StaffBenefit", "StaffBenefit")
+                        .WithMany()
+                        .HasForeignKey("StaffBenefitId");
+
+                    b.Navigation("StaffBenefit");
+                });
+
             modelBuilder.Entity("AddMemberSystem.Models.TB_StaffLeave", b =>
                 {
-                    b.HasOne("AddMemberSystem.Models.TB_Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("AddMemberSystem.Models.TB_LeaveType", "LeaveType")
                         .WithMany()
                         .HasForeignKey("LeaveTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AddMemberSystem.Models.TB_Position", "Position")
-                        .WithMany()
-                        .HasForeignKey("PositionId");
-
-                    b.Navigation("Department");
-
                     b.Navigation("LeaveType");
-
-                    b.Navigation("Position");
                 });
 
             modelBuilder.Entity("AddMemberSystem.Models.TB_StaffPunishment", b =>
                 {
-                    b.HasOne("AddMemberSystem.Models.TB_Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AddMemberSystem.Models.TB_Position", "Position")
-                        .WithMany()
-                        .HasForeignKey("PositionId");
-
                     b.HasOne("AddMemberSystem.Models.TB_PunishmentType", "PunishmentType")
                         .WithMany()
                         .HasForeignKey("PunishmentTypeId")
@@ -718,10 +777,6 @@ namespace AddMemberSystem.Migrations
                         .HasForeignKey("StaffId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Department");
-
-                    b.Navigation("Position");
 
                     b.Navigation("PunishmentType");
 

@@ -10,11 +10,13 @@ namespace AddMemberSystem.Models
         [MaxLength(50)]
         public string Position { get; set; }
 
-        public bool isDeleted { get; set; }
+        public bool IsDeleted { get; set; }
 
-        [ForeignKey("DepartmentPkid")]
-        public int DepartmentId { get; set; }
+        public DateTime? CreatedDate { get; set; }
 
-        public virtual TB_Department Department { get; set; }
+        public int CreatedBy { get; set; }
+
+
+
     }
 }

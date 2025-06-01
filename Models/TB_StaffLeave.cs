@@ -12,16 +12,7 @@ namespace AddMemberSystem.Models
 
         [MaxLength(50)]
         public string StaffLeaveName { get; set; }
-
-        [ForeignKey("PositionPkid")]
-        public int? PositionId { get; set; }
-        public virtual TB_Position Position { get; set; }
-
-        [Required(ErrorMessage = "ဌာနရွေးချယ်ဖို့ လိုအပ်ပါသည်")]
-        [ForeignKey("DepartmentPkid")]
-        public int DepartmentId { get; set; }
-        public virtual TB_Department Department { get; set; }
-
+ 
         public DateTime? LeaveDateFrom { get; set; }
 
         public DateTime? LeaveDateTo { get; set; }
@@ -44,6 +35,12 @@ namespace AddMemberSystem.Models
         [Required(ErrorMessage = "ခွင့်အမျိုးအစားရွေးဖို့ လိုအပ်ပါသည်")]
         [ForeignKey("LeaveTypePkid")]
         public int LeaveTypeId { get; set; }
+
+        [NotMapped]
+        public string CurrentDepartment { get; set; }
+
+        [NotMapped]
+        public string CurrentPosition { get; set; }
 
         public virtual TB_LeaveType LeaveType { get; set; }
     }

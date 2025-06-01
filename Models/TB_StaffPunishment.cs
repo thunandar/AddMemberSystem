@@ -21,14 +21,11 @@ namespace AddMemberSystem.Models
         public int PunishmentTypeId { get; set; }
         public virtual TB_PunishmentType PunishmentType { get; set; }
 
-        [ForeignKey("PositionId")]
-        public int? PositionId { get; set; }
-        public virtual TB_Position Position { get; set; }
+        [NotMapped]
+        public string CurrentDepartment { get; set; }
 
-        [Required(ErrorMessage = "ဌာနရွေးချယ်ဖို့ လိုအပ်ပါသည်")]
-        [ForeignKey("DepartmentId")]
-        public int DepartmentId { get; set; }
-        public virtual TB_Department Department { get; set; }
+        [NotMapped]
+        public string CurrentPosition { get; set; }
 
         public bool? IsDeleted { get; set; }
 

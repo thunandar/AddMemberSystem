@@ -16,6 +16,9 @@ namespace AddMemberSystem.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal? Deductions { get; set; }
 
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? NetSalary { get; set; }
+
         [MaxLength(50)]
         public string MonthOfSalary { get; set; }
 
@@ -24,5 +27,7 @@ namespace AddMemberSystem.Models
         public bool IsDeleted { get; set; }
 
         public DateTime? CreatedDate { get; set; }
+
+        public int CreatedBy { get; set; }
     }
 }

@@ -1,28 +1,19 @@
-﻿@inject IConfiguration Configuration
-@model AddMemberSystem.Models.TB_InitialPosition
+﻿@*
+@inject IConfiguration Configuration
+@model AddMemberSystem.Models.TB_Position
 
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <div class="row">
     <div class="col-md-6" id="originalSection">
         <form asp-action="Create" method="post" class="setting-form">
-            <div class="row">
-                <div class="form-group col-md-4">
-                    <label asp-for="DepartmentId" class="control-label d-flex align-items-center"><span style="font-weight: 600;">ဌာန: &nbsp;</span></label>
-                </div>
-                <div class="form-group col-md-8">
-                    <select id="lstDepartmentId" asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentId">
-                        <option value="">-----ဌာနရွေးချယ်ပါ-----</option>
-                    </select>
-                </div>
-            </div>
             <div class="row mt-3">
                 <div class="form-group col-md-4">
-                    <label asp-for="InitialPosition" class="control-label d-flex align-items-center"><span style="font-weight: 600;">စတင်ခဲ့သည့် ရာထူး: &nbsp;</span></label>
+                    <label asp-for="Position" class="control-label d-flex align-items-center"><span style="font-weight: 600;">ရာထူး: &nbsp;</span></label>
                 </div>
                 <div class="col-md-8">
                     <input type="hidden" id="actionType" name="actionType" value="Create" />
-                    <input asp-for="InitialPosition" class="form-control setting-input">
-                    <span asp-validation-for="InitialPosition" class="text-danger"></span>
+                    <input asp-for="Position" class="form-control setting-input">
+                    <span asp-validation-for="Position" class="text-danger"></span>
                 </div>
             </div>
             <div class="row mt-3">
@@ -68,7 +59,7 @@
                 <tr>
                     <th>နံပါတ်</th>
                     <th>ဌာန</th>
-                    <th>စတင့်ခဲ့သည့် ရာထူး</th>
+                    <th>ရာထူး</th>
                     <th>ပြုပြင်ရန်</th>
                     <th>ဖျက်ရန်</th>
                 </tr>
@@ -101,42 +92,42 @@
 
             if (selectedDepartment === "") {
                 $("#submitButton").prop("disabled", true);
-                $.getJSON(commonUrl + "/InitialPosition/GetAllPositionsAndDepartments", (data) => {
+                $.getJSON(commonUrl+"/Position/GetAllPositionsAndDepartments", (data) => {
                     if (data && data.length > 0) {
                         const rows = data.map((item, index) => `
-                                                    <tr>
-                                                        <td>${index + 1}</td>
-                                                        <td>${item.department.department}</td>
-                                                        <td>${item.initialPosition}</td>
-                                                                        <td><a href="javascript:void(0);" class="edit-link btn btn-primary btn-sm all-edit" data-position-id="${item.initialPositionPkid}" data-position-english="${item.initialPosition}"><i class="fa fa-pencil"></i></a></td>
-                                                                        <td><a href="#" class="delete-Link btn btn-danger btn-sm" data-position-id="${item.initialPositionPkid}"><i class="fa fa-trash"></i></a></td>
-                                                    </tr>
-                                                `).join('');
+                                            <tr>
+                                                <td>${index + 1}</td>
+                                                <td>${item.department.department}</td>
+                                                <td>${item.position}</td>
+                                                <td><a href="javascript:void(0);" class="edit-link btn btn-primary btn-sm all-edit" data-position-id="${item.positionPkid}" data-position-english="${item.position}"><i class="fa fa-pencil"></i></a></td>
+                                                        <td><a href="#" class="delete-Link btn btn-danger btn-sm" data-position-id="${item.positionPkid}"><i class="fa fa-trash"></i></a></td>
+                                            </tr>
+                                        `).join('');
 
                         targetElement.find("tbody").html(rows);
 
-                        $("#InitialPosition").val("");
+                        $("#Position").val("");
                     }
                 });
             } else {
                 // Handle the case when a specific department is selected
-                $.getJSON(commonUrl + "/InitialPosition/GetPositionsByDepartment", { departmentId: selectedDepartment }, (positions) => {
+                $.getJSON(commonUrl + "/Position/GetPositionsByDepartment", { departmentId: selectedDepartment }, (positions) => {
                     if (positions && positions.length > 0) {
                         const rows = positions.map((position, index) => `
-                                                    <tr>
-                                                        <td>${index + 1}</td>
-                                                        <td>${position.department.department}</td>
-                                                                <td>${position.initialPosition}</td>
-                                                                                <td><a href="javascript:void(0);" class="edit-link btn btn-primary btn-sm" data-position-id="${position.initialPositionPkid}" data-position-english="${position.initialPosition}"><i class="fa fa-pencil"></i></a></td>
-                                                                        <td><a href="#" class="delete-Link btn btn-danger btn-sm" data-position-id="${position.initialPositionPkid}"><i class="fa fa-trash"></i></a></td>
-                                                    </tr>
-                                                `).join('');
+                                            <tr>
+                                                <td>${index + 1}</td>
+                                                <td>${position.department.department}</td>
+                                                <td>${position.position}</td>
+                                                        <td><a href="javascript:void(0);" class="edit-link btn btn-primary btn-sm" data-position-id="${position.positionPkid}" data-position-english="${position.position}"><i class="fa fa-pencil"></i></a></td>
+                                                        <td><a href="#" class="delete-Link btn btn-danger btn-sm" data-position-id="${position.positionPkid}"><i class="fa fa-trash"></i></a></td>
+                                            </tr>
+                                        `).join('');
 
                         targetElement.find("tbody").html(rows);
 
-                        $("#InitialPosition").val("");
+                        $("#Position").val("");
                     } else {
-                        $("#InitialPosition").val("");
+                        $("#Position").val("");
                     }
                 });
             }
@@ -170,17 +161,15 @@
             $("<input>").attr({
                 type: "hidden",
                 id: "selectedPositionId",
-                name: "initialPositionPkid",
+                name: "PositionPkid",
                 value: positionId
             }).appendTo("form");
-
 
             $("#actionType").val("Edit");
 
             $("#selectedPositionId").val(positionId);
-            console.log("herer!");
 
-            $("#InitialPosition").val(positionEnglish);
+            $("#Position").val(positionEnglish);
 
             if ($("#lstDepartmentId").val()) {
                 $("#submitButton").prop("disabled", false);
@@ -196,7 +185,8 @@
             $('#originalSection').hide();
             $("#confirmationSection").show();
 
-            $.getJSON(commonUrl + `/InitialPosition/GetDepartmentAndPositionData?positionId=${positionId}`, (data) => {
+            // Fetch the department and position data based on the positionId
+            $.getJSON(commonUrl + `/Position/GetDepartmentAndPositionData?positionId=${positionId}`, (data) => {
                 if (data) {
                     $("#confirmationDepartmentInfo").text(data.department);
                     $("#confirmationPositionInfo").text(data.position);
@@ -213,3 +203,4 @@
         });
     </script>
 }
+*@

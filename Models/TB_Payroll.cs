@@ -9,14 +9,30 @@ namespace AddMemberSystem.Models
 
         [MaxLength(50)]
         public string StaffID { get; set; }
+ 
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? BaseSalary { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
-        public decimal? TotalSalary { get; set; }
+        public decimal? Deductions { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? NetSalary { get; set; }
+
+        [MaxLength(50)]
+        public string MonthOfSalary { get; set; }
+
+        public int? YearOfSalary { get; set; }
 
         public DateTime? PaymentDate { get; set; }
 
+
         public bool IsDeleted { get; set; }
 
-   
+        public DateTime? CreatedDate { get; set; }
+
+        public int CreatedBy { get; set; }
+
+
     }
 }

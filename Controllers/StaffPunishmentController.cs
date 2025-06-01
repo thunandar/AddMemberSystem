@@ -1,5 +1,5 @@
-﻿//using AddMemberSystem.Migrations;
-using AddMemberSystem.Models;
+﻿ using AddMemberSystem.Models;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -63,32 +63,12 @@ namespace AddMemberSystem.Controllers
 
             return View(data);
         }
-       
-        private string GetSelectedDepartment(int selectedDepartmentId)
-        {
-            var department = _context.TB_Departments
-                .Where(d => d.DepartmentPkid == selectedDepartmentId && !d.isDeleted)
-                .Select(d => d.Department)
-                .FirstOrDefault();
-
-            return department ?? "Unknown Department";
-        }
-
-        private string GetSelectedPosition(int selectedPositionId)
-        {
-            var position = _context.TB_Positions
-                .Where(d => d.PositionPkid == selectedPositionId)
-                .Select(d => d.Position)
-                .FirstOrDefault();
-            return position ?? "Unknown Position";
-        }
-       
 
         private List<SelectListItem> GetPunishmentTypes()
         {
             var lstPunishmentTypes = new List<SelectListItem>();
 
-            List<TB_PunishmentType> TB_PunishmentTypes =_context.TB_PunishmentType.Where(d => d.IsDeleted == false).ToList();
+            List<TB_PunishmentType> TB_PunishmentTypes = _context.TB_PunishmentType.Where(d => d.IsDeleted == false).ToList();
 
             lstPunishmentTypes = TB_PunishmentTypes.Select(d => new SelectListItem()
             {
@@ -109,8 +89,28 @@ namespace AddMemberSystem.Controllers
 
         private TB_Staff GetStaffInfoByStaffID(string staffID)
         {
-            return _context.TB_Staffs.FirstOrDefault(s => s.StaffID == staffID);
+            var staff = _context.TB_Staffs
+                .FirstOrDefault(s => s.StaffID == staffID);
+
+            if (staff != null)
+            {
+                // Get current job history
+                var currentJob = _context.TB_JobHistorys
+                    .Where(j => j.StaffID == staffID && j.IsCurrent)
+                    .Include(j => j.Department)
+                    .Include(j => j.Position)
+                    .FirstOrDefault();
+
+                if (currentJob != null)
+                {
+                    staff.CurrentDepartment = currentJob.Department?.Department;
+                    staff.CurrentPosition = currentJob.Position?.Position;
+                }
+            }
+
+            return staff;
         }
+
 
         [HttpGet]
         public IActionResult Create(string staffID)
@@ -127,7 +127,6 @@ namespace AddMemberSystem.Controllers
                 return RedirectToAction("List");
             }
 
-
             TB_StaffPunishment StaffPunishment = new TB_StaffPunishment();
 
             var staffInfo = GetStaffInfoByStaffID(staffID);
@@ -136,14 +135,11 @@ namespace AddMemberSystem.Controllers
             ViewBag.StaffID = staffInfo.StaffID;
             ViewBag.StaffName = staffName.Name;
             ViewBag.PunishmentTypeId = GetPunishmentTypes();
-            ViewBag.SelectedDepartment = GetSelectedDepartment(staffInfo.DepartmentId);
-            ViewBag.SelectedPosition = staffInfo.PositionId.HasValue
-       ? GetSelectedPosition(staffInfo.PositionId.Value)
-       : "Position Not Assigned";
-            //ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
+            ViewBag.SelectedDepartment = staffInfo.CurrentDepartment ?? "N/A";
+            ViewBag.SelectedPosition = staffInfo.CurrentPosition ?? "N/A";
 
             return View(StaffPunishment);
-        }  
+        }
 
         [ValidateAntiForgeryToken]
         [HttpPost]
@@ -153,12 +149,6 @@ namespace AddMemberSystem.Controllers
 
             var staffInfo = GetStaffInfoByStaffID(staffID);
             StaffPunishment.StaffId = staffInfo.StaffPkid;
-
-            var Department = _context.TB_Departments.FirstOrDefault(d => d.DepartmentPkid == staffInfo.DepartmentId);
-            StaffPunishment.DepartmentId = Department.DepartmentPkid;
-
-            var Position = _context.TB_Positions.FirstOrDefault(d => d.PositionPkid == staffInfo.PositionId);
-            StaffPunishment.PositionId = Position?.PositionPkid;
 
 
             if (!ModelState.IsValid)
@@ -198,22 +188,20 @@ namespace AddMemberSystem.Controllers
 
             TB_StaffPunishment staffPunish = GetStaffPunishment(id);
 
-            Console.WriteLine("punish*", staffPunish.StaffPunishmentPkid);
-
-            var staffInfo = _context.TB_Staffs.FirstOrDefault(s => s.StaffPkid == staffPunish.StaffId); 
+            var staffInfo = _context.TB_Staffs.FirstOrDefault(s => s.StaffPkid == staffPunish.StaffId);
 
             ViewBag.StaffID = staffInfo.StaffID;
-            
-            ViewBag.StaffName = staffInfo.Name;
+
+            ViewBag.StaffName = staffInfo.Name ?? "N/A";
             ViewBag.PunishmentTypeId = GetPunishmentTypes();
-            ViewBag.SelectedDepartment = GetSelectedDepartment(staffInfo.DepartmentId);
-            // ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
-            ViewBag.SelectedPosition = staffInfo.PositionId.HasValue
-        ? GetSelectedPosition(staffInfo.PositionId.Value)
-        : "Position Not Assigned";
+
+            var staffInfo2 = GetStaffInfoByStaffID(staffInfo.StaffID);
+            ViewBag.SelectedDepartment = staffInfo2.CurrentDepartment ?? "N/A";
+            ViewBag.SelectedPosition = staffInfo2.CurrentPosition ?? "N/A";
+ 
 
             return View(staffPunish);
-           
+
         }
 
         [HttpPost]
@@ -224,9 +212,7 @@ namespace AddMemberSystem.Controllers
 
             existingStaffPunishment.PunishmentDate = editedStaffPunishment.PunishmentDate;
             existingStaffPunishment.Punishment = editedStaffPunishment.Punishment;
-            existingStaffPunishment.PunishmentTypeId = editedStaffPunishment.PunishmentTypeId;          
-            existingStaffPunishment.DepartmentId = editedStaffPunishment.DepartmentId;          
-            existingStaffPunishment.PositionId = editedStaffPunishment.PositionId;
+            existingStaffPunishment.PunishmentTypeId = editedStaffPunishment.PunishmentTypeId;
             existingStaffPunishment.CreatedDate = editedStaffPunishment.CreatedDate;
 
             if (!ModelState.IsValid)
@@ -253,7 +239,7 @@ namespace AddMemberSystem.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(int Id,string staffID)
+        public IActionResult Details(int Id, string staffID)
         {
             if (!IsUserLoggedIn())
             {
@@ -262,16 +248,17 @@ namespace AddMemberSystem.Controllers
 
             TB_StaffPunishment staffPunishment = GetStaffPunishment(Id);
 
-            var staffInfo = _context.TB_Staffs.FirstOrDefault(s => s.StaffPkid == staffPunishment.StaffId); 
+            var staffInfo = _context.TB_Staffs.FirstOrDefault(s => s.StaffPkid == staffPunishment.StaffId);
 
             ViewBag.StaffID = staffInfo.StaffID;
 
             ViewBag.StaffName = staffInfo.Name;
             ViewBag.PunishmentTypeId = GetPunishmentTypes();
-            ViewBag.SelectedDepartment = GetSelectedDepartment(staffInfo.DepartmentId);
-            // ViewBag.SelectedPosition = GetSelectedPosition(staffInfo.PositionId);
-            ViewBag.SelectedPosition = staffInfo.PositionId.HasValue ? GetSelectedPosition(staffInfo.PositionId.Value) : "Position Not Assigned";
             ViewBag.PunishmentTypeId = GetPunishmentTypeName(staffPunishment.PunishmentTypeId);
+
+            var staffInfo2 = GetStaffInfoByStaffID(staffInfo.StaffID);
+            ViewBag.SelectedDepartment = staffInfo2.CurrentDepartment ?? "N/A";
+            ViewBag.SelectedPosition = staffInfo2.CurrentPosition ?? "N/A";
             return View(staffPunishment);
         }
 

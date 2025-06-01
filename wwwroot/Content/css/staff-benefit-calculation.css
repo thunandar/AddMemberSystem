@@ -1,0 +1,63 @@
+﻿
+
+.salary-card {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+.card-header {
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+    padding: 15px 20px;
+}
+
+.salary-row, .deduction-row, .total-deduction-row, .net-salary-row {
+    margin-bottom: 10px;
+    padding: 5px 0;
+}
+
+.deduction-header {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed #ddd;
+}
+
+.base-salary {
+    color: #2c3e50;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 8px 15px;
+    background-color: #e3f2fd;
+    border-radius: 5px;
+}
+
+.deduction-amount {
+    color: #e74c3c;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 6px 12px;
+}
+
+.total-deduction {
+    color: #c0392b;
+    font-size: 17px;
+    font-weight: 600;
+    padding: 8px 15px;
+    background-color: #ffebee;
+    border-radius: 5px;
+}
+
+.net-salary {
+    color: #27ae60;
+    font-size: 20px;
+    font-weight: 700;
+    padding: 10px 15px;
+    background-color: #e8f5e9;
+    border-radius: 5px;
+}
+
+.deduction-row {
+    font-size: 15px;
+}

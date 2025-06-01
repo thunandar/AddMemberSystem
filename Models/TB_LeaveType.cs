@@ -6,5 +6,9 @@
         public int LeaveTypePkid { get; set; }
 
         public string LeaveTypeName { get; set; }
+
+        public int LeaveDays { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }
