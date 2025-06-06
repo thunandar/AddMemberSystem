@@ -24,7 +24,13 @@ namespace AddMemberSystem.Controllers.Setting
                 return RedirectToAction("Index", "Account");
             }
 
-            List<TB_Department> departments = _context.TB_Departments.Where(dep => dep.isDeleted == false).ToList();
+
+            List<TB_Department> departments = _context.TB_Departments
+               .Where(dep => dep.isDeleted == false)
+               .OrderBy(p => p.SerialNo ?? int.MaxValue) // Nulls go to end
+               .ThenBy(p => p.DepartmentPkid)
+               .ToList();
+
 
             SelectList departmentList = new SelectList(departments, "DepartmentPkid", "Department");
 
@@ -49,23 +55,26 @@ namespace AddMemberSystem.Controllers.Setting
                         ModelState.AddModelError("Department", "Department with this name already exists.");
                         return View("~/Views/Setting/Department/DepartmentCrud.cshtml", dep);
                     }
-
+                    dep.CreatedDate = DateTime.UtcNow;
                     _context.TB_Departments.Add(dep);
                 }
                 else if (actionType == "Edit")
                 {
-                    if (_context.TB_Departments.Any(d => d.Department == dep.Department && !d.isDeleted))
-                    {
-                        ModelState.AddModelError("Department", "Edit Department with this name already exists in the selected department.");
-                        return View("~/Views/Setting/Department/DepartmentCrud.cshtml", dep);
-                    }
 
                     var existingDepartment = _context.TB_Departments.Find(dep.DepartmentPkid);
 
                     if (existingDepartment != null)
                     {
-                        existingDepartment.Department = dep.Department;
 
+                            if (_context.TB_Departments.Any(d => d.Department == d.Department && d.DepartmentPkid != d.DepartmentPkid && !d.isDeleted))
+                            {
+                                ModelState.AddModelError("Department", "Edit Department with this name already exists in the selected department.");
+                                return View("~/Views/Setting/Department/DepartmentCrud.cshtml", dep);
+                            }
+
+                        existingDepartment.Department = dep.Department;
+                        existingDepartment.SerialNo = dep.SerialNo;
+                        existingDepartment.CreatedDate = DateTime.UtcNow;
                         _context.TB_Departments.Update(existingDepartment);
                     }
                 }
@@ -89,11 +98,16 @@ namespace AddMemberSystem.Controllers.Setting
 
                 if (department != null)
                 {
-                    return Json(new { department = department.Department });
+                    return Json(new { department = department.Department, serialNo = department.SerialNo });
                 }
             }
 
-            var departments = _context.TB_Departments.Where(departments => departments.isDeleted == false).ToList();
+
+            var departments = _context.TB_Departments
+               .Where(dep => dep.isDeleted == false)
+               .OrderBy(p => p.SerialNo ?? int.MaxValue) 
+               .ThenBy(p => p.DepartmentPkid)
+               .ToList();
             return Json(departments);
         }
 
@@ -120,8 +134,9 @@ namespace AddMemberSystem.Controllers.Setting
              {
 
                  department.isDeleted = true;
+                department.CreatedDate = DateTime.UtcNow;
 
-                 _context.Entry(department).State = EntityState.Modified;
+                _context.Entry(department).State = EntityState.Modified;
 
                  _context.SaveChanges();
 

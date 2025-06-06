@@ -290,6 +290,7 @@ namespace AddMemberSystem.Controllers
 
             TB_JobHistory result = GetJobHistory(Id);
             result.IsDeleted = true;
+            result.CreatedDate = DateTime.UtcNow;
             _context.Attach(result);
             _context.Entry(result).State = EntityState.Modified;
             _context.SaveChanges();

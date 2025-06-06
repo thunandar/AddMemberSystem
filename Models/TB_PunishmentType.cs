@@ -8,5 +8,9 @@
         public string Punishment { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        public DateTime? CreatedDate { get; set; }
+
+        public int CreatedBy { get; set; }
     }
 }

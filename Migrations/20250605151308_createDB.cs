@@ -16,6 +16,7 @@ namespace AddMemberSystem.Migrations
                     DepartmentPkid = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Department = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    SerialNo = table.Column<int>(type: "int", nullable: true),
                     isDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<int>(type: "int", nullable: false)
@@ -46,7 +47,9 @@ namespace AddMemberSystem.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     LeaveTypeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LeaveDays = table.Column<int>(type: "int", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -74,6 +77,9 @@ namespace AddMemberSystem.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StaffID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     BaseSalary = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    SocialSecurityDeduction = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    RiceOilDeduction = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    LeaveDeduction = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Deductions = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     NetSalary = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     MonthOfSalary = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
@@ -95,6 +101,7 @@ namespace AddMemberSystem.Migrations
                     PositionPkid = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Position = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    SerialNo = table.Column<int>(type: "int", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<int>(type: "int", nullable: false)
@@ -111,7 +118,9 @@ namespace AddMemberSystem.Migrations
                     PunishmentTypePkid = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Punishment = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -126,6 +135,9 @@ namespace AddMemberSystem.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StaffID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     BaseSalary = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    SocialSecurityDeduction = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    RiceOilDeduction = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    LeaveDeduction = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Deductions = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     NetSalary = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     MonthOfSalary = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),

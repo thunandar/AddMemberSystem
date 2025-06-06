@@ -1,5 +1,6 @@
 ﻿
 using AddMemberSystem.Models;
+using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Runtime.Intrinsics.Arm;
 
@@ -67,7 +68,7 @@ namespace AddMemberSystem.Controllers.Setting
                         ModelState.AddModelError("Punishment", "Punishment with this name already exists.");
                         return View("~/Views/Setting/PunishmentType/PunishmentTypeCrud.cshtml");
                     }
-
+                    lt.CreatedDate = DateTime.UtcNow;
                     _context.TB_PunishmentType.Add(lt);
                 }
                 else if (actionType == "Edit")
@@ -83,6 +84,7 @@ namespace AddMemberSystem.Controllers.Setting
                     if (existingSettingName != null)
                     {
                         existingSettingName.Punishment = lt.Punishment;
+                        existingSettingName.CreatedDate = DateTime.UtcNow;
 
                         _context.TB_PunishmentType.Update(existingSettingName);
                     }
@@ -118,8 +120,9 @@ namespace AddMemberSystem.Controllers.Setting
             if (lt != null)
             {
                 lt.IsDeleted = true;
+                lt.CreatedDate = DateTime.UtcNow;
 
-                 _context.Entry(lt).State = EntityState.Modified;
+                _context.Entry(lt).State = EntityState.Modified;
 
                 _context.SaveChanges();
 

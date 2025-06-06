@@ -10,6 +10,8 @@ namespace AddMemberSystem.Models
         [MaxLength(50)]
         public string Position { get; set; }
 
+        public int? SerialNo { get; set; }
+
         public bool IsDeleted { get; set; }
 
         public DateTime? CreatedDate { get; set; }

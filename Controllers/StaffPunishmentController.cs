@@ -47,7 +47,7 @@ namespace AddMemberSystem.Controllers
             List<TB_StaffPunishment> staffLeaves = _context.TB_StaffPunishments
                .Where(staff => staff.IsDeleted == false).ToList();
 
-            const int pageSize = 5;
+            const int pageSize = 10;
             if (pg < 1)
                 pg = 1;
 
@@ -274,6 +274,7 @@ namespace AddMemberSystem.Controllers
 
             TB_StaffPunishment staffPunishment = GetStaffPunishment(Id);
             staffPunishment.IsDeleted = true;
+            staffPunishment.CreatedDate = DateTime.UtcNow;
             _context.Attach(staffPunishment);
             _context.Entry(staffPunishment).State = EntityState.Modified;
             _context.SaveChanges();

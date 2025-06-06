@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AddMemberSystem.Models.TB_Payroll>
+﻿@model IEnumerable<AddMemberSystem.Models.TB_Salary>
 
 @{
     ViewData["Title"] = "Payroll list";
@@ -23,7 +23,7 @@
     </div>
 }
 
-<h1 style="font-size: 32px;">Payroll</h1>
+<h1 style="font-size: 32px;">Salary</h1>
 
 <table class="table">
     <thead>
@@ -34,7 +34,7 @@
             <th>နှုတ်ယူသည့်ပမာဏ</th>
             <th>လစာပမာဏ</th>
             <th>ခံစားသည့်လ</th>
-             <th>ဆန်/ဆီ</th>
+            <th>ဆန်/ဆီ</th>
              <th>ခွင့်မဲ့</th>
              <th>Ssb</th>
             <th>ပေးထားသည့်ရက်</th>
@@ -61,9 +61,9 @@
                 <td class="text-success">
                     @Html.DisplayFor(modelItem => item.NetSalary)
                 </td>
-                  <td>
+                 <td>
                     @Html.DisplayFor(modelItem => item.MonthOfSalary)
-            </td>
+                </td>
                 <td class="text-danger">
                     @Html.DisplayFor(modelItem => item.SocialSecurityDeduction)
                 </td>
@@ -73,9 +73,8 @@
                 <td class="text-danger">
                     @Html.DisplayFor(modelItem => item.LeaveDeduction)
                 </td>
-
             <td>
-                @item.PaymentDate?.ToString("yyyy-MM-dd")
+                    @item.CreatedDate?.ToString("yyyy-MM-dd")
             </td>      
         </tr>
             counter++;

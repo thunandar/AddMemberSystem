@@ -16,6 +16,17 @@
                 </div>
             </div>
             <div class="row mt-3">
+                <div class="form-group col-md-4">
+                    <label asp-for="SerialNo" class="control-label d-flex align-items-center">
+                        <span style="font-weight: 600;">အမှတ်စဉ်: &nbsp;</span>
+                    </label>
+                </div>
+                <div class="col-md-8">
+                    <input asp-for="SerialNo" type="number" class="form-control setting-input" id="serialNoInput" min="0">
+                    <span asp-validation-for="SerialNo" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row mt-3">
                 <div class="col-md-4"></div>
                 <div class="col-md-8 setting-submit">
                     <button type="button" class="btn btn-primary col-md-4 mr-3" style="margin-right: 10px;" id="addNewButton">အသစ်ထည့်မည်</button>
@@ -49,7 +60,8 @@
         <table class="table table-bordered">
             <thead style="background-color: #6c85c3;">
                 <tr>
-                    <th>နံပါတ်</th>
+                    @*<th>နံပါတ်</th>*@
+                    <th>အမှတ်စဉ်</th>
                     <th>ရာထူး</th>
                     <th>ပြုပြင်ရန်</th>
                     <th>ဖျက်ရန်</th>
@@ -66,16 +78,18 @@
     <script>
         const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
 
-        $("#settingNameInput, #submitButton").prop("disabled", true);
+        $("#settingNameInput, #submitButton, #serialNoInput").prop("disabled", true);
+
 
 
         $(document).on("click", ".edit-link", function () {
 
-            $("#settingNameInput, #submitButton").prop("disabled", false);
+            $("#settingNameInput, #submitButton, #serialNoInput").prop("disabled", false);
             $("#actionType").val("Edit");
 
             var settingNameId = $(this).data("setting-id");
             var settingName = $(this).data("setting-name");
+            var serialNo = $(this).data("setting-no");
 
             $("#PositionPkid").remove();
             $("<input>").attr({
@@ -89,7 +103,7 @@
 
             $("#PositionPkid").val(settingNameId);
             $("#settingNameInput").val(settingName);
-
+            $("#serialNoInput").val(serialNo);
 
         });
 
@@ -117,7 +131,7 @@
         });
 
         $("#addNewButton").on("click", function () {
-            $("#settingNameInput, #submitButton").prop("disabled", false);
+            $("#settingNameInput, #submitButton , #serialNoInput").prop("disabled", false);
             $("#actionType").val("Create");
 
         });
@@ -138,10 +152,10 @@
                 if (data && data.length > 0) {
                     const rows = data.map((item, index) => `
                                                             <tr>
-                                                <td>${index + 1}</td>
-                                                <td>${item.position}</td>
+                                                         <td>${item.serialNo}</td>
+                                                <td>${item.position}</td>                                                      
                                                 <td><a href="javascript:void(0);" class="edit-link btn btn-primary btn-sm all-edit"
-                                                                            data-setting-id="${item.positionPkid}" data-setting-name="${item.position}">
+                                                                                            data-setting-id="${item.positionPkid}" data-setting-name="${item.position}" data-setting-no="${item.serialNo}">
                                                     <i class="fa fa-pencil"></i>
                                                 </a></td>
                                                                 <td><a href="#" class="delete-Link btn btn-danger btn-sm" data-setting-id="${item.positionPkid}">

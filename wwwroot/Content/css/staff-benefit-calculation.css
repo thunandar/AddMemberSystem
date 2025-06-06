@@ -1,6 +1,4 @@
-﻿
-
-.salary-card {
+﻿.salary-card {
     border-radius: 10px;
     overflow: hidden;
     border: 1px solid #ddd;
@@ -14,13 +12,14 @@
 
 .salary-row, .deduction-row, .total-deduction-row, .net-salary-row {
     margin-bottom: 10px;
-    padding: 5px 0;
+    padding: 5px 20px;
 }
 
 .deduction-header {
     margin-top: 20px;
     margin-bottom: 10px;
-    padding-bottom: 5px;
+    margin-left: 10px;
+    padding: 5px 20px;
     border-bottom: 1px dashed #ddd;
 }
 
@@ -60,4 +59,27 @@
 
 .deduction-row {
     font-size: 15px;
+}
+
+.text-muted.small {
+    font-size: 13px;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+.mr-2 {
+    margin-right: 0.5rem !important;
+}
+
+/* Adjust modal button spacing */
+.modal-footer .btn {
+    margin-left: 5px;
 }

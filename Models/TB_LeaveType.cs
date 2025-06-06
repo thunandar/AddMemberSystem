@@ -10,5 +10,9 @@
         public int LeaveDays { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        public DateTime? CreatedDate { get; set; }
+
+        public int CreatedBy { get; set; }
     }
 }

@@ -40,6 +40,9 @@ namespace AddMemberSystem.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<int?>("SerialNo")
+                        .HasColumnType("int");
+
                     b.Property<bool>("isDeleted")
                         .HasColumnType("bit");
 
@@ -135,6 +138,12 @@ namespace AddMemberSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LeaveTypePkid"), 1L, 1);
 
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -189,6 +198,9 @@ namespace AddMemberSystem.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<decimal?>("LeaveDeduction")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("MonthOfSalary")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -198,6 +210,12 @@ namespace AddMemberSystem.Migrations
 
                     b.Property<DateTime?>("PaymentDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("RiceOilDeduction")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("SocialSecurityDeduction")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("StaffID")
                         .HasMaxLength(50)
@@ -232,6 +250,9 @@ namespace AddMemberSystem.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int?>("SerialNo")
+                        .HasColumnType("int");
+
                     b.HasKey("PositionPkid");
 
                     b.ToTable("TB_Positions");
@@ -244,6 +265,12 @@ namespace AddMemberSystem.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PunishmentTypePkid"), 1L, 1);
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -279,11 +306,20 @@ namespace AddMemberSystem.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<decimal?>("LeaveDeduction")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("MonthOfSalary")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal?>("NetSalary")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("RiceOilDeduction")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("SocialSecurityDeduction")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("StaffID")

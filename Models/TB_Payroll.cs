@@ -13,6 +13,10 @@ namespace AddMemberSystem.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal? BaseSalary { get; set; }
 
+        public decimal? SocialSecurityDeduction { get; set; }
+        public decimal? RiceOilDeduction { get; set; }
+        public decimal? LeaveDeduction { get; set; }
+
         [Column(TypeName = "decimal(18,2)")]
         public decimal? Deductions { get; set; }
 

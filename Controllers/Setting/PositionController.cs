@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Runtime.Intrinsics.Arm;
 
 namespace AddMemberSystem.Controllers.Setting
 {
@@ -24,7 +25,11 @@ namespace AddMemberSystem.Controllers.Setting
                 return RedirectToAction("Index", "Account");
             }
 
-            List<TB_Position> positionTypes = _context.TB_Positions.Where(dep => dep.IsDeleted == false).ToList();
+            List<TB_Position> positionTypes = _context.TB_Positions
+                .Where(dep => dep.IsDeleted == false)
+                .OrderBy(p => p.SerialNo ?? int.MaxValue) // Nulls go to end
+                .ThenBy(p => p.PositionPkid)
+                .ToList();
 
             SelectList positionTypeList = new SelectList(positionTypes, "PositionPkid", "Position");
 
@@ -44,11 +49,15 @@ namespace AddMemberSystem.Controllers.Setting
 
                 if (positionType != null)
                 {
-                    return Json(new { positionType = positionType.Position });
+                    return Json(new { positionType = positionType.Position, serialNo = positionType.SerialNo });
                 }
             }
 
-            var positionTypes = _context.TB_Positions.Where(dep => dep.IsDeleted == false).ToList();
+            var positionTypes = _context.TB_Positions
+                .Where(dep => dep.IsDeleted == false)
+                .OrderBy(p => p.SerialNo ?? int.MaxValue) // Nulls go to end
+                .ThenBy(p => p.PositionPkid)
+                .ToList();
             return Json(positionTypes);
         }
 
@@ -65,25 +74,28 @@ namespace AddMemberSystem.Controllers.Setting
                         ModelState.AddModelError("Position", "Position with this name already exists.");
                         return View("~/Views/Setting/Position/PositionCrud.cshtml");
                     }
-
+                    lt.CreatedDate = DateTime.UtcNow;
                     _context.TB_Positions.Add(lt);
                 }
                 else if (actionType == "Edit")
                 {
-                    if (_context.TB_Positions.Any(d => d.Position == lt.Position && !d.IsDeleted))
-                    {
-                        ModelState.AddModelError("Position", "Edit Position with this name already exists.");
-                        return View("~/Views/Setting/Position/PositionCrud.cshtml");
-                    }
+                    
 
                     var existingSettingName = _context.TB_Positions.Find(lt.PositionPkid);
 
                     if (existingSettingName != null)
                     {
-                        existingSettingName.Position = lt.Position;
+                            if (_context.TB_Positions.Any(d => d.Position == lt.Position && d.PositionPkid != lt.PositionPkid && !d.IsDeleted))
+                            {
+                            ModelState.AddModelError("Position", "Edit Position with this name already exists.");
+                            return View("~/Views/Setting/Position/PositionCrud.cshtml");
+                        }
 
+                        existingSettingName.Position = lt.Position;
+                        existingSettingName.SerialNo = lt.SerialNo;
+                        existingSettingName.CreatedDate = DateTime.UtcNow;
                         _context.TB_Positions.Update(existingSettingName);
-                    }
+                    }                 
                 }
 
                 _context.SaveChanges();
@@ -116,6 +128,7 @@ namespace AddMemberSystem.Controllers.Setting
             if (lt != null)
             {
                 lt.IsDeleted = true;
+                lt.CreatedDate = DateTime.UtcNow;
 
                 _context.Entry(lt).State = EntityState.Modified;
 

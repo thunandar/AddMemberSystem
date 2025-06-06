@@ -49,7 +49,7 @@ namespace AddMemberSystem.Controllers
             List<TB_StaffLeave> staffLeaves = _context.TB_StaffLeaves
                .Where(staff => staff.IsDeleted == false).ToList();
 
-            const int pageSize = 5;
+            const int pageSize = 10;
             if (pg < 1)
                 pg = 1;
 
@@ -474,6 +474,7 @@ namespace AddMemberSystem.Controllers
 
             TB_StaffLeave staffL = GetStaffLeave(Id);
             staffL.IsDeleted = true;
+            staffL.CreatedDate = DateTime.UtcNow;
             _context.Attach(staffL);
             _context.Entry(staffL).State = EntityState.Modified;
             _context.SaveChanges();

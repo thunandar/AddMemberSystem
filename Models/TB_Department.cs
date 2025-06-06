@@ -9,6 +9,8 @@
         [MaxLength(200)]
         public string Department { get; set; }
 
+        public int? SerialNo { get; set; }
+
         public bool isDeleted { get; set; }
 
         public DateTime? CreatedDate { get; set; }

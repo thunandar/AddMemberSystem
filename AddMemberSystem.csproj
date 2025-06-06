@@ -22,4 +22,11 @@
     <Folder Include="wwwroot\StaffPhoto\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Salary\List.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

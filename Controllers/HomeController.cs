@@ -93,7 +93,7 @@ namespace AddMemberSystem.Controllers
                 }
             }
 
-            const int pageSize = 5;
+            const int pageSize = 10;
             if (pg < 1)
                 pg = 1;
 
@@ -449,6 +449,7 @@ namespace AddMemberSystem.Controllers
 
             TB_Staff staff = GetStaff(Id);
             staff.isDeleted = true;
+            staff.CreatedDate = DateTime.UtcNow;
             _context.Attach(staff);
             _context.Entry(staff).State = EntityState.Modified;
             _context.SaveChanges();
@@ -603,7 +604,7 @@ namespace AddMemberSystem.Controllers
             // Get total count of search results
             int resultCount = query.Count();
 
-            const int pageSize = 5;
+            const int pageSize = 10;
             var pager = new Pager(query.Count(), pg, pageSize);
 
             var recSkip = (pg - 1) * pageSize;
@@ -804,34 +805,36 @@ namespace AddMemberSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveSalary([FromBody] TB_Salary salary)
+        public async Task<IActionResult> SaveSalary(TB_Salary salary, string redirectStaffID, int redirectMonth)
         {
             try
             {
-                if (salary == null || !ModelState.IsValid)
-                {
-                    return BadRequest("Invalid data.");
-                }
-
-                // Set additional fields
                 salary.IsDeleted = false;
                 salary.CreatedDate = DateTime.Now;
 
-                // Add to the database
                 _context.TB_Salaries.Add(salary);
                 await _context.SaveChangesAsync();
 
-                return Ok();
+                TempData["SuccessMessage"] = "Salary record saved successfully!";
+
+                return RedirectToAction("StaffBenefitCalculation", new
+                {
+                    staffID = redirectStaffID,
+                    month = redirectMonth
+                });
             }
             catch (Exception ex)
             {
-                // Log the exception
-                return StatusCode(500, "An error occurred while saving salary details.");
+                TempData["ErrorMessage"] = $"Error saving salary: {ex.Message}";
+                return RedirectToAction("StaffBenefitCalculation", new
+                {
+                    staffID = redirectStaffID,
+                    month = redirectMonth
+                });
             }
         }
-
         [HttpPost]
-        public async Task<IActionResult> ProcessPayment([FromBody] TB_Payroll payroll)
+        public async Task<IActionResult> ProcessPayment(TB_Payroll payroll, string redirectStaffID, int redirectMonth)
         {
             try
             {
@@ -840,31 +843,53 @@ namespace AddMemberSystem.Controllers
                     return BadRequest("Invalid data.");
                 }
 
-                // Check if a record with the same StaffID already exists
+                // Find existing payroll record for same staff, month and year
                 var existingPayroll = await _context.TB_Payrolls
-                    .FirstOrDefaultAsync(p => p.StaffID == payroll.StaffID);
+                    .FirstOrDefaultAsync(p =>
+                        p.StaffID == payroll.StaffID &&
+                        p.MonthOfSalary == payroll.MonthOfSalary &&
+                        p.YearOfSalary == payroll.YearOfSalary);
 
                 if (existingPayroll != null)
                 {
                     // Update existing record
+                    existingPayroll.BaseSalary = payroll.BaseSalary;
+                    existingPayroll.SocialSecurityDeduction = payroll.SocialSecurityDeduction;
+                    existingPayroll.RiceOilDeduction = payroll.RiceOilDeduction;
+                    existingPayroll.LeaveDeduction = payroll.LeaveDeduction;
+                    existingPayroll.Deductions = payroll.Deductions;
                     existingPayroll.NetSalary = payroll.NetSalary;
-                    existingPayroll.PaymentDate = payroll.PaymentDate;
+                    existingPayroll.PaymentDate = DateTime.Now; 
+
+                    _context.TB_Payrolls.Update(existingPayroll);
                 }
                 else
                 {
                     // Add new record
+                    payroll.PaymentDate = DateTime.Now;
                     payroll.IsDeleted = false;
+                    payroll.CreatedDate = DateTime.Now;
+
                     _context.TB_Payrolls.Add(payroll);
                 }
 
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Payment processed successfully!";
 
-                return Ok();
+                return RedirectToAction("StaffBenefitCalculation", new
+                {
+                    staffID = redirectStaffID,
+                    month = redirectMonth
+                });
             }
             catch (Exception ex)
             {
-                // Log the exception
-                return StatusCode(500, "An error occurred while processing payment.");
+                TempData["ErrorMessage"] = $"Error processing payment: {ex.Message}";
+                return RedirectToAction("StaffBenefitCalculation", new
+                {
+                    staffID = redirectStaffID,
+                    month = redirectMonth
+                });
             }
         }
 
