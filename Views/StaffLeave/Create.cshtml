@@ -1,4 +1,6 @@
-﻿@model AddMemberSystem.Models.TB_StaffLeave
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@model AddMemberSystem.Models.TB_StaffLeave
 
 @{
     ViewData["Title"] = "ခွင့်မှတ်တမ်းတင်ခြင်း";
@@ -91,6 +93,8 @@
 @section Scripts {
     <script src="~/js/site.js"></script>
     <script>
+        const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
+
         document.getElementById('leaveTypeSelect').addEventListener('change', updateLeaveDays);
 
         // Function to update total, taken, and remaining leave days
@@ -101,7 +105,7 @@
             var staffID = document.getElementById('staffIDInput').value;
             var leaveTypeId = selectedOption.value;
 
-            fetch(`/StaffLeave/GetTakenLeaveDays?staffID=${staffID}&leaveTypeId=${leaveTypeId}`)
+            fetch(commonUrl + `/StaffLeave/GetTakenLeaveDays?staffID=${staffID}&leaveTypeId=${leaveTypeId}`)
                 .then(response => response.json())
                 .then(data => {
                     // Update using element IDs

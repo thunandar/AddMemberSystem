@@ -16,7 +16,6 @@
 }
 <link rel="stylesheet" href="~/Content/css/box_StaffID.css" asp-append-version="true">
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 <div class="row" style="display: flex; align-items: center;">
     <div class="col-md-10" style="margin-top: -10px;">
@@ -55,7 +54,7 @@
 </form>
 
 <div class="row" style="margin-left: 0px; margin-top: 10px; margin-bottom: 10px;">
-    <form asp-controller="Home" asp-action="" method="get" class="row g-3" id="ListForm">
+    <form method="get" class="row g-3" id="listView">
         <div class="col-md-3">
             <select id="SearchCriteria" name="SearchCriteria" class="form-control" asp-items="ViewBag.SearchCriteriaItems">
                <option value="">-----Choose to search-----</option>
@@ -76,39 +75,16 @@
             </div>
         </div>
         <div class="col-md-2">
-            <button id="btnSearchStaff" class="btn btn-primary search-btn col-md-12">Search</button>
+            <button type="button" id="btnSearchStaff" class="btn btn-primary search-btn col-md-12">Search</button>
         </div>
         <div class="col-md-2">
-            <button id="btnExportToExcel" class="btn btn-primary">Download Excel</button>
+            <button type="button" id="btnExportToExcel" class="btn btn-primary">Download Excel</button>
         </div>
     </form>
 </div>
 
 
-<script>
-    //Go to certain route when user click search/excel download
-    const commonUrl = @Json.Serialize(@Configuration.GetSection("AppUrls").GetSection("TestUrl").Value);
-    $(document).ready(function () {
-        $("#btnSearchStaff").click(function () {
-            $("#ListForm").attr("action", commonUrl + "/Home/SearchStaffs");
-            $("#ListForm").submit();
-        });
 
-        $("#btnExportToExcel").click(function () {
-            var searchTerm = $("#SearchTerm").val();
-
-            if (searchTerm && searchTerm.trim() !== "") {
-                $("#ListForm").attr("action", commonUrl+"/Home/ExcelExportSearchResult");
-            } else {
-                $("#ListForm").attr("action", commonUrl + "/Home/ExcelAllStaffExport");
-            }
-
-            $("#ListForm").submit();
-        });
-
-    });
-
-</script>
 
 <div class="row">
     <div class="col-md-12">
@@ -214,5 +190,31 @@
     </tbody>
 </table>
 
+<script>
+        const aUrl = "@Url.Action("SearchStaffs", "Home")";
+        const bUrl = "@Url.Action("ExcelExportSearchResult", "Home")";
+        const cUrl = "@Url.Action("ExcelAllStaffExport", "Home")";
+        $("#btnSearchStaff").click(function (event) {            
+            event.preventDefault();
+            $("#listView").attr("action", aUrl);
+            $("#listView").submit();
+        });
+
+        $("#btnExportToExcel").click(function (event) {
+            event.preventDefault();
+            
+            var searchTerm = $("#SearchTerm").val();
+
+            if (searchTerm && searchTerm.trim() !== "") {
+
+                $("#listView").attr("action", bUrl);
+            } else {
+
+                $("#listView").attr("action", cUrl);
+            }
+
+            $("#listView").submit();
+        });
+</script>
 
 <partial name="_pager" model="@pager" />
