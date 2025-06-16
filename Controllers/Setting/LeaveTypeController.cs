@@ -48,7 +48,7 @@ namespace AddMemberSystem.Controllers.Setting
                 }
             }
 
-            var leaveTypes = _context.TB_LeaveTypes.ToList();
+            var leaveTypes = _context.TB_LeaveTypes.Where(l => l.IsDeleted == false).ToList();
             return Json(leaveTypes);
         }
 

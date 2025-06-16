@@ -26,8 +26,6 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddHttpContextAccessor();
 
-
-
 var app = builder.Build();
 
 app.UseSession();

@@ -13,7 +13,17 @@
         pager = ViewBag.Pager;
         pageNo = pager.CurrentPage;
     }
+
+    var errorMessage = TempData["ErrorMessage"] as string;
 }
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">
+        @errorMessage
+    </div>
+}
+
 <link rel="stylesheet" href="~/Content/css/box_StaffID.css" asp-append-version="true">
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -133,7 +143,7 @@
             <th>ရာထူး</th>
             <th>ဖုန်းနံပါတ်</th>
             <th>ဝန်ထမ်းစတင်ရက်ဆွဲ</th>
-            <th>ဝန်ထမ်း ဓာတ်ပုံ</th>
+            @*<th>ဝန်ထမ်း ဓာတ်ပုံ</th>*@
             <th>ပြုပြင်ရန်</th>
             <th>ကြည့်ရန်</th>
             <th>ဖျက်ရန်</th>
@@ -166,9 +176,9 @@
             <td>
                     @item.StartedDate?.ToString("yyyy-MM-dd")
             </td>            
-            <td>
+            @*td>
                 <img decoding="async" src="@("~/StaffPhoto/"+@item.StaffPhoto)" asp-append-version="true" width="70px" height="50px" style="object-fit: cover;" />
-            </td>
+            </td>*@
 
                 <td>
                     <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@item.StaffPkid">

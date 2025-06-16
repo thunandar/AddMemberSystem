@@ -66,16 +66,27 @@
             <span asp-validation-for="Salary" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="Age" class="control-label"><span style="font-weight: 600;">အသက်</span> </label>
-            <input asp-for="Age" class="form-control" readonly />
-            <span asp-validation-for="Age" class="text-danger"></span>
+            <label asp-for="Gender" class="control-label"><span style="font-weight: 600;">ကျား/မ</span></label>
+            <select asp-for="Gender" class="form-control">
+                <option value="">--ရွေးချယ်ပါ--</option>
+                <option value="ကျား">ကျား</option>
+                <option value="မ">မ</option>
+                <option value="အခြား">အခြား</option>
+            </select>
+            <span asp-validation-for="Gender" class="text-danger"></span>
         </div>
-      
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="Religion" class="control-label"><span style="font-weight: 600;">ကိုးကွယ်သည့်ဘာသာ</span> </label>
-            <input asp-for="Religion" class="form-control" />
+            <label asp-for="Religion" class="control-label"><span style="font-weight: 600;">ကိုးကွယ်သည့်ဘာသာ</span></label>
+            <select asp-for="Religion" class="form-control">
+                <option value="">--ရွေးချယ်ပါ--</option>
+                <option value="ဗုဒ္ဓဘာသာ">ဗုဒ္ဓဘာသာ</option>
+                <option value="ခရစ်ယာန်ဘာသာ">ခရစ်ယာန်ဘာသာ</option>
+                <option value="အစ္စလာမ်ဘာသာ">အစ္စလာမ်ဘာသာ</option>
+                <option value="အခြား">အခြား</option>
+            </select>
             <span asp-validation-for="Religion" class="text-danger"></span>
         </div>
+      
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="VisibleMark" class="control-label"><span style="font-weight: 600;">ထင်ရှားသည့်အမှတ်အသား</span> </label>
             <input asp-for="VisibleMark" class="form-control" />

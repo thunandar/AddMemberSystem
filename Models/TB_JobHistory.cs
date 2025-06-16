@@ -34,8 +34,7 @@ namespace AddMemberSystem.Models
         [Column(TypeName = "decimal(18, 0)")]
         public decimal? JobDay { get; set; }
 
-        [Column(TypeName = "decimal(18, 0)")]
-        public decimal? Duration { get; set; }
+        public string Duration { get; set; }
 
         [MaxLength(500)]
         public string Remark { get; set; }

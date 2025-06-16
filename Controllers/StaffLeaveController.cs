@@ -47,9 +47,9 @@ namespace AddMemberSystem.Controllers
             }
 
             List<TB_StaffLeave> staffLeaves = _context.TB_StaffLeaves
-               .Where(staff => staff.IsDeleted == false).ToList();
+               .Where(staff => staff.IsDeleted == false).OrderByDescending(s => s.StaffLeavePkid).ToList();
 
-            const int pageSize = 10;
+            const int pageSize = 20;
             if (pg < 1)
                 pg = 1;
 

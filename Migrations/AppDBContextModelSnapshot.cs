@@ -85,8 +85,8 @@ namespace AddMemberSystem.Migrations
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("Duration")
-                        .HasColumnType("decimal(18,0)");
+                    b.Property<string>("Duration")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("FromDate")
                         .HasColumnType("datetime2");
@@ -363,7 +363,6 @@ namespace AddMemberSystem.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("DateOfBirth")
-                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EeSSN")
@@ -375,6 +374,9 @@ namespace AddMemberSystem.Migrations
                     b.Property<string>("FatherName")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LevelOfEducation")
                         .HasMaxLength(100)
@@ -388,7 +390,6 @@ namespace AddMemberSystem.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("NRC")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -455,7 +456,6 @@ namespace AddMemberSystem.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("StaffID")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 

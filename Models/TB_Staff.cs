@@ -11,7 +11,6 @@ namespace AddMemberSystem.Models
 
         public string SerialNo { get; set; }
 
-        [Required]
         [MaxLength(50)]
         public string StaffID { get; set; }
 
@@ -29,15 +28,16 @@ namespace AddMemberSystem.Models
 
         public string SpouseAndChildrenNames { get; set; }
 
-        [Required]
         public DateTime? DateOfBirth { get; set; }
 
-        [Required(ErrorMessage = "မှတ်ပုံတင်ထည့်ဖို့ လိုအပ်ပါသည်")]
         [MaxLength(50)]
         public string NRC { get; set; }
 
         [MaxLength(10)]
         public string Age { get; set; }
+
+        public string Gender { get; set; }
+
 
         [MaxLength(50)]
         public string Religion { get; set; }

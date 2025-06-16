@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Globalization;
+using System.Text;
 
 namespace AddMemberSystem.Controllers
 {
@@ -9,11 +10,13 @@ namespace AddMemberSystem.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly AppDBContext _context;
         private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public HomeController(AppDBContext context, IWebHostEnvironment hostEnvironment)
+        public HomeController(AppDBContext context, IWebHostEnvironment hostEnvironment, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _hostEnvironment = hostEnvironment;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult Index()
@@ -71,8 +74,7 @@ namespace AddMemberSystem.Controllers
 
             List<TB_Staff> staffs = _context.TB_Staffs
                 .Where(staff => staff.isDeleted == false)
-                //.Include(d => d.Department)
-                //.Include(p => p.Position)
+                 .OrderByDescending(s => s.StaffPkid)
                 .ToList();
 
             var staffIds = staffs.Select(s => s.StaffID).ToList();
@@ -93,7 +95,7 @@ namespace AddMemberSystem.Controllers
                 }
             }
 
-            const int pageSize = 10;
+            const int pageSize = 20;
             if (pg < 1)
                 pg = 1;
 
@@ -117,41 +119,6 @@ namespace AddMemberSystem.Controllers
                 .Where(m => m.StaffPkid == Id).FirstOrDefault();
             return staff;
         }
-
-        //private List<SelectListItem> GetDepartments()
-        //{
-        //    var lstDepartments = new List<SelectListItem>();
-
-        //    List<TB_Department> TB_Departments = _context.TB_Departments.Where(d => d.isDeleted == false).ToList();
-
-        //    lstDepartments = TB_Departments.Select(d => new SelectListItem()
-        //    {
-        //        Value = d.DepartmentPkid.ToString(),
-        //        Text = d.Department ?? "Unknown Department"
-        //    }).ToList();
-
-        //    var defItem = new SelectListItem()
-        //    {
-        //        Value = "",
-        //        Text = "----ဌာနရွေးချယ်ပါ----"
-        //    };
-
-        //    lstDepartments.Insert(0, defItem);
-
-        //    return lstDepartments;
-        //}
-
-        //private string GetDepartmentName(int DepartmentPkid)
-        //{
-        //    string departmentName = _context.TB_Departments.Where(d => d.DepartmentPkid == DepartmentPkid).SingleOrDefault().Department;
-        //    return departmentName;
-        //}
-
-        //private string GetPositionName(int PositionPkid)
-        //{
-        //    string positionName = _context.TB_Positions.Where(p => p.PositionPkid == PositionPkid).SingleOrDefault().Position;
-        //    return positionName ?? "Position Not Found";
-        //}
 
         private string GetStaffBenefitsName(int StaffBenefitPkid)
         {
@@ -202,8 +169,6 @@ namespace AddMemberSystem.Controllers
             }
 
             TB_Staff Staff = new TB_Staff();
-            //ViewBag.DepartmentPkid = GetDepartments();
-            //ViewBag.PositionPkid = GetPositions();
             ViewBag.StaffBenefitId = GetStaffBenefits();
             ViewBag.BenefitAmounts = GetStaffBenefitAmounts();
             return View(Staff);
@@ -386,6 +351,7 @@ namespace AddMemberSystem.Controllers
             existingMember.DateOfBirth = editedStaff.DateOfBirth;
             existingMember.NRC = editedStaff.NRC;
             existingMember.Age = editedStaff.Age;
+            existingMember.Gender = editedStaff.Gender;
             existingMember.Religion = editedStaff.Religion;
             existingMember.VisibleMark = editedStaff.VisibleMark;
             existingMember.Address = editedStaff.Address;
@@ -604,7 +570,7 @@ namespace AddMemberSystem.Controllers
             // Get total count of search results
             int resultCount = query.Count();
 
-            const int pageSize = 10;
+            const int pageSize = 20;
             var pager = new Pager(query.Count(), pg, pageSize);
 
             var recSkip = (pg - 1) * pageSize;
@@ -697,15 +663,13 @@ namespace AddMemberSystem.Controllers
                 }
             }
         }
-
           
-
         [HttpGet]
         public IActionResult ExcelAllStaffExport()
         {
             // Fetch non-deleted staffs
             var allStaff = _context.TB_Staffs
-                .Where(staff => staff.isDeleted == false)
+                .Where(staff => staff.isDeleted == false).OrderByDescending(s => s.StaffPkid)
                 .ToList();
 
             // Get current job data for all staff
@@ -767,7 +731,7 @@ namespace AddMemberSystem.Controllers
             if (staff == null)
             {
                 TempData["ErrorMessage"] = "The Staff ID does not exist.";
-                return RedirectToAction("List");
+                return RedirectToAction("List", "Home");
             }
 
             // Set current year (2025 as requested)
@@ -892,6 +856,40 @@ namespace AddMemberSystem.Controllers
                 });
             }
         }
+
+        private static DateTime? ParseMyanmarDate(string myanmarDate)
+        {
+            if (string.IsNullOrWhiteSpace(myanmarDate))
+                return null;
+
+            // Myanmar digit map (Unicode characters)
+            var myanmarDigits = new Dictionary<char, char>
+    {
+        {'၀', '0'}, {'၁', '1'}, {'၂', '2'}, {'၃', '3'}, {'၄', '4'},
+        {'၅', '5'}, {'၆', '6'}, {'၇', '7'}, {'၈', '8'}, {'၉', '9'}
+    };
+
+            // Convert Myanmar digits to Western digits
+            var englishDate = new string(myanmarDate.Select(c =>
+                myanmarDigits.ContainsKey(c) ? myanmarDigits[c] : c
+            ).ToArray());
+
+            // Parse as dd-MM-yyyy (day first)
+            if (DateTime.TryParseExact(englishDate,
+                new[] { "dd-MM-yyyy", "d-MM-yyyy", "dd-M-yyyy", "d-M-yyyy" },
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out DateTime result))
+            {
+                return result;
+            }
+
+            return null; // Return null if parsing fails
+        }
+
+        
+
+
 
     }
 

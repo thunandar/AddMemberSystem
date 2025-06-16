@@ -40,9 +40,9 @@
             }
 
             List<TB_Payroll> result = _context.TB_Payrolls
-               .Where(p => p.IsDeleted == false).ToList();
+               .Where(p => p.IsDeleted == false).OrderByDescending(s => s.PayrollPkid).ToList();
 
-            const int pageSize = 10;
+            const int pageSize = 20;
             if (pg < 1)
                 pg = 1;
 

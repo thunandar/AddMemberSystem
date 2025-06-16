@@ -1,1 +1,276 @@
-﻿
+﻿@model AddMemberSystem.Models.TB_Staff
+@using System.Globalization
+
+<link rel="stylesheet" href="~/Content/css/staff-benefit-calculation.css" asp-append-version="true">
+
+@{
+    ViewData["Title"] = "Salary Calculation";  
+
+}
+
+
+
+@{
+    // Parse base salary
+    decimal baseSalary = 0;
+    decimal.TryParse(Model.Salary, out baseSalary);
+
+    // Calculate Rice & Oil benefit
+    decimal riceOilAmount = 0;
+    if (Model.RiceOil && Model.StaffBenefit != null)
+    {
+        if (Model.ChangeAmount && Model.CustomBenefitAmount.HasValue)
+        {
+            riceOilAmount = Model.CustomBenefitAmount.Value;
+        }
+        else if (!Model.ChangeAmount && decimal.TryParse(Model.StaffBenefit.Amount, out decimal amount))
+        {
+            riceOilAmount = amount;
+        }
+    }
+
+    // Calculate Social Security benefit
+    decimal socialSecurityAmount = Model.SocialSecurity && Model.TotalConAmt.HasValue
+        ? Model.TotalConAmt.Value
+        : 0;
+
+    // Get total leave days from controller
+    int totalExcessLeaveDays = ViewBag.TotalExcessLeaveDays ?? 0;
+
+    // Calculate leave deduction
+    decimal leaveDeduction = 0;
+    if (baseSalary > 0 && totalExcessLeaveDays > 0)
+    {
+        decimal dailySalary = baseSalary / 30;
+        leaveDeduction = dailySalary * totalExcessLeaveDays;
+    }
+
+    // Calculate totals
+    decimal totalDeductions = riceOilAmount + socialSecurityAmount + leaveDeduction;
+    decimal netSalary = baseSalary - totalDeductions;
+}
+
+
+<div class="salary-card card shadow-sm mb-4">
+    <div class="card-header bg-info text-white row">
+        <div class="col-md-5">
+            <h5 class="mb-0">Salary Calculation for @ViewBag.MonthName @ViewBag.SelectedYear</h5>
+        </div>
+        <div class="col-md-4">
+            <div class="col-12 text-center">
+                <button class="btn btn-success mr-2" data-toggle="modal" data-target="#saveConfirmationModal">
+                    Save Salary Record
+                </button>
+                <button class="btn btn-success" data-toggle="modal" data-target="#payConfirmationModal">
+                    Pay Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <!-- Base Salary -->
+        <div class="row salary-row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="font-weight-bold">Base Salary:</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <p class="form-control-plaintext base-salary">
+                        @baseSalary.ToString("#,##0.00") MMK
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deductions Header -->
+        <div class="row deduction-header">
+            <div class="col-12">
+                <h6 class="text-muted">Deductions:</h6>
+            </div>
+        </div>
+
+        <!-- Rice/Oil Deduction -->
+        @if (Model.RiceOil)
+        {
+            <div class="row deduction-row">
+                <div class="col-md-6 offset-md-1">
+                    <div class="form-group">
+                        <label class="font-weight-bold">@(Model.StaffBenefit?.BenefitName ?? "Benefit"):</label>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <p class="form-control-plaintext deduction-amount">
+                            - @riceOilAmount.ToString("#,##0.00") MMK
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Social Security Deduction -->
+        @if (Model.SocialSecurity)
+        {
+            <div class="row deduction-row">
+                <div class="col-md-6 offset-md-1">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Social Security:</label>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <p class="form-control-plaintext deduction-amount">
+                            - @socialSecurityAmount.ToString("#,##0.00") MMK
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Leave Deduction -->
+        @if (totalExcessLeaveDays > 0)
+        {
+            <div class="row deduction-row">
+                <div class="col-md-6 offset-md-1">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Excess Leave:</label>
+                        <p class="text-muted small mb-0">
+                            (@totalExcessLeaveDays days × @((baseSalary / 30).ToString("#,##0.00")) MMK/day)
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <p class="form-control-plaintext deduction-amount">
+                            - @leaveDeduction.ToString("#,##0.00") MMK
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Total Deductions -->
+        <div class="row total-deduction-row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="font-weight-bold">Total Deductions:</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <p class="form-control-plaintext total-deduction">
+                        - @totalDeductions.ToString("#,##0.00") MMK
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Net Salary -->
+        <div class="row net-salary-row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="font-weight-bold">Net Salary:</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <p class="form-control-plaintext net-salary">
+                        @netSalary.ToString("#,##0.00") MMK
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Save Confirmation Modal -->
+        <div class="modal fade" id="saveConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h3 class="modal-title" id="saveModalLabel">Confirm Save</h3>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Are you sure you want to save this salary record?</h4>
+                        <p class="mt-3">
+                            <strong>Staff ID:</strong> @Model.StaffID<br>
+                            <strong>Month:</strong> @ViewBag.MonthName @ViewBag.SelectedYear<br>
+                            <strong>Net Salary:</strong> @netSalary.ToString("#,##0.00") MMK
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <form asp-action="SaveSalary" method="post">
+                            <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+
+                            <!-- Hidden fields to pass data to controller -->
+                            <input type="hidden" name="StaffID" value="@Model.StaffID" />
+                            <input type="hidden" name="MonthOfSalary" value="@ViewBag.MonthName" />
+                            <input type="hidden" name="YearOfSalary" value="@ViewBag.SelectedYear" />
+                            <input type="hidden" name="BaseSalary" value="@baseSalary" />
+                            <input type="hidden" name="RiceOilDeduction" value="@riceOilAmount" />
+                            <input type="hidden" name="SocialSecurityDeduction" value="@socialSecurityAmount" />
+                            <input type="hidden" name="LeaveDeduction" value="@leaveDeduction" />
+                            <input type="hidden" name="Deductions" value="@totalDeductions" />
+                            <input type="hidden" name="NetSalary" value="@netSalary" />
+
+                            <!-- Hidden fields for redirect parameters -->
+                            <input type="hidden" name="redirectStaffID" value="@Model.StaffID" />
+                            <input type="hidden" name="redirectMonth" value="@ViewBag.SelectedMonth" />
+
+                            <button type="submit" class="btn btn-success">Confirm Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PayNow Confirmation Modal -->
+<div class="modal fade" id="payConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="payModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="payModalLabel">Confirm Payment</h3>
+            </div>
+            <div class="modal-body">
+                <h4>Are you sure you want to process payment?</h4>
+                <p class="mt-3">
+                    <strong>Staff ID:</strong> @Model.StaffID<br>
+                    <strong>Month:</strong> @ViewBag.MonthName @ViewBag.SelectedYear<br>
+                    <strong>Net Salary:</strong> @netSalary.ToString("#,##0.00") MMK
+                </p>
+            </div>
+            <div class="modal-footer">
+                <form asp-action="ProcessPayment" method="post">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+
+                    <!-- Hidden fields -->
+                    <input type="hidden" name="StaffID" value="@Model.StaffID" />
+                    <input type="hidden" name="MonthOfSalary" value="@ViewBag.MonthName" />
+                    <input type="hidden" name="YearOfSalary" value="@ViewBag.SelectedYear" />
+                    <input type="hidden" name="BaseSalary" value="@baseSalary" />
+                    <input type="hidden" name="RiceOilDeduction" value="@riceOilAmount" />
+                    <input type="hidden" name="SocialSecurityDeduction" value="@socialSecurityAmount" />
+                    <input type="hidden" name="LeaveDeduction" value="@leaveDeduction" />
+                    <input type="hidden" name="Deductions" value="@totalDeductions" />
+                    <input type="hidden" name="NetSalary" value="@netSalary" />
+
+                    <!-- Redirect parameters -->
+                    <input type="hidden" name="redirectStaffID" value="@Model.StaffID" />
+                    <input type="hidden" name="redirectMonth" value="@ViewBag.SelectedMonth" />
+
+                    <button type="submit" class="btn btn-success">Confirm Payment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

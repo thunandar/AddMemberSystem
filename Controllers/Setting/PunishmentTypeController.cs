@@ -43,8 +43,6 @@ namespace AddMemberSystem.Controllers.Setting
             {
                 var punishmentType = _context.TB_PunishmentType.Find(punishmentTypeId.Value);
 
-                Console.WriteLine("PNI" + punishmentType);
-
                 if (punishmentType != null)
                 {
                     return Json(new { punishmentType = punishmentType.Punishment });

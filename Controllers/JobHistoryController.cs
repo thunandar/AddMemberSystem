@@ -44,9 +44,9 @@ namespace AddMemberSystem.Controllers
             }
 
             List<TB_JobHistory> result = _context.TB_JobHistorys
-               .Where(data => data.IsDeleted == false).ToList();
+               .Where(data => data.IsDeleted == false).OrderByDescending(data => data.JobHistoryPkid).ToList();
 
-            const int pageSize = 10;
+            const int pageSize = 20;
             if (pg < 1)
                 pg = 1;
 

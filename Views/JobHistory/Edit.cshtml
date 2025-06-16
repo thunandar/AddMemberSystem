@@ -34,33 +34,33 @@
             </div>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="FromDate" class="control-label"><span style="font-weight: 600;">စတင်သည့်ရက်</span></label>
-            <input asp-for="FromDate" id="DateOfBirth" class="form-control" type="date" />
+            <label asp-for="FromDate" class="control-label"></label>
+            <input asp-for="FromDate" id="FromDate" class="form-control" type="date" />
             <span asp-validation-for="FromDate" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
-            <label asp-for="ToDate" class="control-label"><span style="font-weight: 600;">ပြီးဆုံးသည့်ရက်</span></label>
-            <input asp-for="ToDate" id="DateOfBirth" class="form-control" type="date" />
+            <label asp-for="ToDate" class="control-label"></label>
+            <input asp-for="ToDate" id="ToDate" class="form-control" type="date" />
             <span asp-validation-for="ToDate" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="JobYear" class="control-label"><span style="font-weight:600;">အလုပ်နှစ်</span></label>
-            <input asp-for="JobYear" class="form-control" />
+            <input asp-for="JobYear" class="form-control" readonly />
             <span asp-validation-for="JobYear" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="JobMonth" class="control-label"><span style="font-weight:600;">အလုပ်လ</span></label>
-            <input asp-for="JobMonth" class="form-control" />
+            <input asp-for="JobMonth" class="form-control" readonly />
             <span asp-validation-for="JobMonth" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="JobDay" class="control-label"><span style="font-weight:600;">အလုပ်ရက်</span></label>
-            <input asp-for="JobDay" class="form-control" />
+            <input asp-for="JobDay" class="form-control" readonly />
             <span asp-validation-for="JobDay" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="Duration" class="control-label"><span style="font-weight:600;">အလုပ်သက်တမ်း</span></label>
-            <input asp-for="Duration" class="form-control" />
+            <input asp-for="Duration" class="form-control" readonly />
             <span asp-validation-for="Duration" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
@@ -76,5 +76,65 @@
 </form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const isCurrent = document.getElementById('IsCurrent');
+            const toDateInput = document.getElementById('ToDate');
+            const fromDateInput = document.getElementById('FromDate');
+            const durationInput = document.getElementById('Duration');
+            const jobYearInput = document.getElementById('JobYear');
+            const jobMonthInput = document.getElementById('JobMonth');
+            const jobDayInput = document.getElementById('JobDay');
+
+            // Initialize on load
+            toggleToDateState();
+
+            // Event listeners
+            isCurrent.addEventListener('change', toggleToDateState);
+            fromDateInput.addEventListener('change', calculateDuration);
+            toDateInput.addEventListener('change', calculateDuration);
+
+            function toggleToDateState() {
+                if (isCurrent.checked) {
+                    toDateInput.disabled = true;
+                    toDateInput.value = '';
+                } else {
+                    toDateInput.disabled = false;
+                }
+                calculateDuration();
+            }
+
+            function calculateDuration() {
+                if (!fromDateInput.value) return;
+
+                const fromDate = new Date(fromDateInput.value);
+                const toDate = isCurrent.checked ? new Date() : new Date(toDateInput.value);
+
+                if (isNaN(toDate) || toDate < fromDate) return;
+
+                // Calculate duration
+                let years = toDate.getFullYear() - fromDate.getFullYear();
+                let months = toDate.getMonth() - fromDate.getMonth();
+                let days = toDate.getDate() - fromDate.getDate();
+
+                if (days < 0) {
+                    months--;
+                    days += new Date(toDate.getFullYear(), toDate.getMonth(), 0).getDate();
+                }
+                if (months < 0) {
+                    years--;
+                    months += 12;
+                }
+
+                // Update fields
+                jobYearInput.value = years;
+                jobMonthInput.value = months;
+                jobDayInput.value = days;
+                durationInput.value = `${years} years, ${months} months, ${days} days`;
+            }
+        });
+    </script>
 }
