@@ -44,7 +44,7 @@ namespace AddMemberSystem.Controllers
             }
 
             List<TB_JobHistory> result = _context.TB_JobHistorys
-               .Where(data => data.IsDeleted == false).OrderByDescending(data => data.JobHistoryPkid).ToList();
+               .Where(data => data.IsDeleted == false).OrderByDescending(data => data.JobHistoryPkid).Where(data => data.IsCurrent == true).ToList();
 
             const int pageSize = 20;
             if (pg < 1)
@@ -263,19 +263,52 @@ namespace AddMemberSystem.Controllers
             return name;
         }
 
+        //[HttpGet]
+        //public IActionResult Details(int Id)
+        //{
+        //    if (!IsUserLoggedIn())
+        //    {
+        //        return RedirectToAction("Index", "Account");
+        //    }
+
+        //    TB_JobHistory result = GetJobHistory(Id);
+        //    ViewBag.DepartmentId = GetDepartmentName(result.JobHistoryPkid);
+        //    ViewBag.PositionId = GetPositionName(result.JobHistoryPkid);
+
+        //    return View(result);
+        //}
+
         [HttpGet]
-        public IActionResult Details(int Id)
+        public IActionResult Details(int Id)  // Keep the ID parameter
         {
             if (!IsUserLoggedIn())
             {
                 return RedirectToAction("Index", "Account");
             }
 
-            TB_JobHistory result = GetJobHistory(Id);
-            ViewBag.DepartmentId = GetDepartmentName(result.JobHistoryPkid);
-            ViewBag.PositionId = GetPositionName(result.JobHistoryPkid);
+            // Get the specific job history record
+            var currentJob = GetJobHistoryDetail(Id);
+            string staffID = currentJob.StaffID;
 
-            return View(result);
+            // Get all job histories for this staff member
+            List<TB_JobHistory> jobHistories = _context.TB_JobHistorys
+                .Include(j => j.Department)
+                .Include(j => j.Position)
+                .Where(j => j.StaffID == staffID && j.IsDeleted == false)
+                .OrderByDescending(j => j.FromDate)
+                .ToList();
+
+            ViewBag.StaffID = staffID;
+            return View(jobHistories);
+        }
+
+        // Helper method to get a single job history
+        private TB_JobHistory GetJobHistoryDetail(int id)
+        {
+            return _context.TB_JobHistorys
+                .Include(j => j.Department)
+                .Include(j => j.Position)
+                .FirstOrDefault(j => j.JobHistoryPkid == id);
         }
 
 

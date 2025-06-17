@@ -864,10 +864,10 @@ namespace AddMemberSystem.Controllers
 
             // Myanmar digit map (Unicode characters)
             var myanmarDigits = new Dictionary<char, char>
-    {
-        {'၀', '0'}, {'၁', '1'}, {'၂', '2'}, {'၃', '3'}, {'၄', '4'},
-        {'၅', '5'}, {'၆', '6'}, {'၇', '7'}, {'၈', '8'}, {'၉', '9'}
-    };
+            {
+                {'၀', '0'}, {'၁', '1'}, {'၂', '2'}, {'၃', '3'}, {'၄', '4'},
+                {'၅', '5'}, {'၆', '6'}, {'၇', '7'}, {'၈', '8'}, {'၉', '9'}
+            };
 
             // Convert Myanmar digits to Western digits
             var englishDate = new string(myanmarDate.Select(c =>
@@ -887,8 +887,45 @@ namespace AddMemberSystem.Controllers
             return null; // Return null if parsing fails
         }
 
-        
 
+        public IActionResult ImportStaffData()
+        {
+            string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "excel", "staff.xlsx");
+
+            using (var workbook = new XLWorkbook(filePath))
+            {
+                foreach (var worksheet in workbook.Worksheets)
+                {
+                    foreach (var row in worksheet.RowsUsed().Skip(2)) // Skip first 2 rows
+                    {
+                        if (row.Cell(2).IsEmpty()) continue;
+
+                        var staff = new TB_Staff
+                        {
+                            //StaffID = "TEMP_" + Guid.NewGuid().ToString("N").Substring(0, 8),
+                            Name = row.Cell(2).GetString(),
+                            StaffID = row.Cell(4).GetString(),
+                            FatherName = row.Cell(5).GetString(),
+                            MotherName = row.Cell(6).GetString(),
+                            NRC = row.Cell(7).GetString(),
+                            DateOfBirth = ParseMyanmarDate(row.Cell(8).GetString()),
+                            LevelOfEducation = row.Cell(9).GetString(),
+                            SpouseAndChildrenNames = row.Cell(10).GetString(),
+                            Address = row.Cell(11).GetString(),
+                            Phone = row.Cell(12).GetString(),
+                            Remarks = row.Cell(14).GetString(),
+                            CreatedDate = DateTime.Now,
+                            CreatedBy = 0,
+                            isDeleted = false
+                        };
+                        _context.Add(staff);
+                    }
+                }
+            }
+            _context.SaveChanges();
+            TempData["SuccessMessage"] = "Import successful!";
+            return RedirectToAction("Index");
+        }
 
 
     }

@@ -253,12 +253,6 @@ namespace AddMemberSystem.Controllers
 
             var staffInfo = GetStaffInfoByStaffID(staffID);
 
-            //var Department = _context.TB_Departments.FirstOrDefault(d => d.DepartmentPkid == staffInfo.DepartmentId);
-            //staffL.DepartmentId = Department.DepartmentPkid;
-
-            //var Position = _context.TB_Positions.FirstOrDefault(d => d.PositionPkid == staffInfo.PositionId);
-            //staffL.PositionId = Position?.PositionPkid;
-
             if (isValidLeaveDays > totalLeaveDays)
             {
 
@@ -386,8 +380,9 @@ namespace AddMemberSystem.Controllers
             var takenDays = _context.TB_StaffLeaves
                 .Where(s => s.StaffID == existingStaffL.StaffID
                          && s.LeaveTypeId == editedStaffL.LeaveTypeId
-                          && s.IsDeleted == false)
-                .Sum(s => s.LeaveDays);
+                          && s.IsDeleted == false 
+                          && s.StaffLeavePkid != editedStaffL.StaffLeavePkid)
+                .Sum(s => (int?)s.LeaveDays) ?? 0;
 
             var remainingDays = leaveType.LeaveDays - takenDays;
 
@@ -402,9 +397,13 @@ namespace AddMemberSystem.Controllers
 
             if (!ModelState.IsValid)
             {
+                int newTaken = takenDays + editedStaffL.LeaveDays;
+                int newRemaining = leaveType.LeaveDays - newTaken;
+
                 // Maintain view state consistency
                 ViewBag.TotalLeaveDays = leaveType.LeaveDays;
-                ViewBag.TakenLeaveDays = takenDays;
+                //ViewBag.TakenLeaveDays = takenDays;
+                ViewBag.TakenLeaveDays = newTaken;
                 ViewBag.RemainingLeaveDays = remainingDays;
                 return View(editedStaffL);
             }
