@@ -49,8 +49,8 @@ namespace AddMemberSystem.Controllers.Account
                             {
                                 Expires = DateTime.UtcNow.AddDays(7),
                                 HttpOnly = true,
-                                SameSite = SameSiteMode.Strict,
-                                Secure = true
+                                SameSite = SameSiteMode.Lax,
+                                Secure = false
                             };
 
                             Response.Cookies.Append("staySignedIn", "true", options);
