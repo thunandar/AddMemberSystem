@@ -95,7 +95,7 @@ namespace AddMemberSystem.Controllers
                 }
             }
 
-            const int pageSize = 20;
+            const int pageSize = 1;
             if (pg < 1)
                 pg = 1;
 
@@ -570,7 +570,7 @@ namespace AddMemberSystem.Controllers
             // Get total count of search results
             int resultCount = query.Count();
 
-            const int pageSize = 20;
+            const int pageSize = 1;
             var pager = new Pager(query.Count(), pg, pageSize);
 
             var recSkip = (pg - 1) * pageSize;
@@ -855,6 +855,33 @@ namespace AddMemberSystem.Controllers
                     month = redirectMonth
                 });
             }
+        }
+
+        public IActionResult SsbList(int pg = 1)
+        {
+            if (!IsUserLoggedIn())
+            {
+                return RedirectToAction("Index", "Account");
+            }
+
+            List<TB_Staff> result = _context.TB_Staffs
+               .Where(p => p.isDeleted == false).OrderByDescending(s => s.StaffPkid).ToList();
+
+            const int pageSize = 20;
+            if (pg < 1)
+                pg = 1;
+
+            int recsCount = result.Count();
+
+            var pager = new Pager(recsCount, pg, pageSize);
+
+            int recSkip = (pg - 1) * pageSize;
+
+            var data = result.Skip(recSkip).Take(pager.PageSize).ToList();
+
+            this.ViewBag.Pager = pager;
+
+            return View(data);
         }
 
         private static DateTime? ParseMyanmarDate(string myanmarDate)

@@ -60,13 +60,11 @@
     </thead>
     <tbody class="text-center">
         @{
-            var counter = 1;
+            var counter = (pager.CurrentPage - 1) * pager.PageSize + 1;
         }
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @counter
-            </td>
+                <td>@(counter++)</td>
                 <td>
                     @{
                         var staff = _context.TB_Staffs.FirstOrDefault(s => s.StaffPkid == item.StaffId);
@@ -117,7 +115,6 @@
                     </div>
                 </div>
         </tr>
-            counter++;
 }
     </tbody>
 </table>

@@ -4,13 +4,41 @@
     @if (Model.TotalPages > 0)
     {
         <ul class="pagination justify-content-end">
+            @{
+                bool isSearch = !string.IsNullOrEmpty(ViewBag.searchTerm);
+                string controller = ViewContext.RouteData.Values["controller"].ToString();
+                string action = isSearch ? "SearchStaffs" : "List";
+            }
+
             @if (Model.CurrentPage > 1)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-controller="Home" asp-action="SearchStaffs" asp-route-searchCriteria="@ViewBag.searchCriteria" asp-route-searchTerm="@ViewBag.searchTerm" asp-route-pg="1">First</a>
+                    @if (isSearch)
+                    {
+                        <a class="page-link" asp-controller="@controller" asp-action="@action"
+                           asp-route-searchCriteria="@ViewBag.searchCriteria"
+                           asp-route-searchTerm="@ViewBag.searchTerm"
+                           asp-route-pg="1">First</a>
+                    }
+                    else
+                    {
+                        <a class="page-link" asp-controller="@controller" asp-action="@action"
+                           asp-route-pg="1">First</a>
+                    }
                 </li>
-                <li>
-                    <a class="page-link" asp-controller="Home" asp-action="SearchStaffs" asp-route-searchCriteria="@ViewBag.searchCriteria" asp-route-searchTerm="@ViewBag.searchTerm" asp-route-pg="@(Model.CurrentPage - 1)">Previous</a>
+                <li class="page-item">
+                    @if (isSearch)
+                    {
+                        <a class="page-link" asp-controller="@controller" asp-action="@action"
+                           asp-route-searchCriteria="@ViewBag.searchCriteria"
+                           asp-route-searchTerm="@ViewBag.searchTerm"
+                           asp-route-pg="@(Model.CurrentPage - 1)">Previous</a>
+                    }
+                    else
+                    {
+                        <a class="page-link" asp-controller="@controller" asp-action="@action"
+                           asp-route-pg="@(Model.CurrentPage - 1)">Previous</a>
+                    }
                 </li>
             }
 
@@ -21,17 +49,50 @@
                     continue;
                 }
                 <li class="page-item @(pge == Model.CurrentPage ? "active" : "")">
-                    <a class="page-link" asp-controller="Home" asp-action="SearchStaffs" asp-route-searchCriteria="@ViewBag.searchCriteria" asp-route-searchTerm="@ViewBag.searchTerm" asp-route-pg="@pge">@pge</a>
+                    @if (isSearch)
+                    {
+                        <a class="page-link" asp-controller="@controller" asp-action="@action"
+                           asp-route-searchCriteria="@ViewBag.searchCriteria"
+                           asp-route-searchTerm="@ViewBag.searchTerm"
+                           asp-route-pg="@pge">@pge</a>
+                    }
+                    else
+                    {
+                        <a class="page-link" asp-controller="@controller" asp-action="@action"
+                           asp-route-pg="@pge">@pge</a>
+                    }
                 </li>
             }
 
             @if (Model.CurrentPage < Model.TotalPages)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-controller="Home" asp-action="SearchStaffs" asp-route-searchCriteria="@ViewBag.searchCriteria" asp-route-searchTerm="@ViewBag.searchTerm" asp-route-pg="@(Model.CurrentPage + 1)">Next</a>
+                    @if (isSearch)
+                    {
+                        <a class="page-link" asp-controller="@controller" asp-action="@action"
+                           asp-route-searchCriteria="@ViewBag.searchCriteria"
+                           asp-route-searchTerm="@ViewBag.searchTerm"
+                           asp-route-pg="@(Model.CurrentPage + 1)">Next</a>
+                    }
+                    else
+                    {
+                        <a class="page-link" asp-controller="@controller" asp-action="@action"
+                           asp-route-pg="@(Model.CurrentPage + 1)">Next</a>
+                    }
                 </li>
                 <li class="page-item">
-                    <a class="page-link" asp-controller="Home" asp-action="SearchStaffs" asp-route-searchCriteria="@ViewBag.searchCriteria" asp-route-searchTerm="@ViewBag.searchTerm" asp-route-pg="@(Model.TotalPages)">Last</a>
+                    @if (isSearch)
+                    {
+                        <a class="page-link" asp-controller="@controller" asp-action="@action"
+                           asp-route-searchCriteria="@ViewBag.searchCriteria"
+                           asp-route-searchTerm="@ViewBag.searchTerm"
+                           asp-route-pg="@(Model.TotalPages)">Last</a>
+                    }
+                    else
+                    {
+                        <a class="page-link" asp-controller="@controller" asp-action="@action"
+                           asp-route-pg="@(Model.TotalPages)">Last</a>
+                    }
                 </li>
             }
         </ul>

@@ -43,13 +43,11 @@
     </thead>
     <tbody class="text-center">
         @{
-            var counter = 1;
+            var counter = (pager.CurrentPage - 1) * pager.PageSize + 1;
         }
 @foreach (var item in Model) {
         <tr>
-                <td>
-                    @counter
-                </td>
+            <td>@(counter++)</td>
             <td>
                 @Html.DisplayFor(modelItem => item.StaffID)
             </td>
@@ -78,7 +76,6 @@
                     @item.CreatedDate?.ToString("yyyy-MM-dd")
             </td>      
         </tr>
-            counter++;
 }
     </tbody>
 </table>
@@ -91,10 +88,10 @@
             @if (pager.CurrentPage > 1)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-controller="Payroll" asp-action="List" asp-route-pg="1">First</a>
+                    <a class="page-link" asp-controller="Salary" asp-action="List" asp-route-pg="1">First</a>
                 </li>
                 <li>
-                    <a class="page-link" asp-controller="Payroll" asp-action="List" asp-route-pg="@(pager.CurrentPage - 1)">Previous</a>
+                    <a class="page-link" asp-controller="Salary" asp-action="List" asp-route-pg="@(pager.CurrentPage - 1)">Previous</a>
                 </li>
             }
 
@@ -105,17 +102,17 @@
                     continue;
                 }
                 <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
-                    <a class="page-link" asp-controller="Payroll" asp-action="List" asp-route-pg="@pge">@pge</a>
+                            <a class="page-link" asp-controller="Salary" asp-action="List" asp-route-pg="@pge">@pge</a>
                 </li>
             }
 
             @if (pager.CurrentPage < pager.TotalPages)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-controller="Payroll" asp-action="List" asp-route-pg="@(pager.CurrentPage + 1)">Next</a>
+                    <a class="page-link" asp-controller="Salary" asp-action="List" asp-route-pg="@(pager.CurrentPage + 1)">Next</a>
                 </li>
                 <li class="page-item">
-                            <a class="page-link" asp-controller="Payroll" asp-action="List" asp-route-pg="@(pager.TotalPages)">Last</a>
+                            <a class="page-link" asp-controller="Salary" asp-action="List" asp-route-pg="@(pager.TotalPages)">Last</a>
                 </li>
             }
         </ul>
