@@ -95,7 +95,7 @@ namespace AddMemberSystem.Controllers
                 }
             }
 
-            const int pageSize = 1;
+            const int pageSize = 20;
             if (pg < 1)
                 pg = 1;
 
