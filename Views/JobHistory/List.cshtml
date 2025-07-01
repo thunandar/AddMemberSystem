@@ -26,7 +26,7 @@
     </div>
 </div>
 
-<table class="table">
+<table class="table table-bordered table-striped table-hover">
     <thead>
         <tr>
             <th>စဉ်</th>
@@ -49,9 +49,7 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>
                 <td>@(counter++)</td>
-                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.StaffID)
                 </td>
