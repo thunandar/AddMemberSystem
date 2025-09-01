@@ -3,62 +3,62 @@
 
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <div class="row">
-    <div class="col-md-6" id="originalSection">
+    <div class="col-md-5" id="originalSection">
         <form asp-action="Create" method="post" class="setting-form">
             <div class="row mt-3">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label asp-for="Department" class="control-label d-flex align-items-center"><span style="font-weight: 600;">ဌာန: &nbsp;</span></label>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-9">
                     <input type="hidden" id="actionType" name="actionType" value="Create" />
                     <input asp-for="Department" class="form-control setting-input" id="departmentInput">
                     <span asp-validation-for="Department" class="text-danger"></span>
                 </div>
             </div>
             <div class="row mt-3">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label asp-for="SerialNo" class="control-label d-flex align-items-center">
                         <span style="font-weight: 600;">အမှတ်စဉ်: &nbsp;</span>
                     </label>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-9">
                     <input asp-for="SerialNo" type="number" class="form-control setting-input" id="serialNoInput" min="0">
                     <span asp-validation-for="SerialNo" class="text-danger"></span>
                 </div>
             </div>
             <div class="row mt-3">
-                <div class="col-md-4"></div>
-                <div class="col-md-8 setting-submit">
-                    <button type="button" class="btn btn-primary col-md-4 mr-3" style="margin-right: 10px;" id="addNewButton">အသစ်ထည့်မည်</button>
-                    <button type="submit" id="submitButton" class="btn btn-primary col-md-4">တင်သွင်းမည်</button>
+                <div class="col-md-3"></div>
+                <div class="col-md-9 setting-submit">
+                    <button type="button" class="btn btn-primary mr-3" style="margin-right: 10px;" id="addNewButton">အသစ်ထည့်မည်</button>
+                    <button type="submit" id="submitButton" class="btn btn-primary">တင်သွင်းမည်</button>
                 </div>
             </div>
         </form>
     </div>
-    <div class="col-md-6" id="confirmationSection" style="display: none;">
+    <div class="col-md-5" id="confirmationSection" style="display: none;">
         <form asp-action="PositionDelete" method="post" class="setting-form ">
             <input type="hidden" id="confirmDepartmentId" name="departmentId" value="" />
             
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label id="ိdepartmentLabel" class="control-label d-flex align-items-center"><span style="font-weight: 600;">ဌာန: </span></label>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-9">
                     <p id="confirmationDepartmentInfo" style="margin: 0;"></p>
                 </div>
             </div>
             <div class="row mt-3">
-                <div class="col-md-4"><p class="text-danger" style="font-weight:bold;">ဖျက်ချင်ပါသလား။</p></div>
-                <div class="col-md-8 setting-submit">
-                    <button type="submit" class="btn btn-primary col-md-4" style="margin-right: 10px;" id="confirmYesButton">ဖျက်မည်</button>
-                    <button type="button" class="btn btn-primary col-md-4" id="confirmNoButton">မဖျက်ပါ</button>
+                <div class="col-md-3"><p class="text-danger" style="font-weight:bold;">ဖျက်ချင်ပါသလား။</p></div>
+                <div class="col-md-9 setting-submit">
+                    <button type="submit" class="btn btn-primary" style="margin-right: 10px;" id="confirmYesButton">ဖျက်မည်</button>
+                    <button type="button" class="btn btn-primary" id="confirmNoButton">မဖျက်ပါ</button>
                 </div>
             </div>
         </form>
     </div>
-    <div class="col-md-6" id="positionsListSetting">
+    <div class="col-md-7" id="positionsListSetting">
         <table class="table table-bordered">
-            <thead style="background-color: #6c85c3;">
+            <thead style="background: linear-gradient(135deg, #007bff, #0056b3); color: #fff;">
                 <tr>
                  @*<th>နံပါတ်</th>*@
                     <th>အမှတ်စဉ်</th>

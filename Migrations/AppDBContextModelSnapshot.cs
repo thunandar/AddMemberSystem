@@ -463,6 +463,10 @@ namespace AddMemberSystem.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<string>("StaffType")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<DateTime?>("StartedDate")
                         .HasColumnType("datetime2");
 

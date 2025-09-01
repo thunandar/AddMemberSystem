@@ -5,9 +5,14 @@
     ViewData["Title"] = "ဝန်ထမ်းအချက်အလက်ပြန်လည်ပြင်ဆင်ခြင်း";
 }
 
-<h2>ဝန်ထမ်းအချက်အလက်ပြန်လည်ပြင်ဆင်ခြင်း</h2>
+<link rel="stylesheet" href="~/css/general.css">
 
-<hr />
+<div class="row header-container">
+    <div class="col-md-10">
+        <h1>ဝန်ထမ်းအချက်အလက်ပြန်လည်ပြင်ဆင်ခြင်း</h1>
+    </div>
+</div>
+
 
 <form asp-action="Edit" enctype="multipart/form-data" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -37,6 +42,21 @@
             <label asp-for="Name" class="control-label"><span style="font-weight: 600;">ဝန်ထမ်းအမည်</span> </label>
             <input asp-for="Name" class="form-control" />
             <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="StaffType" class="control-label">
+                <span style="font-weight: 600;">ဝန်ထမ်းအမျိုးအစား</span>
+            </label>
+            <select asp-for="StaffType" class="form-control">
+                <option value="">--ရွေးချယ်ပါ--</option>
+                <option value="နေ့စား">နေ့စား</option>
+                <option value="အချိန်ပြည့်">အချိန်ပြည့်</option>
+                <option value="အချိန်ပိုင်း">အချိန်ပိုင်း</option>
+                <option value="အလုပ်သင်">အလုပ်သင်</option>
+                <option value="အခြား">အခြား</option>
+            </select>
+            <span asp-validation-for="StaffType" class="text-danger"></span>
         </div>
     
         <div class="form-group col-sm-12 col-md-12 col-lg-4">

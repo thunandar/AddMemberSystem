@@ -15,18 +15,22 @@
     }
 }
 
+<link rel="stylesheet" href="~/css/general.css">
+
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-<div class="row" style="display: flex; align-items: center;">
-    <div class="col-md-10" style="margin-top: -10px;">
-        <h1 style="font-size: 32px;">အလုပ်သမိုင်း မှတ်တမ်းများ</h1>
+<div class="row header-container">
+    <div class="col-md-10">
+        <h1>အလုပ်သမိုင်း မှတ်တမ်းများ</h1>
     </div>
-    <div class="col-md-2">
-        <button class="btn btn-primary"><a asp-action="Create" style="color: #fff;">+ Create New</a></button>
+    <div class="col-md-2 text-md-right text-center mt-2 mt-md-0">
+        <button class="btn btn-primary w-100">
+            <a asp-action="Create">+ Create New</a>
+        </button>
     </div>
 </div>
 
-<table class="table table-bordered table-striped table-hover">
+<table class="table table-bordered table-striped table-hover custom-table text-center">
     <thead>
         <tr>
             <th>စဉ်</th>

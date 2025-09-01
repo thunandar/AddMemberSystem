@@ -18,6 +18,9 @@ namespace AddMemberSystem.Models
         public string Name { get; set; }
 
         [MaxLength(50)]
+        public string StaffType { get; set; }
+
+        [MaxLength(50)]
         public string FatherName { get; set; }
 
         [MaxLength(50)]

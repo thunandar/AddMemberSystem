@@ -1,7 +1,12 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Globalization;
 using System.Text;
+
+using System.Text.Json;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace AddMemberSystem.Controllers
 {
@@ -27,14 +32,14 @@ namespace AddMemberSystem.Controllers
             }
 
             int totalStaffCount = _context.TB_Staffs.Where(b => b.isDeleted == false).Count();
-            //int totalPositionCount = _context.TB_Positions.Where(b => b.isDeleted == false).Count();
-            //int totalDepartmentCount = _context.TB_Departments.Where(b => b.isDeleted == false).Count();
+            int totalPositionCount = _context.TB_Positions.Where(b => b.IsDeleted == false).Count();
+            int totalDepartmentCount = _context.TB_Departments.Where(b => b.isDeleted == false).Count();
             int totalStaffPunishmentCount = _context.TB_StaffPunishments.Where(b => b.IsDeleted == false).Count();
             int totalStaffLeaveCount = _context.TB_StaffLeaves.Where(b => b.IsDeleted == false).Count();
 
             ViewBag.totalStaffCount = totalStaffCount;
-            //ViewBag.totalPositionCount = totalPositionCount;
-            //ViewBag.totalDepartmentCount = totalDepartmentCount;
+            ViewBag.totalPositionCount = totalPositionCount;
+            ViewBag.totalDepartmentCount = totalDepartmentCount;
             ViewBag.totalStaffPunishmentCount = totalStaffPunishmentCount;
             ViewBag.totalStaffLeaveCount = totalStaffLeaveCount;
 
@@ -174,25 +179,47 @@ namespace AddMemberSystem.Controllers
             return View(Staff);
         }
 
+        private string GenerateStaffId()
+        {
+            string prefix = "D" + DateTime.UtcNow.ToString("yyMM"); 
+            int maxSequence = 0;
+
+            var existingIds = _context.TB_Staffs
+                .Where(s => s.StaffID.StartsWith(prefix) && s.StaffID.Length == 8)
+                .Select(s => s.StaffID.Substring(5, 3))
+                .ToList();
+
+            foreach (var idSuffix in existingIds)
+            {
+                if (int.TryParse(idSuffix, out int sequence) && sequence > maxSequence)
+                {
+                    maxSequence = sequence;
+                }
+            }
+
+            int nextSequence = maxSequence + 1;
+            return prefix + nextSequence.ToString("000"); 
+        }
+
         [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult Create(TB_Staff staff)
         {
             if (!ModelState.IsValid)
             {
-                //ViewBag.DepartmentPkid = GetDepartments();
-                //ViewBag.PositionPkid = GetPositions();
                 ViewBag.StaffBenefitId = GetStaffBenefits();
                 ViewBag.BenefitAmounts = GetStaffBenefitAmounts();
                 return View(staff);
             }
 
+            if (staff.StaffType == "နေ့စား")
+            {
+                staff.StaffID = GenerateStaffId(); 
+            }
+
             DateTime today = DateTime.UtcNow.Date;
-            // Validate that DateOfBirth is not in the future
             if (staff.DateOfBirth.HasValue && staff.DateOfBirth.Value > today)
             {
-                //ViewBag.DepartmentPkid = GetDepartments();
-                //ViewBag.PositionPkid = GetPositions();
                 ViewBag.StaffBenefitId = GetStaffBenefits();
                 ViewBag.BenefitAmounts = GetStaffBenefitAmounts();
 
@@ -347,6 +374,7 @@ namespace AddMemberSystem.Controllers
             existingMember.SerialNo = editedStaff.SerialNo;
             existingMember.StaffID = editedStaff.StaffID;
             existingMember.Name = editedStaff.Name;
+            existingMember.StaffType = editedStaff.StaffType;
             existingMember.FatherName = editedStaff.FatherName;
             existingMember.DateOfBirth = editedStaff.DateOfBirth;
             existingMember.NRC = editedStaff.NRC;
@@ -570,7 +598,7 @@ namespace AddMemberSystem.Controllers
             // Get total count of search results
             int resultCount = query.Count();
 
-            const int pageSize = 1;
+            const int pageSize = 20;
             var pager = new Pager(query.Count(), pg, pageSize);
 
             var recSkip = (pg - 1) * pageSize;
@@ -914,33 +942,70 @@ namespace AddMemberSystem.Controllers
             return null; // Return null if parsing fails
         }
 
+        private static string CalculateAge(DateTime? dateOfBirth)
+        {
+            if (!dateOfBirth.HasValue)
+                return null;
+
+            var today = DateTime.Today;
+            var age = today.Year - dateOfBirth.Value.Year;
+
+            if (dateOfBirth.Value.Date > today.AddYears(-age))
+                age--;
+
+            return age.ToString(); 
+        }
+
+        private int GetNextSequenceNumber(string prefix)
+        {
+            int maxSequence = 0;
+
+            var existingIds = _context.TB_Staffs
+                .Where(s => s.StaffID.StartsWith(prefix) && s.StaffID.Length == 8)
+                .Select(s => s.StaffID.Substring(5, 3))
+                .ToList();
+
+            foreach (var idSuffix in existingIds)
+            {
+                if (int.TryParse(idSuffix, out int sequence) && sequence > maxSequence)
+                {
+                    maxSequence = sequence;
+                }
+            }
+
+            return maxSequence + 1;
+        }
 
         public IActionResult ImportStaffData()
         {
-            string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "excel", "staff.xlsx");
+            string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "excel", "staff3.xlsx");
 
             using (var workbook = new XLWorkbook(filePath))
             {
                 foreach (var worksheet in workbook.Worksheets)
                 {
-                    foreach (var row in worksheet.RowsUsed().Skip(2)) // Skip first 2 rows
+                    foreach (var row in worksheet.RowsUsed().Skip(2))
                     {
                         if (row.Cell(2).IsEmpty()) continue;
 
+                        var dob = ParseMyanmarDate(row.Cell(9).GetString());
+                        string staffId = row.Cell(2).GetString();
+
                         var staff = new TB_Staff
                         {
-                            //StaffID = "TEMP_" + Guid.NewGuid().ToString("N").Substring(0, 8),
-                            Name = row.Cell(2).GetString(),
-                            StaffID = row.Cell(4).GetString(),
-                            FatherName = row.Cell(5).GetString(),
-                            MotherName = row.Cell(6).GetString(),
-                            NRC = row.Cell(7).GetString(),
-                            DateOfBirth = ParseMyanmarDate(row.Cell(8).GetString()),
-                            LevelOfEducation = row.Cell(9).GetString(),
-                            SpouseAndChildrenNames = row.Cell(10).GetString(),
-                            Address = row.Cell(11).GetString(),
-                            Phone = row.Cell(12).GetString(),
-                            Remarks = row.Cell(14).GetString(),
+                            StaffID = staffId,
+                            StaffType = staffId.StartsWith("D25") ? "နေ့စား" : "အချိန်ပြည့်", // Conditional assignment
+                            Name = row.Cell(3).GetString(),
+                            FatherName = row.Cell(6).GetString(),
+                            MotherName = row.Cell(7).GetString(),
+                            NRC = row.Cell(8).GetString(),
+                            DateOfBirth = dob,
+                            Age = CalculateAge(dob),
+                            LevelOfEducation = row.Cell(10).GetString(),
+                            SpouseAndChildrenNames = row.Cell(11).GetString(),
+                            Address = row.Cell(12).GetString(),
+                            Phone = row.Cell(13).GetString(),
+                            Remarks = row.Cell(15).GetString(),
                             CreatedDate = DateTime.Now,
                             CreatedBy = 0,
                             isDeleted = false
@@ -952,6 +1017,221 @@ namespace AddMemberSystem.Controllers
             _context.SaveChanges();
             TempData["SuccessMessage"] = "Import successful!";
             return RedirectToAction("Index");
+        }
+        public IActionResult ImportDepartmentAndPosition()
+        {
+            _logger?.LogInformation("Logging test: ImportDepartmentAndPosition method was triggered.");
+            string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "excel", "staff4.xlsx");
+
+            // Create logs directory if it doesn't exist
+            string logDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "excel", "logs");
+            if (!Directory.Exists(logDirectory))
+            {
+                Directory.CreateDirectory(logDirectory);
+            }
+
+            // Create log file with timestamp
+            string logFilePath = Path.Combine(logDirectory, $"Import_Log_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
+
+            using (var logFile = new StreamWriter(logFilePath))
+            {
+                logFile.WriteLine($"Import Log - {DateTime.Now:M/d/yyyy h:mm:ss tt}");
+                logFile.WriteLine("===================================");
+                logFile.WriteLine();
+
+                var departments = _context.TB_Departments
+                    .Where(d => !d.isDeleted)
+                    .AsEnumerable()
+                    .GroupBy(d => NormalizeString(d.Department))
+                    .ToDictionary(g => g.Key, g => g.First().DepartmentPkid);
+
+                var positions = _context.TB_Positions
+                    .Where(p => !p.IsDeleted)
+                    .AsEnumerable()
+                    .GroupBy(p => NormalizeString(p.Position))
+                    .ToDictionary(g => g.Key, g => g.First().PositionPkid);
+
+                int successCount = 0;
+                int errorCount = 0;
+                var importErrors = new List<string>();
+                var missingDepartments = new HashSet<string>();
+                var missingPositions = new HashSet<string>();
+
+                using (var workbook = new XLWorkbook(filePath))
+                {
+                    foreach (var worksheet in workbook.Worksheets)
+                    {
+                        foreach (var row in worksheet.RowsUsed().Skip(2))
+                        {
+                            string staffId = row.Cell(2).GetString();
+                            string rawPosition = row.Cell(4).GetString();
+                            string rawDepartment = row.Cell(14).GetString();
+                            string positionName = NormalizeString(rawPosition);
+                            string departmentName = NormalizeString(rawDepartment);
+                            DateTime? fromDate = ParseMyanmarDate(row.Cell(5).GetString());
+
+                            bool hasError = false;
+                            string errorMessage = "";
+
+                            if (!positions.ContainsKey(positionName))
+                            {
+                                errorMessage = $"[ERROR] Row {row.RowNumber()} (Staff: {staffId}): Missing position '{rawPosition}'";
+                                missingPositions.Add(rawPosition);
+                                hasError = true;
+                            }
+
+                            if (!departments.ContainsKey(departmentName))
+                            {
+                                errorMessage = $"[ERROR] Row {row.RowNumber()} (Staff: {staffId}): Missing department '{rawDepartment}'";
+                                missingDepartments.Add(rawDepartment);
+                                hasError = true;
+                            }
+
+                            if (hasError)
+                            {
+                                logFile.WriteLine(errorMessage);
+                                importErrors.Add(errorMessage);
+                                errorCount++;
+                                continue;
+                            }
+
+                            _context.TB_JobHistorys.Add(new TB_JobHistory
+                            {
+                                StaffID = staffId,
+                                FromDate = fromDate,
+                                PositionId = positions[positionName],
+                                DepartmentId = departments[departmentName],
+                                IsCurrent = true,
+                                CreatedDate = DateTime.Now,
+                                CreatedBy = 0,
+                                IsDeleted = false
+                            });
+
+                            successCount++;
+                        }
+                    }
+                }
+
+                _context.SaveChanges();
+
+                // Write summary to log file
+                logFile.WriteLine();
+                logFile.WriteLine("Import Summary:");
+                logFile.WriteLine("===============");
+                logFile.WriteLine($"✅ Successfully imported: {successCount} rows");
+                logFile.WriteLine($"❌ Failed to import: {errorCount} rows");
+                logFile.WriteLine($"❌ Missing departments: {string.Join(", ", missingDepartments)}");
+                logFile.WriteLine($"❌ Missing positions: {string.Join(", ", missingPositions)}");
+            }
+
+            return RedirectToAction("Index");
+        }
+        private static string NormalizeString(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return string.Empty;
+
+            string clean = input
+                .Replace("\r\n", " ")
+                .Replace("\n", " ")
+                .Replace("\r", " ")
+                .Replace("\t", " ")
+                .Trim();
+
+            // Collapse multiple spaces to a single space
+            while (clean.Contains("  "))
+                clean = clean.Replace("  ", " ");
+
+            // Optional: Use regex for collapsing all whitespace
+            // clean = Regex.Replace(clean, @"\s+", " ");
+
+            return clean
+                .Replace('\u106A', '\u1009')  // Normalize specific Myanmar characters
+                .Replace('\u106B', '\u100A')
+                .Replace('\u108F', '\u1014')
+                .Normalize(NormalizationForm.FormC)
+                .ToLowerInvariant();
+        }
+
+        public IActionResult ImportSocialSecurityData()
+        {
+            string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "excel", "ssb3.xlsx");
+            int successCount = 0;
+            var importErrors = new List<string>();
+
+            using (var workbook = new XLWorkbook(filePath))
+            {
+                foreach (var worksheet in workbook.Worksheets)
+                {
+                    foreach (var row in worksheet.RowsUsed().Skip(2))
+                    {
+                        try
+                        {
+                            if (row.Cell(2).IsEmpty())
+                            {
+                                importErrors.Add($"Skipped row {row.RowNumber()}: Missing StaffID");
+                                continue;
+                            }
+
+                            string staffId = row.Cell(2).GetString();
+                            var staff = _context.TB_Staffs.FirstOrDefault(s => s.StaffID == staffId);
+
+                            if (staff == null)
+                            {
+                                importErrors.Add($"Row {row.RowNumber()}: Staff not found (ID: {staffId})");
+                                continue;
+                            }
+
+                            staff.SocialSecurity = true;
+                            staff.ErSSN = row.Cell(5).GetString();
+                            staff.EeSSN = row.Cell(7).GetString();
+                            staff.Gender = row.Cell(11).GetString();
+                            staff.Minc = GetDecimalValue(row.Cell(12));
+                            staff.SS1EeRate = GetDecimalValue(row.Cell(13));
+                            staff.SS1ErRate = GetDecimalValue(row.Cell(14));
+                            staff.SS1EeConAmt = GetDecimalValue(row.Cell(15));
+                            staff.SS1ErConAmt = GetDecimalValue(row.Cell(16));
+                            staff.SS2EeRate = GetDecimalValue(row.Cell(17));
+                            staff.SS2ErRate = GetDecimalValue(row.Cell(18));
+                            staff.SS2EeConAmt = GetDecimalValue(row.Cell(19));
+                            staff.SS2ErConAmt = GetDecimalValue(row.Cell(20));
+                            staff.TotalConAmt = GetDecimalValue(row.Cell(21));
+
+                            _context.Update(staff);
+                            successCount++;
+                        }
+                        catch (Exception ex)
+                        {
+                            importErrors.Add($"Row {row.RowNumber()}: {ex.Message}");
+                        }
+                    }
+                }
+                _context.SaveChanges();
+            }
+
+            if (importErrors.Any())
+            {
+                TempData["ErrorMessage"] = $"Imported {successCount} records with {importErrors.Count} errors: " +
+                                           string.Join("; ", importErrors);
+            }
+            else
+            {
+                TempData["SuccessMessage"] = $"Successfully imported {successCount} social security records";
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        private decimal? GetDecimalValue(IXLCell cell)
+        {
+            if (cell.IsEmpty()) return null;
+
+            return cell.DataType switch
+            {
+                XLDataType.Number => cell.GetValue<decimal>(),
+                XLDataType.Text => decimal.TryParse(cell.GetString(), out decimal result) ? result : null,
+                _ => null
+            };
         }
 
 

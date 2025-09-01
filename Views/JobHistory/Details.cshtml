@@ -4,78 +4,80 @@
     string staffID = ViewBag.StaffID;
 }
 
+<link rel="stylesheet" href="~/css/general.css">
+
+<div class="row header-container">
+    <div class="col-md-12">
+        <h1>အလုပ်သမိုင်း မှတ်တမ်းများ - ဝန်ထမ်းအမှတ် : @staffID</h1>
+    </div>
+</div>
+
 <div class="card">
-    <div class="card-header bg-primary text-white">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="mb-0" style="padding: 20px;">အလုပ်သမိုင်း မှတ်တမ်းများ - ဝန်ထမ်းအမှတ် : @staffID</h4>       
-        </div>
-    </div>
-
-            <table class="table table-bordered table-striped table-hover">
-                <thead class="bg-secondary text-white">
-                    <tr>
-                        <th>စဉ်</th>
-                        <th>ဌာန</th>
-                        <th>ရာထူး</th>
-                        <th>စတင်သည့်ရက်</th>
-                        <th>ပြီးဆုံးသည့်ရက်</th>
-                        <th>လက်ရှိ</th>
-                        <th>သက်တမ်း</th>
-                        <th>မှတ်ချက်</th>
+    <table class="table table-bordered table-striped table-hover custom-table text-center">
+        <thead>
+            <tr>
+                <th>စဉ်</th>
+                <th>ဌာန</th>
+                <th>ရာထူး</th>
+                <th>စတင်သည့်ရက်</th>
+                <th>ပြီးဆုံးသည့်ရက်</th>
+                <th>လက်ရှိ</th>
+                <th>သက်တမ်း</th>
+                <th>မှတ်ချက်</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int counter = 1;
+                foreach (var item in Model)
+                {
+                    <tr class="@(item.IsCurrent ? "table-success" : "")">
+                        <td>@counter</td>
+                        <td>@item.Department?.Department</td>
+                        <td>@item.Position?.Position</td>
+                        <td>@item.FromDate?.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            @if (item.IsCurrent)
+                            {
+                                <span class="badge bg-info text-white">Present</span>
+                            }
+                            else
+                            {
+                                @item.ToDate?.ToString("yyyy-MM-dd")
+                            }
+                        </td>
+                        <td>
+                            @if (item.IsCurrent)
+                            {
+                                <i class="fa fa-check-circle text-success fa-lg"></i>
+                            }
+                        </td>
+                        <td>
+                            @if (item.JobYear > 0)
+                            {
+                                <span>@item.JobYear နှစ် </span>
+                            }
+                            @if (item.JobMonth > 0)
+                            {
+                                <span>@item.JobMonth လ </span>
+                            }
+                            @if (item.JobDay > 0)
+                            {
+                                <span>@item.JobDay ရက်</span>
+                            }
+                        </td>
+                        <td>@item.Remark</td>
                     </tr>
-                </thead>
-                <tbody class="text-center">
-                    @{
-                        int counter = 1;
-                        foreach (var item in Model)
-                        {
-                            <tr class="@(item.IsCurrent ? "table-success" : "")">
-                                <td>@counter</td>
-                                <td>@item.Department?.Department</td>
-                                <td>@item.Position?.Position</td>
-                                <td>@item.FromDate?.ToString("yyyy-MM-dd")</td>
-                                <td>
-                                    @if (item.IsCurrent)
-                                    {
-                                        <span class="badge bg-info">Present</span>
-                                    }
-                                    else
-                                    {
-                                        @item.ToDate?.ToString("yyyy-MM-dd")
-                                    }
-                                </td>
-                                <td>
-                                    @if (item.IsCurrent)
-                                    {
-                                        <i class="fa fa-check-circle text-success"></i>
-                                    }
-                                </td>
-                                <td>
-                                    @if (item.JobYear > 0)
-                                    {
-                                        <span>@item.JobYear နှစ်</span>
-                                    }
-                                    @if (item.JobMonth > 0)
-                                    {
-                                        <span>@item.JobMonth လ</span>
-                                    }
-                                    @if (item.JobDay > 0)
-                                    {
-                                        <span>@item.JobDay ရက်</span>
-                                    }
-                                </td>
-                                <td>@item.Remark</td>
-                            </tr>
-                            counter++;
-                        }
-                    }
-                </tbody>
-            </table>
+                    counter++;
+                }
+            }
+        </tbody>
+    </table>
 
-        @if (!Model.Any())
-        {
-            <div class="alert alert-info text-center">
-                <i class="fa fa-info-circle"></i> No job history records found
-            </div>
-        }
-    </div>
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            <i class="fa fa-info-circle"></i> အလုပ်သမိုင်းမှတ်တမ်း မရှိပါ။
+        </div>
+    }
+</div>

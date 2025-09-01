@@ -16,6 +16,8 @@
 
 }
 
+<link rel="stylesheet" href="~/css/general.css">
+
 @if (!string.IsNullOrEmpty(errorMessage))
 {
     <div class="alert alert-danger">
@@ -23,9 +25,13 @@
     </div>
 }
 
-<h1 style="font-size: 32px;">Salary</h1>
+<div class="row header-container">
+    <div class="col-md-10">
+        <h1>အခြေခံလစာ</h1>
+    </div>
+</div>
 
-<table class="table table-bordered table-striped table-hover">
+<table class="table table-bordered table-striped table-hover custom-table text-center">
     <thead>
         <tr>
             <th>စဉ်</th>

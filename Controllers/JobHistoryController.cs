@@ -139,8 +139,11 @@ namespace AddMemberSystem.Controllers
             ViewBag.DepartmentId = GetDepartments();
             ViewBag.PositionId = GetPositions();
 
+            
+
             if (JobHistory.IsCurrent)
             {
+                JobHistory.ToDate = DateTime.Today;
                 bool alreadyHasCurrent = _context.TB_JobHistorys
                     .Any(jh => jh.StaffID == JobHistory.StaffID && jh.IsCurrent);
                 if (alreadyHasCurrent)

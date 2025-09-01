@@ -16,15 +16,22 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.18" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\excel\" />
+    <Folder Include="wwwroot\excel\log\" />
+    <Folder Include="wwwroot\excel\logs\" />
+    <Folder Include="wwwroot\logs\" />
     <Folder Include="wwwroot\StaffPhoto\" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Update="Views\Salary\List.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\css\general.css">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

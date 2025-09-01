@@ -5,9 +5,13 @@
     ViewData["Title"] = "ဝန်ထမ်းအချက်အလက်များ";
 }
 
-<h2>ဝန်ထမ်းအချက်အလက်များ</h2>
+<link rel="stylesheet" href="~/css/general.css">
 
-<hr />
+<div class="row header-container">
+    <div class="col-md-12">
+        <h1>ဝန်ထမ်းအချက်အလက်များ</h1>
+    </div>
+</div>
 
 <form enctype="multipart/form-data" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -32,6 +36,11 @@
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="Name" class="control-label"><span style="font-weight: 600;">ဝန်ထမ်းအမည်</span> </label>
             <input asp-for="Name" class="form-control" readonly />
+        </div>
+
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="StaffType" class="control-label"><span style="font-weight: 600;">ဝန်ထမ်းအမျိုးအစား</span> </label>
+            <input asp-for="StaffType" class="form-control" readonly />
         </div>
     
         <div class="form-group col-sm-12 col-md-12 col-lg-4">

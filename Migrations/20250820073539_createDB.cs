@@ -329,6 +329,7 @@ namespace AddMemberSystem.Migrations
                     SerialNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StaffID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    StaffType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     FatherName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     MotherName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     LevelOfEducation = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),

@@ -1,4 +1,4 @@
-@{
+﻿@*@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -37,7 +37,137 @@
     </div>
 
 
+</div>*@
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@{
+    var totalStaffCount = ViewBag.totalStaffCount ?? 0;
+    var totalPositionCount = ViewBag.totalPositionCount ?? 0;
+    var totalDepartmentCount = ViewBag.totalDepartmentCount ?? 0;
+    var totalStaffPunishmentCount = ViewBag.totalStaffPunishmentCount ?? 0;
+    var totalStaffLeaveCount = ViewBag.totalStaffLeaveCount ?? 0;
+}
+
+<style>
+    body {
+        background: #f1f3f6;
+        font-family: "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .dashboard-container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 2rem 1rem;
+    }
+
+    .dashboard-title {
+        font-weight: bold;
+        margin-bottom: 2rem;
+        text-align: center;
+        color: #004aad;
+        font-size: 2rem;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .stat-card {
+        border-radius: 15px;
+        padding: 1.5rem;
+        background: #fff;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+        text-align: center;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 8px 20px rgba(0,0,0,0.15);
+        }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        display: inline-block;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .stat-label {
+        font-size: 1rem;
+        color: #666;
+        margin-top: 0.25rem;
+    }
+
+    /* Example icons using Unicode emojis */
+    .icon-staff::before {
+        content: "👥";
+    }
+
+    .icon-position::before {
+        content: "🧑‍💼";
+    }
+
+    .icon-department::before {
+        content: "🏢";
+    }
+
+    .icon-leave::before {
+        content: "📅";
+    }
+
+    .icon-punishment::before {
+        content: "⚠️";
+    }
+
+    .icon-performance::before {
+        content: "📈";
+    }
+</style>
+
+<div class="dashboard-container">
+    <h2 class="dashboard-title">📊 HR Dashboard Overview</h2>
+
+    <div class="grid">
+        <div class="stat-card">
+            <span class="stat-icon icon-staff"></span>
+            <div class="stat-value">@totalStaffCount</div>
+            <div class="stat-label">Total Staffs</div>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon icon-position"></span>
+            <div class="stat-value">@totalPositionCount</div>
+            <div class="stat-label">Total Positions</div>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon icon-department"></span>
+            <div class="stat-value">@totalDepartmentCount</div>
+            <div class="stat-label">Departments</div>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon icon-leave"></span>
+            <div class="stat-value">@totalStaffLeaveCount</div>
+            <div class="stat-label">Leaves</div>
+        </div>
+    </div>
 </div>
+
+
 
 
 

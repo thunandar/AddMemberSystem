@@ -23,18 +23,20 @@
         @errorMessage
     </div>
 }
-
 <link rel="stylesheet" href="~/Content/css/box_StaffID.css" asp-append-version="true">
+<link rel="stylesheet" href="~/css/general.css">
 
-<div class="row" style="display: flex; align-items: center;">
-    <div class="col-md-10" style="margin-top: -10px;">
+
+<div class="row header-container">
+    <div class="col-md-10">
         <h1>စီမံရေးရာဌာန ၀န်ထမ်း ပြစ်မှု ပြစ်ဒဏ်များ</h1>
     </div>
-    <div class="col-md-2">
-        <button class="btn btn-primary" onclick="showForm()">+ တင်သွင်းမည်</button>
+    <div class="col-md-2 text-md-right text-center mt-2 mt-md-0">
+        <button class="btn btn-primary w-100" onclick="showForm()">
+           + Create New
+        </button>
     </div>
 </div>
-
 
 <div id="overlay"></div>
 <form id="staffForm" method="get" action="@Url.Action("Create", "StaffPunishment")">
@@ -46,7 +48,7 @@
 @inject AddMemberSystem.Data.AppDBContext _context
 
 
-<table class="table table-bordered table-striped table-hover">
+<table class="table table-bordered table-striped table-hover custom-table text-center">
     <thead>
         <tr>
             <th>စဉ်</th>

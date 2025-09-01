@@ -5,8 +5,13 @@
     ViewData["Title"] = "Create New Staff";
 }
 
-<h2>Create New Staff</h2>
-<hr />
+<link rel="stylesheet" href="~/css/general.css">
+
+<div class="row header-container">
+    <div class="col-md-12">
+        <h1>ဝန်ထမ်း ဖန်တီးခြင်း</h1>
+    </div>
+</div>
 
 <form asp-action="Create" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -22,7 +27,7 @@
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="StaffID" class="control-label"><span style="font-weight: 600;">ဝန်ထမ်းအမှတ်</span> </label>
-            <input asp-for="StaffID" class="form-control" />
+            <input asp-for="StaffID" class="form-control" id="staffIdInput" />
             <span asp-validation-for="StaffID" class="text-danger"></span>
         </div>
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
@@ -30,6 +35,22 @@
             <input asp-for="Name" class="form-control" />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
+
+        <div class="form-group col-sm-12 col-md-12 col-lg-4">
+            <label asp-for="StaffType" class="control-label">
+                <span style="font-weight: 600;">ဝန်ထမ်းအမျိုးအစား</span>
+            </label>
+            <select asp-for="StaffType" class="form-control">
+                <option value="">--ရွေးချယ်ပါ--</option>
+                <option value="နေ့စား">နေ့စား</option>
+                <option value="အချိန်ပြည့်">အချိန်ပြည့်</option>
+                <option value="အချိန်ပိုင်း">အချိန်ပိုင်း</option>
+                <option value="အလုပ်သင်">အလုပ်သင်</option>
+                <option value="အခြား">အခြား</option>
+            </select>
+            <span asp-validation-for="StaffType" class="text-danger"></span>
+        </div>
+
 
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="FatherName" class="control-label">
@@ -76,6 +97,7 @@
             <input asp-for="Age" id="Age" class="form-control" readonly />
             <span asp-validation-for="Age" class="text-danger"></span>
         </div>
+
         <div class="form-group col-sm-12 col-md-12 col-lg-4">
             <label asp-for="Gender" class="control-label"><span style="font-weight: 600;">ကျား/မ</span></label>
             <select asp-for="Gender" class="form-control">
@@ -265,6 +287,27 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
   <script>
+
+$(function() {
+    const $staffType = $("#StaffType");
+    const $staffIdInput = $("#staffIdInput");
+    
+    // Initialize placeholder text
+    $staffIdInput.attr("placeholder", "Auto-generated for daily staff");
+    
+    $staffType.on("change", function() {
+        if ($(this).val() === "နေ့စား") {
+            // Show placeholder text to indicate auto-generation
+            $staffIdInput.val("");
+            $staffIdInput.prop("readonly", true);
+            $staffIdInput.css("background-color", "#f0f0f0");
+        } else {
+            $staffIdInput.prop("readonly", false);
+            $staffIdInput.css("background-color", "");
+        }
+    }).trigger("change"); 
+});
+
         // Corrected show/hide for social security checkbox
         $(function () {
             const $ssDetails = $("#ssDetails");

@@ -3,7 +3,7 @@
 
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <div class="row">
-    <div class="col-md-6" id="originalSection">
+    <div class="col-md-5" id="originalSection">
         <form asp-action="Create" method="post" class="setting-form">
             <div class="row">
                 <div class="form-group col-md-4">
@@ -15,7 +15,6 @@
                     <span asp-validation-for="BenefitName" class="text-danger"></span>
                 </div>
             </div>
-
             <div class="row">
                 <div class="form-group col-md-4">
                     <label asp-for="Amount" class="control-label d-flex align-items-center"><span style="font-weight: 600;">ပမာဏ: &nbsp;</span></label>
@@ -29,13 +28,13 @@
             <div class="row mt-3">
                 <div class="col-md-4"></div>
                 <div class="col-md-8 setting-submit">
-                    <button type="button" class="btn btn-primary col-md-4 mr-3" style="margin-right: 10px;" id="addNewButton">အသစ်ထည့်မည်</button>
-                    <button type="submit" id="submitButton" class="btn btn-primary col-md-4">တင်သွင်းမည်</button>
+                    <button type="button" class="btn btn-primary mr-3" style="margin-right: 10px;" id="addNewButton">အသစ်ထည့်မည်</button>
+                    <button type="submit" id="submitButton" class="btn btn-primary ">တင်သွင်းမည်</button>
                 </div>
             </div>
         </form>
     </div>
-    <div class="col-md-6" id="confirmationSection" style="display: none;">
+    <div class="col-md-5" id="confirmationSection" style="display: none;">
         <form asp-action="Delete" method="post" class="setting-form ">
             <input type="hidden" id="confirmStaffBenefitId" name="staffBenefitId" value="" />
 
@@ -58,15 +57,15 @@
             <div class="row mt-3">
                 <div class="col-md-4"><p class="text-danger" style="font-weight:bold;">ဖျက်ချင်ပါသလား။</p></div>
                 <div class="col-md-8 setting-submit">
-                    <button type="submit" class="btn btn-primary col-md-4" style="margin-right: 10px;" id="confirmYesButton">ဖျက်မည်</button>
-                    <button type="button" class="btn btn-primary col-md-4" id="confirmNoButton">မဖျက်ပါ</button>
+                    <button type="submit" class="btn btn-primary" style="margin-right: 10px;" id="confirmYesButton">ဖျက်မည်</button>
+                    <button type="button" class="btn btn-primary" id="confirmNoButton">မဖျက်ပါ</button>
                 </div>
             </div>
         </form>
     </div>
-    <div class="col-md-6" id="listSetting">
+    <div class="col-md-7" id="listSetting">
         <table class="table table-bordered">
-            <thead style="background-color: #6c85c3;">
+            <thead style="background: linear-gradient(135deg, #007bff, #0056b3); color: #fff;">
                 <tr>
                     <th>နံပါတ်</th>
                     <th>အကျိုးခံစားခွင့်အမည်</th>

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AddMemberSystem.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20250613050207_createDB")]
+    [Migration("20250820073539_createDB")]
     partial class createDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -464,6 +464,10 @@ namespace AddMemberSystem.Migrations
                     b.Property<string>("StaffPhoto")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("StaffType")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("StartedDate")
                         .HasColumnType("datetime2");
